@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: pecantv_user
+      POSTGRES_PASSWORD: pecantv_pass
+      POSTGRES_DB: pecantv_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/usr/src/app
+volumes:
+  db_data: 

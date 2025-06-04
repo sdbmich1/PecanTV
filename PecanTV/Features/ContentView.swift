@@ -2,13 +2,24 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @State private var showSplash = false
+    @State private var splashActive = true
     
     var body: some View {
         Group {
             if authViewModel.isAuthenticated {
-                MainTabView()
+                if splashActive {
+                    SplashScreenView(isActive: $splashActive)
+                } else {
+                    MainTabView()
+                }
             } else {
                 AuthenticationView()
+            }
+        }
+        .onChange(of: authViewModel.isAuthenticated) { isAuthenticated in
+            if isAuthenticated {
+                splashActive = true
             }
         }
     }

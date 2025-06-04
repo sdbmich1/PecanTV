@@ -1,4 +1,5 @@
 import SwiftUI
+import AVKit
 
 struct ContentDetailView: View {
     let content: Content
@@ -128,13 +129,36 @@ struct ContentDetailView: View {
                                 .foregroundColor(isInWatchlist ? .red : .gray)
                         }
                     }
+                    // Watch Trailer Button
+                    if let trailerURL = content.trailerURL {
+                        Button(action: {
+                            isPlaying = true
+                        }) {
+                            HStack {
+                                Image(systemName: "play.rectangle.fill")
+                                Text("Watch Trailer")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.orange)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                        }
+                        .accessibilityIdentifier("Watch Trailer")
+                    }
                 }
                 .padding()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(isPresented: $isPlaying) {
-            VideoPlayerView(content: content)
+            if let trailerURL = content.trailerURL {
+                VideoPlayer(player: AVPlayer(url: trailerURL))
+                    .edgesIgnoringSafeArea(.all)
+                    .accessibilityIdentifier("VideoPlayer")
+            } else {
+                VideoPlayerView(content: content)
+            }
         }
     }
 }

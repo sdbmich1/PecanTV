@@ -1,43 +1,29 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var viewModel = DemoHomeViewModel()
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    if !viewModel.continueWatching.isEmpty {
+                    if !viewModel.trendingContent.isEmpty {
                         ContentCarousel(
-                            title: "Continue Watching",
-                            content: viewModel.continueWatching
+                            title: "Trending Now",
+                            content: viewModel.trendingContent
                         )
                     }
-                    
-                    ContentCarousel(
-                        title: "Trending Now",
-                        content: viewModel.trendingContent
-                    )
-                    
-                    ContentCarousel(
-                        title: "Recommended for You",
-                        content: viewModel.recommendedContent
-                    )
                 }
                 .padding(.vertical)
             }
             .navigationTitle("PecanTV")
             .refreshable {
-                viewModel.refresh()
+                // No-op for demo
             }
-            .alert("Error", isPresented: .constant(viewModel.error != nil)) {
-                Button("OK") {
-                    viewModel.error = nil
-                }
+            .alert("Error", isPresented: .constant(false)) {
+                Button("OK") {}
             } message: {
-                if let error = viewModel.error {
-                    Text(error)
-                }
+                EmptyView()
             }
         }
     }
