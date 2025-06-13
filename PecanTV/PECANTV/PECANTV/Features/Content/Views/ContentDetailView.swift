@@ -8,146 +8,126 @@ struct ContentDetailView: View {
     @State private var showContent = false
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Back button
-                Button(action: { dismiss() }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                        Text("PecanTV")
-                    }
-                    .foregroundColor(.primary)
-                }
-                .padding(.horizontal)
-                
-                // Poster and Info
+        ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            
+            ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    AsyncImage(url: URL(string: content.posterURL)) { phase in
-                        switch phase {
-                        case .empty:
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .aspectRatio(2/3, contentMode: .fit)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        case .failure:
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .aspectRatio(2/3, contentMode: .fit)
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .cornerRadius(12)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(content.title)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primary)
-                        
+                    // Back button
+                    Button(action: { dismiss() }) {
                         HStack {
-                            Text(content.type)
-                            Text("•")
-                            Text("\(content.runtime) min")
-                            Text("•")
-                            Text(content.genre)
-                            Text("•")
-                            Text(content.ageRating)
+                            Image(systemName: "chevron.left")
+                            Text("Back")
                         }
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        
-                        Text(content.description)
-                            .font(.body)
-                            .foregroundColor(.primary)
-                            .padding(.top, 8)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.black.opacity(0.6))
+                        .cornerRadius(20)
                     }
                     .padding(.horizontal)
-                }
-                
-                // Action Buttons
-                VStack(spacing: 12) {
-                    Button(action: { showTrailer = true }) {
-                        HStack {
-                            Image(systemName: "play.fill")
-                            Text("Watch Trailer")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                    }
+                    .padding(.top, 8)
                     
-                    Button(action: { showContent = true }) {
-                        HStack {
-                            Image(systemName: "play.fill")
-                            Text("Watch Film")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                    }
-                }
-                .padding(.horizontal)
-            }
-            .padding(.vertical)
-        }
-        .background(Color(.systemBackground))
-        .fullScreenCover(isPresented: $showTrailer) {
-            ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
-                
-                VStack {
-                    // Back button
-                    HStack {
-                        Button(action: { showTrailer = false }) {
-                            HStack {
-                                Image(systemName: "chevron.left")
-                                Text("Back")
+                    // Poster and Info
+                    VStack(alignment: .leading, spacing: 16) {
+                        AsyncImage(url: URL(string: content.posterURL)) { phase in
+                            switch phase {
+                            case .empty:
+                                Rectangle()
+                                    .fill(Color.gray.opacity(0.2))
+                                    .aspectRatio(2/3, contentMode: .fit)
+                                    .frame(maxWidth: 200)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(2/3, contentMode: .fit)
+                                    .frame(maxWidth: 200)
+                            case .failure:
+                                Rectangle()
+                                    .fill(Color.gray.opacity(0.2))
+                                    .aspectRatio(2/3, contentMode: .fit)
+                                    .frame(maxWidth: 200)
+                            @unknown default:
+                                EmptyView()
                             }
-                            .foregroundColor(.white)
-                            .padding()
                         }
-                        Spacer()
+                        .cornerRadius(12)
+                        .shadow(radius: 5)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(content.title)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                            
+                            HStack {
+                                Text(content.type)
+                                Text("•")
+                                Text("\(content.runtime) min")
+                                Text("•")
+                                Text(content.genre)
+                                Text("•")
+                                Text(content.ageRating)
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            
+                            Text(content.description)
+                                .font(.body)
+                                .foregroundColor(.white)
+                                .padding(.top, 8)
+                        }
+                        .padding(.horizontal)
                     }
                     
-                    if let trailerURL = URL(string: content.trailerURL) {
-                        VideoPlayer(player: AVPlayer(url: trailerURL))
-                            .edgesIgnoringSafeArea(.all)
+                    // Action Buttons
+                    VStack(spacing: 12) {
+                        Button(action: { showTrailer = true }) {
+                            HStack {
+                                Image(systemName: "play.fill")
+                                Text("Watch Trailer")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        }
+                        
+                        Button(action: { showContent = true }) {
+                            HStack {
+                                Image(systemName: "play.fill")
+                                Text("Watch Film")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.pecanRed)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        }
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 20)
+                    
+                    // Bottom spacing for footer
+                    Spacer()
+                        .frame(height: 60)
                 }
+                .padding(.vertical)
+            }
+        }
+        .navigationBarHidden(true)
+        .fullScreenCover(isPresented: $showTrailer) {
+            if let url = URL(string: content.trailerURL) {
+                VideoPlayerView(url: url, content: content)
             }
         }
         .fullScreenCover(isPresented: $showContent) {
-            ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
-                
-                VStack {
-                    // Back button
-                    HStack {
-                        Button(action: { showContent = false }) {
-                            HStack {
-                                Image(systemName: "chevron.left")
-                                Text("Back")
-                            }
-                            .foregroundColor(.white)
-                            .padding()
-                        }
-                        Spacer()
-                    }
-                    
-                    if let contentURL = URL(string: content.contentURL) {
-                        VideoPlayer(player: AVPlayer(url: contentURL))
-                            .edgesIgnoringSafeArea(.all)
-                    }
-                }
+            if let url = URL(string: content.contentURL) {
+                VideoPlayerView(url: url, content: content)
             }
         }
     }
