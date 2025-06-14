@@ -122,6 +122,14 @@ struct CastrVideoPlayerView: View {
             }
         }
         playerObserver = observer
+        
+        configurePlayer()
+    }
+    
+    private func configurePlayer() {
+        player?.allowsExternalPlayback = true
+        player?.usesExternalPlaybackWhileExternalScreenIsActive = true
+        player?.automaticallyWaitsToMinimizeStalling = true
     }
     
     private func cleanup() {

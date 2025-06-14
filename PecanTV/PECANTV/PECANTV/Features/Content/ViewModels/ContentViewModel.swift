@@ -39,7 +39,7 @@ class ContentViewModel: ObservableObject {
                         trailerURL: data["trailerURL"] as? String ?? "",
                         contentURL: data["contentURL"] as? String ?? "",
                         description: data["description"] as? String ?? "",
-                        type: data["type"] as? String ?? "FILM",
+                        type: data["type"] as? String ?? "Film",
                         runtime: data["runtime"] as? Int ?? 0,
                         genre: data["genre"] as? String ?? "",
                         ageRating: data["ageRating"] as? String ?? ""

@@ -9,6 +9,8 @@ import SwiftUI
 import SwiftData
 import FirebaseCore
 import FirebaseAuth
+import AVKit
+import AVFoundation
 
 struct ContentView: View {
     @StateObject private var authViewModel = AuthViewModel()
@@ -16,10 +18,130 @@ struct ContentView: View {
     @State private var showAuth = false
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var isInitialized = false
+    @StateObject private var homeViewModel = HomeViewModel()
+    @State private var selectedContent: MediaContent?
+    @State private var isPlayerPresented = false
+    @State private var isTrailerPresented = false
+    @State private var player: AVPlayer?
+    @State private var isLoading = true
+    @State private var error: Error?
+    
+    // MARK: - Content Data
+    private let trendingContent: [MediaContent] = [
+        MediaContent(
+            id: 1,
+            title: "Get Christie Love",
+            posterURL: "https://storage.googleapis.com/pecantv_title_images/getchristielove-Feature-Img-16x9.png",
+            trailerURL: "https://storage.googleapis.com/pecantv_trailers/getchristielove_trailer-60s.mp4",
+            contentURL: "https://storage.googleapis.com/pecantv_content/getchristielove.mp4",
+            description: "A groundbreaking crime drama series following the adventures of Christie Love, a stylish and intelligent undercover police detective in Los Angeles.",
+            type: "SERIES",
+            runtime: 60,
+            genre: "Crime",
+            ageRating: "TV-14"
+        ),
+        MediaContent(
+            id: 2,
+            title: "The Jeffersons",
+            posterURL: "https://storage.googleapis.com/pecantv_title_images/thejeffersons-Feature-Img-16x9.png",
+            trailerURL: "https://storage.googleapis.com/pecantv_trailers/thejeffersons_trailer-60s.mp4",
+            contentURL: "https://storage.googleapis.com/pecantv_content/thejeffersons.mp4",
+            description: "A classic sitcom about a successful African-American family who moves from Queens to Manhattan's Upper East Side.",
+            type: "SERIES",
+            runtime: 30,
+            genre: "Comedy",
+            ageRating: "TV-PG"
+        ),
+        MediaContent(
+            id: 3,
+            title: "Good Times",
+            posterURL: "https://storage.googleapis.com/pecantv_title_images/goodtimes-Feature-Img-16x9.png",
+            trailerURL: "https://storage.googleapis.com/pecantv_trailers/goodtimes_trailer-60s.mp4",
+            contentURL: "https://storage.googleapis.com/pecantv_content/goodtimes.mp4",
+            description: "A sitcom about a working-class African-American family living in a Chicago housing project.",
+            type: "SERIES",
+            runtime: 30,
+            genre: "Comedy",
+            ageRating: "TV-PG"
+        ),
+        MediaContent(
+            id: 4,
+            title: "Sanford and Son",
+            posterURL: "https://storage.googleapis.com/pecantv_title_images/sanfordandson-Feature-Img-16x9.png",
+            trailerURL: "https://storage.googleapis.com/pecantv_trailers/sanfordandson_trailer-60s.mp4",
+            contentURL: "https://storage.googleapis.com/pecantv_content/sanfordandson.mp4",
+            description: "A comedy series about a widowed junk dealer and his son living in the Watts neighborhood of Los Angeles.",
+            type: "SERIES",
+            runtime: 30,
+            genre: "Comedy",
+            ageRating: "TV-PG"
+        ),
+        MediaContent(
+            id: 5,
+            title: "What's Happening!!",
+            posterURL: "https://storage.googleapis.com/pecantv_title_images/whatshappening-Feature-Img-16x9.png",
+            trailerURL: "https://storage.googleapis.com/pecantv_trailers/whatshappening_trailer-60s.mp4",
+            contentURL: "https://storage.googleapis.com/pecantv_content/whatshappening.mp4",
+            description: "A sitcom about three high school friends and their misadventures in Los Angeles.",
+            type: "SERIES",
+            runtime: 30,
+            genre: "Comedy",
+            ageRating: "TV-PG"
+        )
+    ]
+    
+    private let continueWatchingContent: [MediaContent] = [
+        MediaContent(
+            id: 6,
+            title: "The Jeffersons",
+            posterURL: "https://storage.googleapis.com/pecantv_title_images/thejeffersons-Feature-Img-16x9.png",
+            trailerURL: "https://storage.googleapis.com/pecantv_trailers/thejeffersons_trailer-60s.mp4",
+            contentURL: "https://storage.googleapis.com/pecantv_content/thejeffersons.mp4",
+            description: "A classic sitcom about a successful African-American family who moves from Queens to Manhattan's Upper East Side.",
+            type: "SERIES",
+            runtime: 30,
+            genre: "Comedy",
+            ageRating: "TV-PG"
+        ),
+        MediaContent(
+            id: 7,
+            title: "Good Times",
+            posterURL: "https://storage.googleapis.com/pecantv_title_images/goodtimes-Feature-Img-16x9.png",
+            trailerURL: "https://storage.googleapis.com/pecantv_trailers/goodtimes_trailer-60s.mp4",
+            contentURL: "https://storage.googleapis.com/pecantv_content/goodtimes.mp4",
+            description: "A sitcom about a working-class African-American family living in a Chicago housing project.",
+            type: "SERIES",
+            runtime: 30,
+            genre: "Comedy",
+            ageRating: "TV-PG"
+        )
+    ]
     
     var body: some View {
         Group {
-            if authViewModel.isAuthenticated {
+            if !isInitialized {
+                // Initial loading screen
+                VStack {
+                    Image("pecantv_logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 200)
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(1.5)
+                        .padding(.top, 20)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black)
+                .onAppear {
+                    // Initialize app state
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        isInitialized = true
+                    }
+                }
+            } else {
+                // Main app content
                 TabView(selection: $selectedTab) {
                     HomeView()
                         .tabItem {
@@ -33,42 +155,50 @@ struct ContentView: View {
                         }
                         .tag(1)
                     
-                    Text("My PECAN")
+                    MyPecanView()
                         .tabItem {
                             Label("My PECAN", systemImage: "person")
                         }
                         .tag(2)
                 }
-            } else {
-                VStack {
-                    Image("pecan_logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200, height: 200)
-                        .padding(.bottom, 40)
-                    
-                    Text("Welcome to PECAN TV")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .padding(.bottom, 20)
-                    
-                    Button(action: {
-                        showAuth = true
-                    }) {
-                        Text("Sign In / Sign Up")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(10)
+                .overlay {
+                    if !authViewModel.isAuthenticated {
+                        Color.black.opacity(0.9)
+                            .edgesIgnoringSafeArea(.all)
+                            .overlay {
+                                VStack {
+                                    Image("pecantv_logo")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 200, height: 200)
+                                        .padding(.bottom, 40)
+                                    
+                                    Text("Welcome to PECAN TV")
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                        .padding(.bottom, 20)
+                                    
+                                    Button(action: {
+                                        showAuth = true
+                                    }) {
+                                        Text("Sign In / Sign Up")
+                                            .font(.headline)
+                                            .foregroundColor(.white)
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(Color.blue)
+                                            .cornerRadius(10)
+                                    }
+                                    .padding(.horizontal, 40)
+                                }
+                            }
                     }
-                    .padding(.horizontal, 40)
-                }
-                .sheet(isPresented: $showAuth) {
-                    AuthenticationView()
                 }
             }
+        }
+        .sheet(isPresented: $showAuth) {
+            AuthenticationView()
         }
         .alert("Error", isPresented: $showError) {
             Button("OK", role: .cancel) { }

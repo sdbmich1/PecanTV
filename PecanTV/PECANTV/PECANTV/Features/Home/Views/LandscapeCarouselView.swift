@@ -56,6 +56,7 @@ struct LandscapeCarouselView: View {
                                                 .frame(width: itemWidth, alignment: .leading)
                                         }
                                     }
+                                    .buttonStyle(PlainButtonStyle())
                                     .id(index)
                                 }
                             }
@@ -80,7 +81,7 @@ struct LandscapeCarouselView: View {
                                     .font(.title2)
                                     .foregroundColor(.white)
                                     .frame(width: 40, height: 40)
-                                    .background(Color.black.opacity(0.5))
+                                    .background(Color.black.opacity(0.7))
                                     .clipShape(Circle())
                             }
                             .padding(.leading, 8)
@@ -100,7 +101,7 @@ struct LandscapeCarouselView: View {
                                     .font(.title2)
                                     .foregroundColor(.white)
                                     .frame(width: 40, height: 40)
-                                    .background(Color.black.opacity(0.5))
+                                    .background(Color.black.opacity(0.7))
                                     .clipShape(Circle())
                             }
                             .padding(.trailing, 8)

@@ -1,8 +1,8 @@
 import Foundation
 
 enum MediaType: String, Codable {
-    case film = "FILM"
-    case series = "SERIES"
+    case film = "Film"
+    case series = "TV Series"
 }
 
 enum Genre: String, CaseIterable, Codable {
@@ -24,6 +24,7 @@ enum Genre: String, CaseIterable, Codable {
     case sports = "Sports"
     case thriller = "Thriller"
     case western = "Western"
+    case war = "War"
     
     var displayName: String {
         switch self {
