@@ -5,6 +5,7 @@ struct LandscapeCarouselView: View {
     let content: [MediaContent]
     @State private var currentIndex = 0
     @State private var scrollViewProxy: ScrollViewProxy?
+    @StateObject private var favoritesManager = FavoritesManager()
     
     private let itemWidth: CGFloat = 280
     private let spacing: CGFloat = 16
@@ -14,7 +15,7 @@ struct LandscapeCarouselView: View {
             Text(title)
                 .font(.title2)
                 .fontWeight(.bold)
-                .foregroundColor(.primary)
+                .foregroundColor(.white)
                 .padding(.horizontal)
             
             GeometryReader { geometry in
@@ -23,13 +24,13 @@ struct LandscapeCarouselView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: spacing) {
                                 ForEach(Array(content.enumerated()), id: \.element.id) { index, item in
-                                    NavigationLink(destination: ContentDetailView(content: item)) {
+                                    NavigationLink(destination: ContentDetailView(content: item, favoritesManager: favoritesManager)) {
                                         VStack(alignment: .leading) {
                                             AsyncImage(url: URL(string: item.posterURL)) { phase in
                                                 switch phase {
                                                 case .empty:
                                                     Rectangle()
-                                                        .fill(Color.gray.opacity(0.2))
+                                                        .fill(Color.gray.opacity(0.3))
                                                         .frame(width: itemWidth, height: 157.5)
                                                 case .success(let image):
                                                     image
@@ -39,7 +40,7 @@ struct LandscapeCarouselView: View {
                                                         .clipped()
                                                 case .failure:
                                                     Rectangle()
-                                                        .fill(Color.gray.opacity(0.2))
+                                                        .fill(Color.gray.opacity(0.3))
                                                         .frame(width: itemWidth, height: 157.5)
                                                 @unknown default:
                                                     EmptyView()
@@ -51,11 +52,13 @@ struct LandscapeCarouselView: View {
                                             Text(item.title)
                                                 .font(.subheadline)
                                                 .fontWeight(.medium)
-                                                .foregroundColor(.primary)
+                                                .foregroundColor(.white)
                                                 .lineLimit(2)
                                                 .frame(width: itemWidth, alignment: .leading)
+                                                .padding(.top, 4)
                                         }
                                     }
+                                    .buttonStyle(PlainButtonStyle())
                                     .id(index)
                                 }
                             }
@@ -66,44 +69,46 @@ struct LandscapeCarouselView: View {
                         }
                     }
                     
-                    // Navigation Buttons
-                    HStack {
-                        // Left scroll button
-                        if currentIndex > 0 {
-                            Button(action: {
-                                withAnimation {
-                                    currentIndex -= 1
-                                    scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
+                    // Navigation Buttons (only show if there are multiple items)
+                    if content.count > 1 {
+                        HStack {
+                            // Left scroll button
+                            if currentIndex > 0 {
+                                Button(action: {
+                                    withAnimation {
+                                        currentIndex -= 1
+                                        scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
+                                    }
+                                }) {
+                                    Image(systemName: "chevron.left")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                        .frame(width: 40, height: 40)
+                                        .background(Color.black.opacity(0.7))
+                                        .clipShape(Circle())
                                 }
-                            }) {
-                                Image(systemName: "chevron.left")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                    .frame(width: 40, height: 40)
-                                    .background(Color.black.opacity(0.5))
-                                    .clipShape(Circle())
+                                .padding(.leading, 8)
                             }
-                            .padding(.leading, 8)
-                        }
-                        
-                        Spacer()
-                        
-                        // Right scroll button
-                        if currentIndex < content.count - 1 {
-                            Button(action: {
-                                withAnimation {
-                                    currentIndex += 1
-                                    scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
+                            
+                            Spacer()
+                            
+                            // Right scroll button
+                            if currentIndex < content.count - 1 {
+                                Button(action: {
+                                    withAnimation {
+                                        currentIndex += 1
+                                        scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
+                                    }
+                                }) {
+                                    Image(systemName: "chevron.right")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                        .frame(width: 40, height: 40)
+                                        .background(Color.black.opacity(0.7))
+                                        .clipShape(Circle())
                                 }
-                            }) {
-                                Image(systemName: "chevron.right")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                    .frame(width: 40, height: 40)
-                                    .background(Color.black.opacity(0.5))
-                                    .clipShape(Circle())
+                                .padding(.trailing, 8)
                             }
-                            .padding(.trailing, 8)
                         }
                     }
                 }
@@ -119,11 +124,11 @@ struct LandscapeCarouselView: View {
         content: [
             MediaContent(
                 id: 1,
-                title: "Sample Film",
-                posterURL: "https://www.dropbox.com/scl/fi/nxj319g2vpc43eb075vwx/GetChristieLove-Feature-Img-16x9.png?rlkey=nitbvdf33fe5ddkusowmydjjf&raw=1",
-                trailerURL: "https://example.com/trailer.mp4",
-                contentURL: "https://example.com/film.mp4",
+                title: "Sample Film 1",
                 description: "A sample film description",
+                posterURL: "https://example.com/poster1.jpg",
+                trailerURL: "https://example.com/trailer1.mp4",
+                contentURL: "https://example.com/content1.mp4",
                 type: "FILM",
                 runtime: 120,
                 genre: "Action",
@@ -131,14 +136,14 @@ struct LandscapeCarouselView: View {
             ),
             MediaContent(
                 id: 2,
-                title: "Another Film",
-                posterURL: "https://www.dropbox.com/scl/fi/cpetw71zb146k9av5bhbo/Jesse-Owens-Feature-Img.png?rlkey=rvdr3t4jszbfiwd2xsoz1arxl&raw=1",
-                trailerURL: "https://example.com/trailer2.mp4",
-                contentURL: "https://example.com/film2.mp4",
+                title: "Sample Film 2",
                 description: "Another sample film description",
+                posterURL: "https://example.com/poster2.jpg",
+                trailerURL: "https://example.com/trailer2.mp4",
+                contentURL: "https://example.com/content2.mp4",
                 type: "FILM",
-                runtime: 90,
-                genre: "Drama",
+                runtime: 95,
+                genre: "Comedy",
                 ageRating: "PG"
             )
         ]

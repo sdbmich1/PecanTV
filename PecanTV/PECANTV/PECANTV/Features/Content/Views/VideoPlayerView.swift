@@ -1,5 +1,6 @@
 import SwiftUI
 import AVKit
+import ObjectiveC
 
 struct VideoPlayerView: View {
     let url: URL
@@ -33,7 +34,14 @@ struct VideoPlayerView: View {
                 }
                 .padding()
                 
-                if let error = error {
+                if isLoading {
+                    VStack {
+                        ProgressView("Loading video...")
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .foregroundColor(.white)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = error {
                     VStack(spacing: 16) {
                         Image(systemName: "exclamationmark.triangle")
                             .font(.system(size: 48))
@@ -46,12 +54,16 @@ struct VideoPlayerView: View {
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
+                        
+                        Button("Try Again") {
+                            setupPlayer()
+                        }
+                        .padding()
+                        .background(Color.pecanRed)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                     }
-                    .padding()
-                } else if isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                        .scaleEffect(1.5)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let player = player {
                     VideoPlayer(player: player)
                         .edgesIgnoringSafeArea(.all)
@@ -72,10 +84,14 @@ struct VideoPlayerView: View {
                             Text(content.type)
                             Text("•")
                             Text("\(content.runtime) min")
-                            Text("•")
-                            Text(content.genre)
-                            Text("•")
-                            Text(content.ageRating)
+                            if !content.genre.isEmpty && content.genre != "Unknown" {
+                                Text("•")
+                                Text(content.genre)
+                            }
+                            if !content.ageRating.isEmpty && content.ageRating != "NR" {
+                                Text("•")
+                                Text(content.ageRating)
+                            }
                         }
                         .font(.subheadline)
                         .foregroundColor(.gray)
@@ -83,7 +99,8 @@ struct VideoPlayerView: View {
                         Text(content.description)
                             .font(.body)
                             .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                     }
                     .padding()
@@ -101,38 +118,136 @@ struct VideoPlayerView: View {
     }
     
     private func setupPlayer() {
+        // Clean up existing player first
+        player?.pause()
+        player = nil
+        
         isLoading = true
         error = nil
         
+        print("🎬 Setting up player for: \(content.title)")
+        print("🎬 URL: \(url)")
+        
+        // Test network connectivity first
+        testNetworkConnectivity { isConnected in
+            if !isConnected {
+                print("❌ No network connectivity")
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.error = NSError(domain: "VideoPlayer", code: -1, userInfo: [NSLocalizedDescriptionKey: "No network connectivity"])
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.createPlayer()
+            }
+        }
+    }
+    
+    private func createPlayer() {
         // Create AVPlayerItem with asset
-        let asset = AVAsset(url: url)
+        let asset = AVURLAsset(url: url)
         let playerItem = AVPlayerItem(asset: asset)
         
-        // Create player
+        // Configure player item for better buffering
+        playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = true
+        playerItem.preferredForwardBufferDuration = 15.0 // Increased to 15 seconds
+        
+        // Create player with minimal configuration
         let newPlayer = AVPlayer(playerItem: playerItem)
+        newPlayer.automaticallyWaitsToMinimizeStalling = true // Changed to true for better buffering
+        
+        var didStartPlayback = false
         
         // Add observer for player item status
         let statusObserver = playerItem.observe(\.status, options: [.new, .initial]) { item, _ in
             DispatchQueue.main.async {
+                print("🎬 Status changed for \(self.content.title): \(item.status.rawValue)")
                 switch item.status {
                 case .readyToPlay:
+                    print("✅ Video ready to play for: \(self.content.title)")
                     self.isLoading = false
-                    newPlayer.play()
+                    if !didStartPlayback {
+                        didStartPlayback = true
+                        // Add a small delay to ensure buffering
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            newPlayer.play()
+                        }
+                    }
                 case .failed:
+                    print("❌ Video failed to load for: \(self.content.title)")
+                    if let error = item.error {
+                        print("❌ Error details: \(error.localizedDescription)")
+                    }
                     self.isLoading = false
                     self.error = item.error
                 case .unknown:
-                    break
+                    print("⏳ Video status unknown for: \(self.content.title)")
                 @unknown default:
                     break
                 }
             }
         }
         
-        // Store observer to prevent deallocation
+        // Add observer for playback buffer
+        let bufferObserver = playerItem.observe(\.loadedTimeRanges, options: [.new]) { item, _ in
+            let ranges = item.loadedTimeRanges
+            if let range = ranges.first {
+                let duration = CMTimeGetSeconds(range.timeRangeValue.duration)
+                print("📊 Buffered duration: \(duration)s for \(self.content.title)")
+                // If we have at least 5 seconds buffered and not started, play
+                if duration > 5.0 && !didStartPlayback {
+                    print("🎬 Starting playback with buffer: \(duration)s")
+                    DispatchQueue.main.async {
+                        self.isLoading = false
+                        didStartPlayback = true
+                        newPlayer.play()
+                    }
+                }
+            }
+        }
+        
+        // Add observer for playback stall
+        let stallObserver = playerItem.observe(\.isPlaybackLikelyToKeepUp, options: [.new]) { item, _ in
+            DispatchQueue.main.async {
+                if !item.isPlaybackLikelyToKeepUp {
+                    print("⚠️ Playback likely to stall for: \(self.content.title)")
+                } else {
+                    print("✅ Playback likely to keep up for: \(self.content.title)")
+                }
+            }
+        }
+        
+        // Store observers to prevent deallocation
         objc_setAssociatedObject(playerItem, "statusObserver", statusObserver, .OBJC_ASSOCIATION_RETAIN)
+        objc_setAssociatedObject(playerItem, "bufferObserver", bufferObserver, .OBJC_ASSOCIATION_RETAIN)
+        objc_setAssociatedObject(playerItem, "stallObserver", stallObserver, .OBJC_ASSOCIATION_RETAIN)
         
         player = newPlayer
+        
+        // Fallback: if not started after 8 seconds, try to play anyway
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8.0) {
+            if !didStartPlayback {
+                print("🎬 Fallback: attempting to play after 8 second timeout")
+                self.isLoading = false
+                didStartPlayback = true
+                newPlayer.play()
+            }
+        }
+    }
+    
+    private func testNetworkConnectivity(completion: @escaping (Bool) -> Void) {
+        guard let url = URL(string: "https://www.apple.com") else {
+            completion(false)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { _, response, error in
+            let isConnected = error == nil && (response as? HTTPURLResponse)?.statusCode == 200
+            completion(isConnected)
+        }
+        task.resume()
     }
 }
 
@@ -142,10 +257,10 @@ struct VideoPlayerView: View {
         content: MediaContent(
             id: 1,
             title: "Sample Video",
+            description: "Sample description",
             posterURL: "https://example.com/poster.jpg",
             trailerURL: "https://example.com/trailer.mp4",
-            contentURL: "https://example.com/video.mp4",
-            description: "Sample description",
+            contentURL: "https://example.com/content.mp4",
             type: "FILM",
             runtime: 120,
             genre: "Action",
