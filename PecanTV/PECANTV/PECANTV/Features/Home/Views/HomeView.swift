@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var viewModel: ContentViewModel
     @State private var selectedTab = 0
     @State private var searchText = ""
     @State private var selectedGenre = "All Genres"
@@ -9,189 +9,441 @@ struct HomeView: View {
     @State private var selectedContent: MediaContent?
     @State private var showTrailer = false
     @State private var showDetail = false
+    @State private var isGenreChanging = false
     
-    let genres = ["All Genres", "Action", "Adventure", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Horror", "Martial Arts", "Mystery", "Noir", "Romance", "Sci-Fi", "Sports", "Thriller", "Western", "War"]
+    let genres = ["All Genres", "Action", "Adventure", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Horror", "Martial Arts", "Mystery", "Noir", "Romance", "Sci-Fi", "Sports", "Thriller", "Western"]
     
-    // Sample content data
-    let content: [MediaContent] = [
-        MediaContent(
-            id: 1,
-            title: "Get Christie Love",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/GetChristieLove-Feature-Img-16x9.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/GetChristieLove_Trailer-final-60s.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/GetChristieLove.mp4",
-            description: "A groundbreaking police drama following the adventures of Christie Love, an undercover detective.",
-            type: "TV Series",
-            runtime: 60,
-            genre: "Crime",
-            ageRating: "TV-PG"
-        ),
-        MediaContent(
-            id: 2,
-            title: "Black Brigade",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/Black-Brigade-Feature-Img.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/BlackBrigade_Trailer_35sFinal.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/BlackBrigade.mp4",
-            description: "A war film about a group of African American soldiers during World War II.",
-            type: "Film",
-            runtime: 98,
-            genre: "War",
-            ageRating: "PG"
-        ),
-        MediaContent(
-            id: 3,
-            title: "The Learning Tree",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/The-Learning-Tree-Feature-Img.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/TheLearningTree_Trailer_35sFinal.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/TheLearningTree.mp4",
-            description: "A coming-of-age story set in 1920s Kansas, following the life of a young African American boy.",
-            type: "Film",
-            runtime: 107,
-            genre: "Drama",
-            ageRating: "PG"
-        ),
-        MediaContent(
-            id: 4,
-            title: "Sounder",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/Sounder-Feature-Img.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/Sounder_Trailer_35sFinal.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/Sounder.mp4",
-            description: "A family drama set in the Depression-era South, following a family's struggle to survive.",
-            type: "Film",
-            runtime: 105,
-            genre: "Drama",
-            ageRating: "G"
-        ),
-        MediaContent(
-            id: 5,
-            title: "The Autobiography of Miss Jane Pittman",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/JanePittman-Feature-Img.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/JanePittman_Trailer_35sFinal.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/JanePittman.mp4",
-            description: "A powerful drama following the life of a woman who lived from slavery through the Civil Rights Movement.",
-            type: "TV Series",
-            runtime: 110,
-            genre: "Drama",
-            ageRating: "TV-PG"
-        ),
-        MediaContent(
-            id: 6,
-            title: "Roots",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/Roots-Feature-Img.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/Roots_Trailer_35sFinal.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/Roots.mp4",
-            description: "A landmark miniseries tracing the history of an African American family from slavery to freedom.",
-            type: "TV Series",
-            runtime: 90,
-            genre: "Drama",
-            ageRating: "TV-14"
-        ),
-        MediaContent(
-            id: 7,
-            title: "The Color Purple",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/ColorPurple-Feature-Img.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/ColorPurple_Trailer_35sFinal.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/ColorPurple.mp4",
-            description: "A powerful drama about the life of a young African American woman in the early 1900s.",
-            type: "Film",
-            runtime: 154,
-            genre: "Drama",
-            ageRating: "PG-13"
-        ),
-        MediaContent(
-            id: 8,
-            title: "Do the Right Thing",
-            posterURL: "https://storage.googleapis.com/pecantv_title_images/DoTheRightThing-Feature-Img.png",
-            trailerURL: "https://storage.googleapis.com/pecantv_trailers/DoTheRightThing_Trailer_35sFinal.mp4",
-            contentURL: "https://storage.googleapis.com/pecantv_content/DoTheRightThing.mp4",
-            description: "A powerful drama about racial tensions in a Brooklyn neighborhood on the hottest day of the year.",
-            type: "Film",
-            runtime: 120,
-            genre: "Drama",
-            ageRating: "R"
-        )
-    ]
+    var allContent: [MediaContent] {
+        viewModel.films + viewModel.tvSeries
+    }
     
     var filteredContent: [MediaContent] {
-        content.filter { content in
-            let matchesTab = selectedTab == 0 ? content.type == "Film" : content.type == "TV Series"
-            let matchesGenre = selectedGenre == "All Genres" || content.genre == selectedGenre
-            let matchesSearch = searchText.isEmpty || content.title.localizedCaseInsensitiveContains(searchText)
-            return matchesTab && matchesGenre && matchesSearch
+        let genreFiltered = selectedGenre == "All Genres" ? allContent : allContent.filter { content in
+            let contentGenres = content.genre
+                .split(separator: ",")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            return contentGenres.contains(selectedGenre.lowercased())
         }
+        let searchFiltered = searchText.isEmpty ? genreFiltered : genreFiltered.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        return searchFiltered
+    }
+    
+    var filteredFilms: [MediaContent] {
+        let genreFiltered = selectedGenre == "All Genres" ? viewModel.films : viewModel.films.filter { content in
+            let contentGenres = content.genre
+                .split(separator: ",")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            return contentGenres.contains(selectedGenre.lowercased())
+        }
+        let searchFiltered = searchText.isEmpty ? genreFiltered : genreFiltered.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        return searchFiltered
+    }
+    
+    var filteredTVSeries: [MediaContent] {
+        let genreFiltered = selectedGenre == "All Genres" ? viewModel.tvSeries : viewModel.tvSeries.filter { content in
+            let contentGenres = content.genre
+                .split(separator: ",")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            return contentGenres.contains(selectedGenre.lowercased())
+        }
+        let searchFiltered = searchText.isEmpty ? genreFiltered : genreFiltered.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        return searchFiltered
     }
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // Search and Genre Bar
-                    HStack {
-                        TextField("Search", text: $searchText)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .frame(maxWidth: .infinity)
-                        
-                        Button(action: { showGenrePicker = true }) {
+            ZStack {
+                Color.white.edgesIgnoringSafeArea(.all)
+                
+                if viewModel.isLoading || isGenreChanging {
+                    VStack {
+                        ProgressView("Loading content...")
+                            .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                            .foregroundColor(.black)
+                    }
+                } else if let error = viewModel.error {
+                    VStack {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 48))
+                            .foregroundColor(.red)
+                        Text("Error loading content")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                        Text(error.localizedDescription)
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        // Search and Filter Bar at the top
+                        HStack(spacing: 12) {
+                            // Search Bar
                             HStack {
-                                Text(selectedGenre)
-                                    .foregroundColor(.white)
-                                Image(systemName: "chevron.down")
-                                    .foregroundColor(.white)
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.gray)
+                                TextField("Search movies and shows...", text: $searchText)
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .foregroundColor(.black)
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(Color.blue)
-                            .cornerRadius(8)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(25)
+                            
+                            // Genre Dropdown
+                            Menu {
+                                ForEach(genres, id: \.self) { genre in
+                                    Button(genre) {
+                                        if selectedGenre != genre {
+                                            isGenreChanging = true
+                                            selectedGenre = genre
+                                            // Debug: Log the filtered content
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                                print("🎬 Genre changed to: \(genre)")
+                                                print("🎬 Filtered content count: \(filteredContent.count)")
+                                                print("🎬 Filtered films count: \(filteredFilms.count)")
+                                                print("🎬 First 3 filtered films:")
+                                                for (index, film) in filteredFilms.prefix(3).enumerated() {
+                                                    print("  \(index): ID \(film.id) - \(film.title)")
+                                                }
+                                                isGenreChanging = false
+                                            }
+                                        }
+                                    }
+                                }
+                            } label: {
+                                HStack {
+                                    Text(selectedGenre)
+                                        .foregroundColor(.black)
+                                        .lineLimit(1)
+                                    Image(systemName: "chevron.down")
+                                        .foregroundColor(.gray)
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 12)
+                                .background(Color.gray.opacity(0.1))
+                                .cornerRadius(25)
+                            }
                         }
-                        .buttonStyle(PlainButtonStyle())
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .padding(.bottom, 16)
+                        
+                        // Content ScrollView
+                        ScrollView {
+                            LazyVStack(alignment: .leading, spacing: 20) {
+                                // Featured Content (First item as hero)
+                                if let featuredContent = filteredContent.first {
+                                    FeaturedContentView(content: featuredContent)
+                                }
+                                
+                                // Content Carousels
+                                if selectedGenre == "All Genres" {
+                                    // Show general carousels when no genre is selected
+                                    
+                                    // Trending Now Carousel (exclude featured content)
+                                    if filteredContent.count > 1 {
+                                        LazyLandscapeCarouselView(
+                                            title: "Trending Now",
+                                            content: Array(filteredContent.dropFirst())
+                                        )
+                                    }
+                                    
+                                    // Films Carousel
+                                    if !viewModel.films.isEmpty {
+                                        LazyLandscapeCarouselView(
+                                            title: "Films",
+                                            content: viewModel.films
+                                        )
+                                    }
+                                    
+                                    // TV Series Carousel
+                                    if !viewModel.tvSeries.isEmpty {
+                                        LazyLandscapeCarouselView(
+                                            title: "TV Series",
+                                            content: viewModel.tvSeries
+                                        )
+                                    }
+                                } else {
+                                    // Show genre-specific carousels when a genre is selected
+                                    
+                                    // Genre Content Carousel (exclude featured content)
+                                    if filteredContent.count > 1 {
+                                        LazyLandscapeCarouselView(
+                                            title: "\(selectedGenre) Content",
+                                            content: Array(filteredContent.dropFirst())
+                                        )
+                                    }
+                                    
+                                    // Genre Films Carousel (only if there are films in this genre)
+                                    if !filteredFilms.isEmpty {
+                                        LazyLandscapeCarouselView(
+                                            title: "\(selectedGenre) Films",
+                                            content: filteredFilms
+                                        )
+                                    }
+                                    
+                                    // Genre TV Series Carousel (only if there are series in this genre)
+                                    if !filteredTVSeries.isEmpty {
+                                        LazyLandscapeCarouselView(
+                                            title: "\(selectedGenre) TV Series",
+                                            content: filteredTVSeries
+                                        )
+                                    }
+                                }
+                                
+                                // Show message if no content found for selected genre
+                                if selectedGenre != "All Genres" && filteredContent.isEmpty {
+                                    VStack(spacing: 16) {
+                                        Image(systemName: "film")
+                                            .font(.system(size: 48))
+                                            .foregroundColor(.gray)
+                                        Text("No \(selectedGenre) content found")
+                                            .font(.headline)
+                                            .foregroundColor(.black)
+                                        Text("Try selecting a different genre or search for something else")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                            .multilineTextAlignment(.center)
+                                            .padding(.horizontal)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 40)
+                                }
+                            }
+                            .padding(.bottom, 100) // Space for tab bar
+                        }
                     }
-                    .padding(.horizontal)
-                    
-                    // Content Type Tabs
-                    HStack(spacing: 20) {
-                        TabButton(title: "Films", isSelected: selectedTab == 0) {
-                            selectedTab = 0
-                        }
-                        TabButton(title: "TV Series", isSelected: selectedTab == 1) {
-                            selectedTab = 1
-                        }
-                    }
-                    .padding(.horizontal)
-                    
-                    // Trending Now Section
-                    LandscapeCarouselView(title: "Trending Now", content: filteredContent)
-                        .frame(height: 250)
                 }
             }
-            .sheet(isPresented: $showGenrePicker) {
-                NavigationView {
-                    GenrePickerView(selectedGenre: $selectedGenre, genres: genres)
+            .navigationTitle("PECAN TV")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Image("pecantv_logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 30)
                 }
-                .presentationDetents([.medium])
-            }
-        }
-        .sheet(isPresented: $showDetail) {
-            if let content = selectedContent {
-                ContentDetailView(content: content)
             }
         }
     }
 }
 
-struct TabButton: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
+struct FeaturedContentView: View {
+    let content: MediaContent
+    @StateObject private var favoritesManager = FavoritesManager()
+    @State private var showDetail = false
     
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .fontWeight(isSelected ? .bold : .regular)
-                .foregroundColor(isSelected ? .white : .gray)
-                .padding(.vertical, 8)
-                .padding(.horizontal, 16)
-                .background(isSelected ? Color.red : Color.clear)
-                .cornerRadius(8)
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Featured")
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(.black)
+                .padding(.horizontal)
+            
+            ZStack(alignment: .bottomLeading) {
+                AsyncImage(url: URL(string: content.posterURL)) { phase in
+                    switch phase {
+                    case .empty:
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 300)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 300)
+                            .clipped()
+                    case .failure:
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 300)
+                            .overlay(
+                                Image(systemName: "photo")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(.gray)
+                            )
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+                .cornerRadius(12)
+                .padding(.horizontal)
+                
+                // Gradient overlay
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.clear, Color.black.opacity(0.7)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 300)
+                .cornerRadius(12)
+                .padding(.horizontal)
+                
+                // Content info
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(content.title)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                    
+                    HStack {
+                        Text(content.type)
+                        Text("•")
+                        Text("\(content.runtime) min")
+                        if !content.genre.isEmpty && content.genre != "Unknown" {
+                            Text("•")
+                            Text(content.genre)
+                        }
+                        if !content.ageRating.isEmpty && content.ageRating != "NR" {
+                            Text("•")
+                            Text(content.ageRating)
+                        }
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    
+                    Text(content.description)
+                        .font(.body)
+                        .foregroundColor(.white)
+                        .lineLimit(3)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
+            }
+            .onTapGesture {
+                showDetail = true
+            }
+        }
+        .sheet(isPresented: $showDetail) {
+            ContentDetailView(content: content, favoritesManager: favoritesManager)
+        }
+    }
+}
+
+struct LazyLandscapeCarouselView: View {
+    let title: String
+    let content: [MediaContent]
+    @State private var scrollOffset: CGFloat = 0
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.black)
+                
+                Spacer()
+                
+                // Scroll buttons
+                HStack(spacing: 8) {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            scrollOffset -= 200
+                        }
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.black.opacity(0.6))
+                            .clipShape(Circle())
+                    }
+                    
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            scrollOffset += 200
+                        }
+                    }) {
+                        Image(systemName: "chevron.right")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.black.opacity(0.6))
+                            .clipShape(Circle())
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 12) {
+                    ForEach(content, id: \.id) { item in
+                        LazyContentCard(content: item)
+                    }
+                }
+                .padding(.horizontal)
+                .offset(x: scrollOffset)
+            }
+        }
+        .onAppear {
+            print("🎬 Carousel '\(title)' created with \(content.count) items:")
+            for (index, item) in content.enumerated() {
+                print("  \(index): ID \(item.id) - \(item.title)")
+            }
+        }
+    }
+}
+
+struct LazyContentCard: View {
+    let content: MediaContent
+    @StateObject private var favoritesManager = FavoritesManager()
+    @State private var showDetail = false
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            AsyncImage(url: URL(string: content.posterURL)) { phase in
+                switch phase {
+                case .empty:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 150, height: 225)
+                        .overlay(
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .gray))
+                        )
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 150, height: 225)
+                        .clipped()
+                case .failure:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 150, height: 225)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.system(size: 32))
+                                .foregroundColor(.gray)
+                        )
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .cornerRadius(10)
+            
+            Text(content.title)
+                .font(.subheadline)
+                .foregroundColor(.black)
+                .lineLimit(2)
+                .frame(width: 150)
+        }
+        .contentShape(Rectangle()) // Make entire card tappable
+        .onTapGesture {
+            print("🎬 Card tapped - ID: \(content.id), Title: \(content.title), Genre: \(content.genre)")
+            showDetail = true
+        }
+        .sheet(isPresented: $showDetail) {
+            ContentDetailView(content: content, favoritesManager: favoritesManager)
+        }
+        .onAppear {
+            print("🎬 Card created - ID: \(content.id), Title: \(content.title)")
         }
     }
 }
@@ -199,32 +451,52 @@ struct TabButton: View {
 struct GenrePickerView: View {
     @Binding var selectedGenre: String
     let genres: [String]
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        List(genres, id: \.self) { genre in
-            Button(action: {
-                selectedGenre = genre
-                dismiss()
-            }) {
-                HStack {
-                    Text(genre)
-                    Spacer()
-                    if genre == selectedGenre {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.blue)
+        NavigationView {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(genres, id: \.self) { genre in
+                        Button {
+                            selectedGenre = genre
+                            dismiss()
+                        } label: {
+                            HStack {
+                                Text(genre)
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                if genre == selectedGenre {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                            .padding(.horizontal)
+                            .padding(.vertical, 12)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        if genre != genres.last {
+                            Divider()
+                                .padding(.leading)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Genre")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
                     }
                 }
             }
         }
-        .navigationTitle("Select Genre")
-        .navigationBarItems(trailing: Button("Done") {
-            dismiss()
-        })
     }
 }
 
 #Preview {
     HomeView()
-        .environmentObject(AuthViewModel())
 } 

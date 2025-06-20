@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F0ABE2112DF5F6B9008C455C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F0ABE2102DF5F6B9008C455C /* GoogleService-Info.plist */; };
-		F0E24C982DF5EB1600BBF992 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = F0E24C972DF5EB1600BBF992 /* FirebaseAuth */; };
-		F0E24C9A2DF5EB8600BBF992 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F0E24C992DF5EB8600BBF992 /* FirebaseCore */; settings = {ATTRIBUTES = (Weak, ); }; };
-		F0E24C9C2DF5EC0900BBF992 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F0E24C9B2DF5EC0900BBF992 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,9 +57,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0E24C9A2DF5EB8600BBF992 /* FirebaseCore in Frameworks */,
-				F0E24C982DF5EB1600BBF992 /* FirebaseAuth in Frameworks */,
-				F0E24C9C2DF5EC0900BBF992 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,9 +126,6 @@
 			);
 			name = PECANTV;
 			packageProductDependencies = (
-				F0E24C972DF5EB1600BBF992 /* FirebaseAuth */,
-				F0E24C992DF5EB8600BBF992 /* FirebaseCore */,
-				F0E24C9B2DF5EC0900BBF992 /* FirebaseFirestore */,
 			);
 			productName = PECANTV;
 			productReference = F0EC80322DDD86100015ED14 /* PECANTV.app */;
@@ -219,7 +210,7 @@
 			mainGroup = F0EC80292DDD86100015ED14;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				F0216C782DF509C5001D1B64 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				F0A70B2C2E0494CB003DDD00 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F0EC80332DDD86100015ED14 /* Products */;
@@ -426,6 +417,11 @@
 				DEVELOPMENT_TEAM = 5P2Q29TVR8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSExceptionAllowsInsecureHTTPLoads = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSExceptionMinimumTLSVersion = TLSv1.0;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSExceptionRequiresForwardSecrecy = NO;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSIncludesSubdomains = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -455,6 +451,11 @@
 				DEVELOPMENT_TEAM = 5P2Q29TVR8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSExceptionAllowsInsecureHTTPLoads = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSExceptionMinimumTLSVersion = TLSv1.0;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSExceptionRequiresForwardSecrecy = NO;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSExceptionDomains_localhost_NSIncludesSubdomains = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -587,7 +588,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F0216C782DF509C5001D1B64 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		F0A70B2C2E0494CB003DDD00 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
@@ -596,24 +597,6 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		F0E24C972DF5EB1600BBF992 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F0216C782DF509C5001D1B64 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-		F0E24C992DF5EB8600BBF992 /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F0216C782DF509C5001D1B64 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
-		};
-		F0E24C9B2DF5EC0900BBF992 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F0216C782DF509C5001D1B64 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F0EC802A2DDD86100015ED14 /* Project object */;
 }

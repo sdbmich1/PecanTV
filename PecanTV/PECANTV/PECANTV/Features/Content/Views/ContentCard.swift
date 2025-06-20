@@ -153,10 +153,10 @@ extension Image {
         ContentCard(content: MediaContent(
             id: 1,
             title: "Sample Movie",
+            description: "A sample movie description.",
             posterURL: "https://example.com/poster.jpg",
             trailerURL: "https://example.com/trailer.mp4",
             contentURL: "https://example.com/content.mp4",
-            description: "A sample movie description.",
             type: "FILM",
             runtime: 120,
             genre: "Action",
@@ -166,10 +166,10 @@ extension Image {
         ContentCard(content: MediaContent(
             id: 2,
             title: "Featured Movie",
+            description: "A featured movie description.",
             posterURL: "https://example.com/poster.jpg",
             trailerURL: "https://example.com/trailer.mp4",
             contentURL: "https://example.com/content.mp4",
-            description: "A featured movie description.",
             type: "FILM",
             runtime: 120,
             genre: "Action",

@@ -1,9 +1,10 @@
-import FirebaseCore
+// import FirebaseCore
 
 class FirebaseConfig {
     static func configure() {
-        if FirebaseApp.app() == nil {
-            FirebaseApp.configure()
-        }
+        // Temporarily disabled until we get GoogleService-Info.plist
+        // if FirebaseApp.app() == nil {
+        //     FirebaseApp.configure()
+        // }
     }
 }
