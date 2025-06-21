@@ -59,7 +59,7 @@ struct VideoPlayerView: View {
                             setupPlayer()
                         }
                         .padding()
-                        .background(Color.pecanRed)
+                        .background(Color.red)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }

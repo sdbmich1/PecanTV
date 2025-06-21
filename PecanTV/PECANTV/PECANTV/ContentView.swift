@@ -23,7 +23,7 @@ struct ContentView: View {
                 }
                 .tag(0)
             
-            Text("My Favs")
+            FavoritesView(allContent: contentViewModel.films + contentViewModel.tvSeries)
                 .tabItem {
                     Label("My Favs", systemImage: "heart")
                 }

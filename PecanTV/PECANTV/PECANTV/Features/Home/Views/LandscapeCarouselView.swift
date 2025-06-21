@@ -5,18 +5,63 @@ struct LandscapeCarouselView: View {
     let content: [MediaContent]
     @State private var currentIndex = 0
     @State private var scrollViewProxy: ScrollViewProxy?
-    @StateObject private var favoritesManager = FavoritesManager()
+    @StateObject private var favoritesManager = FavoritesManager.shared
     
     private let itemWidth: CGFloat = 280
     private let spacing: CGFloat = 16
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(.white)
-                .padding(.horizontal)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                
+                Spacer()
+                
+                // Scroll buttons in header
+                if content.count > 1 {
+                    HStack(spacing: 8) {
+                        Button(action: {
+                            withAnimation {
+                                if currentIndex > 0 {
+                                    currentIndex -= 1
+                                    scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
+                                }
+                            }
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .font(.title3)
+                                .foregroundColor(.white)
+                                .frame(width: 32, height: 32)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                        }
+                        .disabled(currentIndex == 0)
+                        .opacity(currentIndex == 0 ? 0.5 : 1.0)
+                        
+                        Button(action: {
+                            withAnimation {
+                                if currentIndex < content.count - 1 {
+                                    currentIndex += 1
+                                    scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
+                                }
+                            }
+                        }) {
+                            Image(systemName: "chevron.right")
+                                .font(.title3)
+                                .foregroundColor(.white)
+                                .frame(width: 32, height: 32)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                        }
+                        .disabled(currentIndex >= content.count - 1)
+                        .opacity(currentIndex >= content.count - 1 ? 0.5 : 1.0)
+                    }
+                }
+            }
+            .padding(.horizontal)
             
             GeometryReader { geometry in
                 ZStack {
@@ -26,28 +71,64 @@ struct LandscapeCarouselView: View {
                                 ForEach(Array(content.enumerated()), id: \.element.id) { index, item in
                                     NavigationLink(destination: ContentDetailView(content: item, favoritesManager: favoritesManager)) {
                                         VStack(alignment: .leading) {
-                                            AsyncImage(url: URL(string: item.posterURL)) { phase in
-                                                switch phase {
-                                                case .empty:
-                                                    Rectangle()
-                                                        .fill(Color.gray.opacity(0.3))
-                                                        .frame(width: itemWidth, height: 157.5)
-                                                case .success(let image):
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: itemWidth, height: 157.5)
-                                                        .clipped()
-                                                case .failure:
-                                                    Rectangle()
-                                                        .fill(Color.gray.opacity(0.3))
-                                                        .frame(width: itemWidth, height: 157.5)
-                                                @unknown default:
-                                                    EmptyView()
+                                            ZStack(alignment: .topTrailing) {
+                                                AsyncImage(url: URL(string: item.posterURL)) { phase in
+                                                    switch phase {
+                                                    case .empty:
+                                                        Rectangle()
+                                                            .fill(Color.gray.opacity(0.3))
+                                                            .frame(width: itemWidth, height: 157.5)
+                                                            .overlay(
+                                                                ProgressView()
+                                                                    .progressViewStyle(CircularProgressViewStyle(tint: .gray))
+                                                                    .scaleEffect(0.8)
+                                                            )
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .frame(width: itemWidth, height: 157.5)
+                                                            .clipped()
+                                                            .cornerRadius(8)
+                                                    case .failure:
+                                                        Rectangle()
+                                                            .fill(Color.gray.opacity(0.3))
+                                                            .frame(width: itemWidth, height: 157.5)
+                                                            .overlay(
+                                                                VStack(spacing: 8) {
+                                                                    Image(systemName: "photo")
+                                                                        .font(.system(size: 24))
+                                                                        .foregroundColor(.gray)
+                                                                    Text(item.title)
+                                                                        .font(.caption)
+                                                                        .foregroundColor(.gray)
+                                                                        .multilineTextAlignment(.center)
+                                                                        .lineLimit(2)
+                                                                        .padding(.horizontal, 4)
+                                                                }
+                                                            )
+                                                            .cornerRadius(8)
+                                                    @unknown default:
+                                                        Rectangle()
+                                                            .fill(Color.gray.opacity(0.3))
+                                                            .frame(width: itemWidth, height: 157.5)
+                                                            .cornerRadius(8)
+                                                    }
                                                 }
+                                                
+                                                // Favorite button
+                                                Button(action: {
+                                                    favoritesManager.toggleFavorite(item)
+                                                }) {
+                                                    Image(systemName: favoritesManager.isFavorite(item) ? "heart.fill" : "heart")
+                                                        .font(.system(size: 16, weight: .semibold))
+                                                        .foregroundColor(favoritesManager.isFavorite(item) ? .pecanRed : .white)
+                                                        .padding(8)
+                                                        .background(Color.black.opacity(0.6))
+                                                        .clipShape(Circle())
+                                                }
+                                                .padding(8)
                                             }
-                                            .frame(width: itemWidth, height: 157.5)
-                                            .cornerRadius(8)
                                             
                                             Text(item.title)
                                                 .font(.subheadline)
@@ -66,49 +147,6 @@ struct LandscapeCarouselView: View {
                         }
                         .onAppear {
                             scrollViewProxy = proxy
-                        }
-                    }
-                    
-                    // Navigation Buttons (only show if there are multiple items)
-                    if content.count > 1 {
-                        HStack {
-                            // Left scroll button
-                            if currentIndex > 0 {
-                                Button(action: {
-                                    withAnimation {
-                                        currentIndex -= 1
-                                        scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
-                                    }
-                                }) {
-                                    Image(systemName: "chevron.left")
-                                        .font(.title2)
-                                        .foregroundColor(.white)
-                                        .frame(width: 40, height: 40)
-                                        .background(Color.black.opacity(0.7))
-                                        .clipShape(Circle())
-                                }
-                                .padding(.leading, 8)
-                            }
-                            
-                            Spacer()
-                            
-                            // Right scroll button
-                            if currentIndex < content.count - 1 {
-                                Button(action: {
-                                    withAnimation {
-                                        currentIndex += 1
-                                        scrollViewProxy?.scrollTo(currentIndex, anchor: .leading)
-                                    }
-                                }) {
-                                    Image(systemName: "chevron.right")
-                                        .font(.title2)
-                                        .foregroundColor(.white)
-                                        .frame(width: 40, height: 40)
-                                        .background(Color.black.opacity(0.7))
-                                        .clipShape(Circle())
-                                }
-                                .padding(.trailing, 8)
-                            }
                         }
                     }
                 }

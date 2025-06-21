@@ -57,7 +57,7 @@ struct MyPECANView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.red)
+                            .background(Color.pecanRed)
                             .cornerRadius(10)
                     }
                     .padding(.horizontal)

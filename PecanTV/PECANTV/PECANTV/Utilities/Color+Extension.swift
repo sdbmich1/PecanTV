@@ -1,29 +1,23 @@
 import SwiftUI
 
 extension Color {
-    static let pecanRed = Color(hex: "EF4A23")
+    // Brand Colors
+    static let pecanRed = Color(red: 239/255, green: 74/255, blue: 35/255) // EF4A23
     
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (1, 1, 1, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue:  Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
+    // Semantic Colors
+    static let pecanPrimary = pecanRed
+    static let pecanSecondary = Color(red: 45/255, green: 45/255, blue: 45/255) // Dark gray
+    static let pecanBackground = Color.black
+    static let pecanSurface = Color(red: 20/255, green: 20/255, blue: 20/255) // Very dark gray
+    
+    // Text Colors
+    static let pecanTextPrimary = Color.white
+    static let pecanTextSecondary = Color.gray
+    static let pecanTextMuted = Color(red: 120/255, green: 120/255, blue: 120/255)
+    
+    // Status Colors
+    static let pecanSuccess = Color.green
+    static let pecanWarning = Color.orange
+    static let pecanError = pecanRed
+    static let pecanInfo = Color.blue
 } 

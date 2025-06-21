@@ -80,17 +80,7 @@ struct HomeView: View {
                         // Search and Filter Bar at the top
                         HStack(spacing: 12) {
                             // Search Bar
-                            HStack {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundColor(.gray)
-                                TextField("Search movies and shows...", text: $searchText)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .foregroundColor(.black)
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 12)
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(25)
+                            SearchBar(text: $searchText, placeholder: "Search movies and shows...")
                             
                             // Genre Dropdown
                             Menu {
@@ -143,54 +133,115 @@ struct HomeView: View {
                                 if selectedGenre == "All Genres" {
                                     // Show general carousels when no genre is selected
                                     
-                                    // Trending Now Carousel (exclude featured content)
-                                    if filteredContent.count > 1 {
-                                        LazyLandscapeCarouselView(
-                                            title: "Trending Now",
-                                            content: Array(filteredContent.dropFirst())
-                                        )
-                                    }
-                                    
-                                    // Films Carousel
-                                    if !viewModel.films.isEmpty {
-                                        LazyLandscapeCarouselView(
-                                            title: "Films",
-                                            content: viewModel.films
-                                        )
-                                    }
-                                    
-                                    // TV Series Carousel
-                                    if !viewModel.tvSeries.isEmpty {
-                                        LazyLandscapeCarouselView(
-                                            title: "TV Series",
-                                            content: viewModel.tvSeries
-                                        )
+                                    if searchText.isEmpty {
+                                        // No search query - show regular carousels
+                                        
+                                        // Trending Now Section (always show when All Genres selected and no search)
+                                        TrendingNowView(content: allContent)
+                                        
+                                        // Films Carousel
+                                        if !viewModel.films.isEmpty {
+                                            LandscapeCarouselView(
+                                                title: "Films",
+                                                content: viewModel.films
+                                            )
+                                        }
+                                        
+                                        // Poster Carousel (only when no search)
+                                        if !viewModel.films.isEmpty {
+                                            PosterCarouselView(
+                                                title: "Featured Posters",
+                                                content: Array(viewModel.films.prefix(10))
+                                            )
+                                        }
+                                        
+                                        // TV Series Carousel
+                                        if !viewModel.tvSeries.isEmpty {
+                                            LandscapeCarouselView(
+                                                title: "TV Series",
+                                                content: viewModel.tvSeries
+                                            )
+                                        }
+                                    } else {
+                                        // Search query - show search results
+                                        if !filteredContent.isEmpty {
+                                            LandscapeCarouselView(
+                                                title: "Search Results for '\(searchText)'",
+                                                content: filteredContent
+                                            )
+                                        } else {
+                                            // No search results
+                                            VStack(spacing: 16) {
+                                                Image(systemName: "magnifyingglass")
+                                                    .font(.system(size: 48))
+                                                    .foregroundColor(.gray)
+                                                Text("No results found for '\(searchText)'")
+                                                    .font(.headline)
+                                                    .foregroundColor(.black)
+                                                Text("Try different keywords or browse our content")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.gray)
+                                                    .multilineTextAlignment(.center)
+                                                    .padding(.horizontal)
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                            .padding(.vertical, 40)
+                                        }
                                     }
                                 } else {
                                     // Show genre-specific carousels when a genre is selected
                                     
-                                    // Genre Content Carousel (exclude featured content)
-                                    if filteredContent.count > 1 {
-                                        LazyLandscapeCarouselView(
-                                            title: "\(selectedGenre) Content",
-                                            content: Array(filteredContent.dropFirst())
-                                        )
-                                    }
-                                    
-                                    // Genre Films Carousel (only if there are films in this genre)
-                                    if !filteredFilms.isEmpty {
-                                        LazyLandscapeCarouselView(
-                                            title: "\(selectedGenre) Films",
-                                            content: filteredFilms
-                                        )
-                                    }
-                                    
-                                    // Genre TV Series Carousel (only if there are series in this genre)
-                                    if !filteredTVSeries.isEmpty {
-                                        LazyLandscapeCarouselView(
-                                            title: "\(selectedGenre) TV Series",
-                                            content: filteredTVSeries
-                                        )
+                                    if searchText.isEmpty {
+                                        // No search query - show genre carousels
+                                        
+                                        // Genre Content Carousel (show all filtered content)
+                                        if !filteredContent.isEmpty {
+                                            LandscapeCarouselView(
+                                                title: "\(selectedGenre) Content",
+                                                content: filteredContent
+                                            )
+                                        }
+                                        
+                                        // Genre Films Carousel (only if there are films in this genre)
+                                        if !filteredFilms.isEmpty {
+                                            LandscapeCarouselView(
+                                                title: "\(selectedGenre) Films",
+                                                content: filteredFilms
+                                            )
+                                        }
+                                        
+                                        // Genre TV Series Carousel (only if there are series in this genre)
+                                        if !filteredTVSeries.isEmpty {
+                                            LandscapeCarouselView(
+                                                title: "\(selectedGenre) TV Series",
+                                                content: filteredTVSeries
+                                            )
+                                        }
+                                    } else {
+                                        // Search query with genre filter
+                                        if !filteredContent.isEmpty {
+                                            LandscapeCarouselView(
+                                                title: "\(selectedGenre) Results for '\(searchText)'",
+                                                content: filteredContent
+                                            )
+                                        } else {
+                                            // No search results for this genre
+                                            VStack(spacing: 16) {
+                                                Image(systemName: "magnifyingglass")
+                                                    .font(.system(size: 48))
+                                                    .foregroundColor(.gray)
+                                                Text("No \(selectedGenre) results for '\(searchText)'")
+                                                    .font(.headline)
+                                                    .foregroundColor(.black)
+                                                Text("Try different keywords or browse other genres")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.gray)
+                                                    .multilineTextAlignment(.center)
+                                                    .padding(.horizontal)
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                            .padding(.vertical, 40)
+                                        }
                                     }
                                 }
                                 
@@ -234,7 +285,7 @@ struct HomeView: View {
 
 struct FeaturedContentView: View {
     let content: MediaContent
-    @StateObject private var favoritesManager = FavoritesManager()
+    @StateObject private var favoritesManager = FavoritesManager.shared
     @State private var showDetail = false
     
     var body: some View {
@@ -252,6 +303,11 @@ struct FeaturedContentView: View {
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
                             .frame(height: 300)
+                            .overlay(
+                                ProgressView("Loading...")
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    .foregroundColor(.white)
+                            )
                     case .success(let image):
                         image
                             .resizable()
@@ -263,12 +319,21 @@ struct FeaturedContentView: View {
                             .fill(Color.gray.opacity(0.3))
                             .frame(height: 300)
                             .overlay(
-                                Image(systemName: "photo")
-                                    .font(.system(size: 48))
-                                    .foregroundColor(.gray)
+                                VStack(spacing: 12) {
+                                    Image(systemName: "photo")
+                                        .font(.system(size: 48))
+                                        .foregroundColor(.gray)
+                                    Text(content.title)
+                                        .font(.headline)
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal)
+                                }
                             )
                     @unknown default:
-                        EmptyView()
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 300)
                     }
                 }
                 .cornerRadius(12)
@@ -321,129 +386,6 @@ struct FeaturedContentView: View {
         }
         .sheet(isPresented: $showDetail) {
             ContentDetailView(content: content, favoritesManager: favoritesManager)
-        }
-    }
-}
-
-struct LazyLandscapeCarouselView: View {
-    let title: String
-    let content: [MediaContent]
-    @State private var scrollOffset: CGFloat = 0
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(title)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
-                
-                Spacer()
-                
-                // Scroll buttons
-                HStack(spacing: 8) {
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            scrollOffset -= 200
-                        }
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .font(.title3)
-                            .foregroundColor(.white)
-                            .frame(width: 32, height: 32)
-                            .background(Color.black.opacity(0.6))
-                            .clipShape(Circle())
-                    }
-                    
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            scrollOffset += 200
-                        }
-                    }) {
-                        Image(systemName: "chevron.right")
-                            .font(.title3)
-                            .foregroundColor(.white)
-                            .frame(width: 32, height: 32)
-                            .background(Color.black.opacity(0.6))
-                            .clipShape(Circle())
-                    }
-                }
-            }
-            .padding(.horizontal)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 12) {
-                    ForEach(content, id: \.id) { item in
-                        LazyContentCard(content: item)
-                    }
-                }
-                .padding(.horizontal)
-                .offset(x: scrollOffset)
-            }
-        }
-        .onAppear {
-            print("🎬 Carousel '\(title)' created with \(content.count) items:")
-            for (index, item) in content.enumerated() {
-                print("  \(index): ID \(item.id) - \(item.title)")
-            }
-        }
-    }
-}
-
-struct LazyContentCard: View {
-    let content: MediaContent
-    @StateObject private var favoritesManager = FavoritesManager()
-    @State private var showDetail = false
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            AsyncImage(url: URL(string: content.posterURL)) { phase in
-                switch phase {
-                case .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(width: 150, height: 225)
-                        .overlay(
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .gray))
-                        )
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 150, height: 225)
-                        .clipped()
-                case .failure:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(width: 150, height: 225)
-                        .overlay(
-                            Image(systemName: "photo")
-                                .font(.system(size: 32))
-                                .foregroundColor(.gray)
-                        )
-                @unknown default:
-                    EmptyView()
-                }
-            }
-            .cornerRadius(10)
-            
-            Text(content.title)
-                .font(.subheadline)
-                .foregroundColor(.black)
-                .lineLimit(2)
-                .frame(width: 150)
-        }
-        .contentShape(Rectangle()) // Make entire card tappable
-        .onTapGesture {
-            print("🎬 Card tapped - ID: \(content.id), Title: \(content.title), Genre: \(content.genre)")
-            showDetail = true
-        }
-        .sheet(isPresented: $showDetail) {
-            ContentDetailView(content: content, favoritesManager: favoritesManager)
-        }
-        .onAppear {
-            print("🎬 Card created - ID: \(content.id), Title: \(content.title)")
         }
     }
 }

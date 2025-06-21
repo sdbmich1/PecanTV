@@ -1,5 +1,4 @@
 import SwiftUI
-import FirebaseFirestore
 
 struct MyPecanView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
@@ -39,16 +38,10 @@ struct MyPecanView: View {
                         }
                         
                         Button(action: {
-                            Task {
-                                do {
-                                    try await authViewModel.signOut()
-                                } catch {
-                                    print("Error signing out: \(error)")
-                                }
-                            }
+                            authViewModel.signOut()
                         }) {
                             Text("Sign Out")
-                                .foregroundColor(.red)
+                                .foregroundColor(.pecanRed)
                         }
                     }
                 }
@@ -112,32 +105,16 @@ struct MyPecanView: View {
                             showEditProfile = false
                         },
                         trailing: Button("Save") {
-                            Task {
-                                do {
-                                    if let userId = authViewModel.firebaseUser?.uid {
-                                        let userData: [String: Any] = [
-                                            "firstName": firstName,
-                                            "lastName": lastName,
-                                            "email": email
-                                        ]
-                                        try await Firestore.firestore()
-                                            .collection("users")
-                                            .document(userId)
-                                            .updateData(userData)
-                                        
-                                        // Update local user data
-                                        authViewModel.currentUser = User(
-                                            id: userId,
-                                            firstName: firstName,
-                                            lastName: lastName,
-                                            email: email
-                                        )
-                                        showEditProfile = false
-                                    }
-                                } catch {
-                                    print("Error updating profile: \(error)")
-                                }
+                            // Update local user data only
+                            if let currentUser = authViewModel.currentUser {
+                                authViewModel.currentUser = User(
+                                    id: currentUser.id,
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    email: email
+                                )
                             }
+                            showEditProfile = false
                         }
                     )
                 }

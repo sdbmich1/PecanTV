@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct FavoritesView: View {
-    @StateObject private var favoritesManager = FavoritesManager()
+    @StateObject private var favoritesManager = FavoritesManager.shared
     let allContent: [MediaContent]
     @State private var selectedContent: MediaContent?
     @State private var showDetail = false
@@ -13,81 +13,53 @@ struct FavoritesView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
+                Color.white.ignoresSafeArea()
                 
                 if favoriteContent.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "heart.slash")
-                            .font(.system(size: 48))
+                    VStack(spacing: 20) {
+                        Image(systemName: "heart")
+                            .font(.system(size: 60))
                             .foregroundColor(.gray)
+                        
                         Text("No Favorites Yet")
                             .font(.title2)
-                            .foregroundColor(.white)
-                        Text("Add movies and shows to your favorites to see them here")
-                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.black)
+                        
+                        Text("Start adding your favorite content to see them here")
+                            .font(.body)
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
-                    ScrollView {
-                        LazyVGrid(columns: [
-                            GridItem(.flexible()),
-                            GridItem(.flexible())
-                        ], spacing: 16) {
-                            ForEach(favoriteContent) { content in
-                                ContentPosterCard(content: content)
-                                    .onTapGesture {
-                                        selectedContent = content
-                                        showDetail = true
-                                    }
-                            }
+                    VStack(spacing: 0) {
+                        // Content area
+                        ScrollView {
+                            LandscapeCarouselView(
+                                title: "My Favorites",
+                                content: favoriteContent
+                            )
+                            .padding(.horizontal)
+                            .padding(.top, 20)
                         }
-                        .padding()
                     }
                 }
             }
             .navigationTitle("My Favorites")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showDetail) {
-                if let content = selectedContent {
-                    ContentDetailView(content: content, favoritesManager: favoritesManager)
+                if let selectedContent = selectedContent {
+                    ContentDetailView(content: selectedContent, favoritesManager: favoritesManager)
                 }
             }
         }
-    }
-}
-
-struct ContentPosterCard: View {
-    let content: MediaContent
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            AsyncImage(url: URL(string: content.posterURL)) { phase in
-                switch phase {
-                case .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                        .aspectRatio(2/3, contentMode: .fit)
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(2/3, contentMode: .fit)
-                case .failure:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                        .aspectRatio(2/3, contentMode: .fit)
-                @unknown default:
-                    EmptyView()
-                }
+        .onAppear {
+            // Load favorites from database when view appears
+            Task {
+                await favoritesManager.loadFavoritesFromDatabase()
             }
-            .cornerRadius(8)
-            
-            Text(content.title)
-                .font(.subheadline)
-                .foregroundColor(.white)
-                .lineLimit(2)
-                .padding(.top, 4)
         }
     }
 }

@@ -39,7 +39,7 @@ struct ContentDetailView: View {
                                 case .empty:
                                     Rectangle()
                                         .fill(Color.gray.opacity(0.2))
-                                        .frame(width: UIScreen.main.bounds.width - 32)
+                                        .frame(width: UIScreen.main.bounds.width - 8)
                                         .frame(height: 240)
                                         .overlay(
                                             Image(systemName: "photo")
@@ -50,13 +50,13 @@ struct ContentDetailView: View {
                                     image
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: UIScreen.main.bounds.width - 32)
+                                        .frame(width: UIScreen.main.bounds.width - 8)
                                         .frame(height: 240)
                                         .clipped()
                                 case .failure:
                                     Rectangle()
                                         .fill(Color.gray.opacity(0.2))
-                                        .frame(width: UIScreen.main.bounds.width - 32)
+                                        .frame(width: UIScreen.main.bounds.width - 8)
                                         .frame(height: 240)
                                         .overlay(
                                             Image(systemName: "photo")
@@ -75,7 +75,7 @@ struct ContentDetailView: View {
                             }) {
                                 Image(systemName: favoritesManager.isFavorite(content) ? "heart.fill" : "heart")
                                     .font(.title2)
-                                    .foregroundColor(favoritesManager.isFavorite(content) ? .red : .white)
+                                    .foregroundColor(favoritesManager.isFavorite(content) ? .pecanRed : .white)
                                     .padding(12)
                                     .background(Color.black.opacity(0.6))
                                     .clipShape(Circle())
@@ -241,7 +241,7 @@ struct TrailerErrorView: View {
                             UIApplication.shared.open(url)
                         }
                         .padding()
-                        .background(Color.pecanRed)
+                        .background(Color.red)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
@@ -293,7 +293,7 @@ struct TrailerWebView: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.pecanRed)
+                        .background(Color.red)
                         .cornerRadius(20)
                     }
                 }
@@ -327,7 +327,7 @@ struct TrailerWebView: View {
                             UIApplication.shared.open(url)
                         }
                         .padding()
-                        .background(Color.pecanRed)
+                        .background(Color.red)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
@@ -397,5 +397,5 @@ struct WebView: UIViewRepresentable {
         genre: "Action",
         ageRating: "PG-13"
     )
-    return ContentDetailView(content: sampleContent, favoritesManager: FavoritesManager())
+    ContentDetailView(content: sampleContent, favoritesManager: FavoritesManager.shared)
 } 

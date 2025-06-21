@@ -22,18 +22,20 @@ struct GenrePicker: View {
         }
         .sheet(isPresented: $showPicker) {
             NavigationView {
-                List(genres, id: \.self) { genre in
-                    Button(action: {
-                        selectedGenre = genre
-                        showPicker = false
-                    }) {
-                        HStack {
-                            Text(genre)
-                                .foregroundColor(.primary)
-                            Spacer()
-                            if genre == selectedGenre {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.pecanRed)
+                List {
+                    ForEach(genres, id: \.self) { genre in
+                        Button(action: {
+                            selectedGenre = genre
+                            showPicker = false
+                        }) {
+                            HStack {
+                                Text(genre)
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                if genre == selectedGenre {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.pecanRed)
+                                }
                             }
                         }
                     }
