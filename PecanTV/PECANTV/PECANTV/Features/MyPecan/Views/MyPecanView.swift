@@ -105,14 +105,15 @@ struct MyPecanView: View {
                             showEditProfile = false
                         },
                         trailing: Button("Save") {
-                            // Update local user data only
-                            if let currentUser = authViewModel.currentUser {
+                            // Update local user data
+                            if let user = authViewModel.currentUser {
                                 authViewModel.currentUser = User(
-                                    id: currentUser.id,
+                                    id: user.id,
                                     firstName: firstName,
                                     lastName: lastName,
                                     email: email
                                 )
+                                showEditProfile = false
                             }
                             showEditProfile = false
                         }

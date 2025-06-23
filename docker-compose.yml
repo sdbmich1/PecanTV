@@ -58,7 +58,7 @@ services:
     volumes:
       - ./api:/app
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pecantv
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@postgres:5432/pecantv
     depends_on:
       postgres:
         condition: service_healthy

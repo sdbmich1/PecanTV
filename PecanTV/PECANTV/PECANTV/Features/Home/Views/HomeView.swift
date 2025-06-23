@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var viewModel: ContentViewModel
+    @EnvironmentObject private var healthChecker: APIHealthChecker
     @State private var selectedTab = 0
     @State private var searchText = ""
     @State private var selectedGenre = "All Genres"
@@ -11,7 +12,7 @@ struct HomeView: View {
     @State private var showDetail = false
     @State private var isGenreChanging = false
     
-    let genres = ["All Genres", "Action", "Adventure", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Horror", "Martial Arts", "Mystery", "Noir", "Romance", "Sci-Fi", "Sports", "Thriller", "Western"]
+    let genres = ["All Genres", "Action", "Adventure", "Animals", "Anime", "Children", "Comedy", "Crime", "Documentary", "Drama", "Educational", "Faith", "Fantasy", "Fashion", "Food", "Gaming", "Health", "History", "Horror", "Martial Arts", "Mystery", "Nature", "News", "Reality", "Romance", "Science Fiction", "Science", "Sitcom", "Special", "Sports", "Technology", "Thriller", "Western"]
     
     var allContent: [MediaContent] {
         viewModel.films + viewModel.tvSeries
@@ -22,7 +23,14 @@ struct HomeView: View {
             let contentGenres = content.genre
                 .split(separator: ",")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            return contentGenres.contains(selectedGenre.lowercased())
+            
+            // Handle special cases for genre mapping
+            let selectedGenreLower = selectedGenre.lowercased()
+            let mappedGenres = getMappedGenres(for: selectedGenreLower)
+            
+            return contentGenres.contains { contentGenre in
+                mappedGenres.contains(contentGenre)
+            }
         }
         let searchFiltered = searchText.isEmpty ? genreFiltered : genreFiltered.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
         return searchFiltered
@@ -33,7 +41,14 @@ struct HomeView: View {
             let contentGenres = content.genre
                 .split(separator: ",")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            return contentGenres.contains(selectedGenre.lowercased())
+            
+            // Handle special cases for genre mapping
+            let selectedGenreLower = selectedGenre.lowercased()
+            let mappedGenres = getMappedGenres(for: selectedGenreLower)
+            
+            return contentGenres.contains { contentGenre in
+                mappedGenres.contains(contentGenre)
+            }
         }
         let searchFiltered = searchText.isEmpty ? genreFiltered : genreFiltered.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
         return searchFiltered
@@ -44,10 +59,29 @@ struct HomeView: View {
             let contentGenres = content.genre
                 .split(separator: ",")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            return contentGenres.contains(selectedGenre.lowercased())
+            
+            // Handle special cases for genre mapping
+            let selectedGenreLower = selectedGenre.lowercased()
+            let mappedGenres = getMappedGenres(for: selectedGenreLower)
+            
+            return contentGenres.contains { contentGenre in
+                mappedGenres.contains(contentGenre)
+            }
         }
         let searchFiltered = searchText.isEmpty ? genreFiltered : genreFiltered.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
         return searchFiltered
+    }
+    
+    // Helper function to map display genre names to possible database names
+    private func getMappedGenres(for displayGenre: String) -> [String] {
+        let mapping: [String: [String]] = [
+            "science fiction": ["science fiction", "sci-fi", "scifi"],
+            "sci-fi": ["science fiction", "sci-fi", "scifi"],
+            "martial arts": ["martial arts", "kung-fu", "kungfu"],
+            "kung-fu": ["martial arts", "kung-fu", "kungfu"]
+        ]
+        
+        return mapping[displayGenre] ?? [displayGenre]
     }
     
     var body: some View {
@@ -55,7 +89,28 @@ struct HomeView: View {
             ZStack {
                 Color.white.edgesIgnoringSafeArea(.all)
                 
-                if viewModel.isLoading || isGenreChanging {
+                if !healthChecker.isAPIAvailable {
+                    VStack(spacing: 20) {
+                        Image(systemName: "wifi.slash")
+                            .font(.system(size: 60))
+                            .foregroundColor(.red)
+                        
+                        Text("Server Unavailable")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text("The PecanTV server is currently unavailable.\nPlease check your connection or try again later.")
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal)
+                        
+                        Button("Retry Connection") {
+                            healthChecker.checkAPIHealth()
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .padding()
+                } else if viewModel.isLoading || isGenreChanging {
                     VStack {
                         ProgressView("Loading content...")
                             .progressViewStyle(CircularProgressViewStyle(tint: .black))
@@ -288,6 +343,9 @@ struct FeaturedContentView: View {
     @StateObject private var favoritesManager = FavoritesManager.shared
     @State private var showDetail = false
     
+    // Use flexible dimensions to prevent layout conflicts
+    private let featuredHeight: CGFloat = 300
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Featured")
@@ -302,22 +360,17 @@ struct FeaturedContentView: View {
                     case .empty:
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
-                            .frame(height: 300)
-                            .overlay(
-                                ProgressView("Loading...")
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .foregroundColor(.white)
-                            )
+                            .frame(maxHeight: featuredHeight)
                     case .success(let image):
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(height: 300)
+                            .frame(maxHeight: featuredHeight)
                             .clipped()
                     case .failure:
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
-                            .frame(height: 300)
+                            .frame(maxHeight: featuredHeight)
                             .overlay(
                                 VStack(spacing: 12) {
                                     Image(systemName: "photo")
@@ -345,7 +398,7 @@ struct FeaturedContentView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .frame(height: 300)
+                .frame(maxHeight: featuredHeight)
                 .cornerRadius(12)
                 .padding(.horizontal)
                 
@@ -386,6 +439,188 @@ struct FeaturedContentView: View {
         }
         .sheet(isPresented: $showDetail) {
             ContentDetailView(content: content, favoritesManager: favoritesManager)
+        }
+    }
+}
+
+struct LandscapeCarouselView: View {
+    let title: String
+    let content: [MediaContent]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.black)
+                
+                Spacer()
+            }
+            .padding(.horizontal)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 12) {
+                    ForEach(content, id: \.id) { item in
+                        LazyContentCard(content: item)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+        .onAppear {
+            print("🎬 Carousel '\(title)' created with \(content.count) items:")
+            for (index, item) in content.enumerated() {
+                print("  \(index): ID \(item.id) - \(item.title)")
+            }
+        }
+    }
+}
+
+struct LazyLandscapeCarouselView: View {
+    let title: String
+    let content: [MediaContent]
+    @State private var scrollOffset: CGFloat = 0
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.black)
+                
+                Spacer()
+                
+                // Scroll buttons
+                HStack(spacing: 8) {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            scrollOffset -= 200
+                        }
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.black.opacity(0.6))
+                            .clipShape(Circle())
+                    }
+                    
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            scrollOffset += 200
+                        }
+                    }) {
+                        Image(systemName: "chevron.right")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.black.opacity(0.6))
+                            .clipShape(Circle())
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 12) {
+                    ForEach(content, id: \.id) { item in
+                        LazyContentCard(content: item)
+                    }
+                }
+                .padding(.horizontal)
+                .offset(x: scrollOffset)
+            }
+        }
+        .onAppear {
+            print("🎬 Carousel '\(title)' created with \(content.count) items:")
+            for (index, item) in content.enumerated() {
+                print("  \(index): ID \(item.id) - \(item.title)")
+            }
+        }
+    }
+}
+
+struct LazyContentCard: View {
+    let content: MediaContent
+    @EnvironmentObject var favoritesManager: FavoritesManager
+    @State private var showDetail = false
+    
+    // Use landscape dimensions for 16:9 aspect ratio
+    private let cardWidth: CGFloat = 280
+    private let cardHeight: CGFloat = 157.5  // 16:9 aspect ratio
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            AsyncImage(url: URL(string: content.posterURL)) { phase in
+                switch phase {
+                case .empty:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: cardWidth, height: cardHeight)
+                        .overlay(
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .gray))
+                        )
+                        .cornerRadius(10)
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: cardWidth, height: cardHeight)
+                        .clipped()
+                        .cornerRadius(10)
+                case .failure:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: cardWidth, height: cardHeight)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.system(size: 32))
+                                .foregroundColor(.gray)
+                        )
+                        .cornerRadius(10)
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(content.title)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+                    .lineLimit(2)
+                
+                HStack {
+                    Text(content.genre)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                    
+                    Spacer()
+                    
+                    if !content.ageRating.isEmpty && content.ageRating != "NR" {
+                        Text(content.ageRating)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .frame(width: cardWidth, alignment: .leading)
+        }
+        .frame(width: cardWidth)
+        .contentShape(Rectangle()) // Make entire card tappable
+        .onTapGesture {
+            print("🎬 Card tapped - ID: \(content.id), Title: \(content.title), Genre: \(content.genre)")
+            showDetail = true
+        }
+        .sheet(isPresented: $showDetail) {
+            ContentDetailView(content: content, favoritesManager: favoritesManager)
+        }
+        .onAppear {
+            print("🎬 Card created - ID: \(content.id), Title: \(content.title)")
         }
     }
 }

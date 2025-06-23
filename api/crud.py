@@ -1,8 +1,39 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
 from typing import List, Optional
+import hashlib
 import models
 import schemas
+
+# Authentication CRUD operations
+def get_user_by_email(db: Session, email: str) -> Optional[models.User]:
+    return db.query(models.User).filter(models.User.email == email).first()
+
+def get_user_by_id(db: Session, user_id: int) -> Optional[models.User]:
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+def create_user(db: Session, user: schemas.UserCreate) -> models.User:
+    # Hash the password
+    password_hash = hashlib.sha256(user.password.encode()).hexdigest()
+    
+    db_user = models.User(
+        email=user.email,
+        password_hash=password_hash,
+        first_name=user.first_name,
+        last_name=user.last_name
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+def verify_user_password(db: Session, email: str, password: str) -> Optional[models.User]:
+    user = get_user_by_email(db, email)
+    if user:
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
+        if user.password_hash == password_hash:
+            return user
+    return None
 
 def get_content(
     db: Session,

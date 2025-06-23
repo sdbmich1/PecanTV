@@ -31,20 +31,30 @@ struct ContentCard: View {
     
     private let maxRetries = 3
     
+    // Use flexible dimensions to prevent layout conflicts
+    private var cardWidth: CGFloat {
+        isFeatured ? 300 : 150
+    }
+    
+    private var cardHeight: CGFloat {
+        isFeatured ? 180 : 225
+    }
+    
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 8) {
             ZStack {
                 if isLoading {
                     ProgressView()
-                        .frame(width: isFeatured ? 300 : 150, height: isFeatured ? 180 : 225)
+                        .frame(maxWidth: cardWidth, maxHeight: cardHeight)
                         .background(Color.gray.opacity(0.3))
+                        .cornerRadius(10)
                 }
                 
                 if let cachedImage = cachedImage {
                     Image(uiImage: cachedImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: isFeatured ? 300 : 150, height: isFeatured ? 180 : 225)
+                        .frame(maxWidth: cardWidth, maxHeight: cardHeight)
                         .clipped()
                         .cornerRadius(10)
                 } else {
@@ -52,10 +62,16 @@ struct ContentCard: View {
                         switch phase {
                         case .empty:
                             ProgressView()
+                                .frame(maxWidth: cardWidth, maxHeight: cardHeight)
+                                .background(Color.gray.opacity(0.3))
+                                .cornerRadius(10)
                         case .success(let image):
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
+                                .frame(maxWidth: cardWidth, maxHeight: cardHeight)
+                                .clipped()
+                                .cornerRadius(10)
                                 .onAppear {
                                     isLoading = false
                                     if let uiImage = image.asUIImage() {
@@ -66,6 +82,9 @@ struct ContentCard: View {
                         case .failure(_):
                             if retryCount < maxRetries {
                                 ProgressView()
+                                    .frame(maxWidth: cardWidth, maxHeight: cardHeight)
+                                    .background(Color.gray.opacity(0.3))
+                                    .cornerRadius(10)
                                     .onAppear {
                                         retryLoad()
                                     }
@@ -73,8 +92,9 @@ struct ContentCard: View {
                                 Image(systemName: "photo")
                                     .font(.largeTitle)
                                     .foregroundColor(.gray)
-                                    .frame(width: isFeatured ? 300 : 150, height: isFeatured ? 180 : 225)
+                                    .frame(maxWidth: cardWidth, maxHeight: cardHeight)
                                     .background(Color.gray.opacity(0.3))
+                                    .cornerRadius(10)
                                     .onAppear {
                                         isLoading = false
                                         imageLoadError = true
@@ -84,9 +104,6 @@ struct ContentCard: View {
                             EmptyView()
                         }
                     }
-                    .frame(width: isFeatured ? 300 : 150, height: isFeatured ? 180 : 225)
-                    .clipped()
-                    .cornerRadius(10)
                 }
                 
                 if isFeatured {
@@ -96,21 +113,27 @@ struct ContentCard: View {
                 }
             }
             
-            Text(content.title)
-                .font(isFeatured ? .headline : .subheadline)
-                .lineLimit(1)
-            
-            if isFeatured {
-                Text("\(content.genre) • \(content.runtime) min")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            } else {
-                Text(content.genre)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(content.title)
+                    .font(isFeatured ? .headline : .subheadline)
+                    .lineLimit(1)
+                    .foregroundColor(.primary)
+                
+                if isFeatured {
+                    Text("\(content.genre) • \(content.runtime) min")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                } else {
+                    Text(content.genre)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
             }
+            .frame(maxWidth: cardWidth, alignment: .leading)
         }
-        .frame(width: isFeatured ? 300 : 150)
+        .frame(maxWidth: cardWidth)
         .onAppear {
             loadCachedImage()
         }

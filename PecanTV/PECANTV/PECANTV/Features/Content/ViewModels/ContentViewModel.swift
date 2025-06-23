@@ -115,13 +115,16 @@ class ContentViewModel: ObservableObject {
     
     // Helper function to convert genre names from all caps to title case
     private func convertGenreToTitleCase(_ genre: String) -> String {
-        // Handle special cases like "Sci-Fi" and "Martial Arts"
+        // Handle special cases mapping database names to display names
         let specialCases = [
-            "SCI-FI": "Sci-Fi",
+            "SCI-FI": "Science Fiction",
+            "SCIENCE FICTION": "Science Fiction",
+            "KUNG-FU": "Martial Arts",
+            "KUNGFU": "Martial Arts",
             "MARTIAL ARTS": "Martial Arts"
         ]
         
-        if let specialCase = specialCases[genre] {
+        if let specialCase = specialCases[genre.uppercased()] {
             return specialCase
         }
         

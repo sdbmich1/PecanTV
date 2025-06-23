@@ -6,11 +6,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Database URL
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://postgres:postgres@postgres:5432/pecantv"
-)
+# Database URL - handle both Docker and local development
+# If running locally, use localhost:5433, otherwise use Docker hostname
+if os.getenv("RUNNING_LOCALLY"):
+    DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5433/pecantv"
+else:
+    DATABASE_URL = os.getenv(
+        "DATABASE_URL",
+        "postgresql+psycopg2://postgres:postgres@postgres:5432/pecantv"
+    )
 
 # Create SQLAlchemy engine
 engine = create_engine(DATABASE_URL)

@@ -4,6 +4,7 @@ import SwiftUI
 struct SignInView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var healthChecker: APIHealthChecker
     @State private var email = ""
     @State private var password = ""
     @State private var firstName = ""
@@ -32,6 +33,21 @@ struct SignInView: View {
                 Text(isSignUp ? "Create Account" : "Sign In")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                
+                // API Status Indicator
+                if !healthChecker.isAPIAvailable {
+                    HStack {
+                        Image(systemName: "wifi.slash")
+                            .foregroundColor(.red)
+                        Text("Server unavailable")
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(Color.red.opacity(0.1))
+                    .cornerRadius(8)
+                }
                 
                 VStack(spacing: 15) {
                     if isSignUp {
@@ -97,7 +113,7 @@ struct SignInView: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal)
-                .disabled(authViewModel.isLoading || email.isEmpty || password.isEmpty)
+                .disabled(authViewModel.isLoading || email.isEmpty || password.isEmpty || !healthChecker.isAPIAvailable)
                 .contentShape(Rectangle())
                 
                 Button(action: {

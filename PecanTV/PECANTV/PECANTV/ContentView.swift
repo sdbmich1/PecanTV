@@ -12,35 +12,85 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var authViewModel = AuthViewModel()
     @StateObject private var contentViewModel = ContentViewModel()
+    @StateObject private var favoritesManager = FavoritesManager()
+    @StateObject private var healthChecker = APIHealthChecker.shared
     @State private var selectedTab = 0
+    @State private var showAPIErrorAlert = false
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeView()
-                .environmentObject(contentViewModel)
-                .tabItem {
-                    Label("Home", systemImage: "house")
+        Group {
+            if authViewModel.isAuthenticated {
+                TabView(selection: $selectedTab) {
+                    HomeView()
+                        .environmentObject(contentViewModel)
+                        .tabItem {
+                            Label("Home", systemImage: "house")
+                        }
+                        .tag(0)
+                    
+                    FavoritesView(allContent: contentViewModel.films + contentViewModel.tvSeries)
+                        .environmentObject(favoritesManager)
+                        .tabItem {
+                            Label("My Favs", systemImage: "heart")
+                        }
+                        .tag(1)
+                    
+                    ProfileView()
+                        .tabItem {
+                            Label("My PECAN", systemImage: "person")
+                        }
+                        .tag(2)
                 }
-                .tag(0)
-            
-            FavoritesView(allContent: contentViewModel.films + contentViewModel.tvSeries)
-                .tabItem {
-                    Label("My Favs", systemImage: "heart")
+            } else if !healthChecker.isAPIAvailable {
+                VStack(spacing: 20) {
+                    Image(systemName: "wifi.slash")
+                        .font(.system(size: 60))
+                        .foregroundColor(.red)
+                    
+                    Text("Server Unavailable")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    
+                    Text("Unable to connect to PecanTV server. Please check your connection and try again.")
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal)
+                    
+                    Button("Retry Connection") {
+                        healthChecker.checkAPIHealth()
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-                .tag(1)
-            
-            ProfileView()
-                .tabItem {
-                    Label("My PECAN", systemImage: "person")
-                }
-                .tag(2)
+                .padding()
+            } else {
+                SignInView()
+                    .environmentObject(authViewModel)
+            }
         }
         .onAppear {
-            // Set up authentication success callback
-            authViewModel.onAuthenticationSuccess = {
-                print("🎉 Authentication successful, loading content...")
-                contentViewModel.loadContent()
+            // Check API health on app launch
+            healthChecker.checkAPIHealth { isAvailable in
+                if isAvailable {
+                    // Set up authentication success callback
+                    authViewModel.onAuthenticationSuccess = {
+                        print("🎉 Authentication successful, loading content...")
+                        contentViewModel.loadContent()
+                    }
+                }
             }
+        }
+        .onChange(of: healthChecker.isAPIAvailable) { isAvailable in
+            if !isAvailable {
+                showAPIErrorAlert = true
+            }
+        }
+        .alert("Server Unavailable", isPresented: $showAPIErrorAlert) {
+            Button("Retry") {
+                healthChecker.checkAPIHealth()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("The PecanTV server is currently unavailable. Please check your connection or try again later.")
         }
     }
 }

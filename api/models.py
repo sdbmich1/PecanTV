@@ -9,6 +9,22 @@ class ContentType(str, enum.Enum):
     FILM = "FILM"
     SERIES = "SERIES"
 
+# User model for authentication
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)
+    first_name = Column(String(100))
+    last_name = Column(String(100))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
+
 # Junction table for many-to-many relationship between content and genres
 content_genres = Table(
     'content_genres',

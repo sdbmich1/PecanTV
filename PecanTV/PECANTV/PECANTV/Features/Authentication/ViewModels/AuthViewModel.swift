@@ -14,6 +14,9 @@ class AuthViewModel: ObservableObject {
     // Callback for when authentication succeeds
     var onAuthenticationSuccess: (() -> Void)?
     
+    // API base URL - using your Mac's IP address
+    private let baseURL = "http://localhost:8000"
+    
     // private var authStateHandler: AuthStateDidChangeListenerHandle?
     // private let db = Firestore.firestore()
     
@@ -21,7 +24,13 @@ class AuthViewModel: ObservableObject {
     private let usersKey = "stored_users"
     
     init() {
-        // setupAuthStateListener()
+        // Check if user is already authenticated (stored in UserDefaults)
+        if let userData = UserDefaults.standard.data(forKey: "current_user"),
+           let user = try? JSONDecoder().decode(User.self, from: userData) {
+            currentUser = user
+            isAuthenticated = true
+            print("🔄 Restored authenticated user: \(user.fullName)")
+        }
     }
     
     deinit {
@@ -76,89 +85,152 @@ class AuthViewModel: ObservableObject {
         return user
     }
     
-    // MARK: - Authentication Methods
+    // MARK: - API Authentication Methods
     func signIn(email: String, password: String) async {
         isLoading = true
         error = nil
         
-        print("🔐 Attempting signin for: \(email)")
+        print("🔐 Attempting API signin for: \(email)")
         
-        // Check if it's the test user
-        if email == "test@example.com" && password == "password" {
-            currentUser = User(
-                id: "mock-user-id",
-                firstName: "Test",
-                lastName: "User",
-                email: email
-            )
-            isAuthenticated = true
-            print("✅ Test user signed in successfully")
-        } else {
-            // Check stored users
-            let users = getStoredUsers()
-            print("📊 Found \(users.count) stored users")
+        guard let url = URL(string: "\(baseURL)/auth/login") else {
+            error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
+            isLoading = false
+            return
+        }
+        
+        let loginData = ["email": email, "password": password]
+        
+        do {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try JSONSerialization.data(withJSONObject: loginData)
             
-            if let user = validateCredentials(email: email, password: password) {
-                currentUser = user
-                isAuthenticated = true
-                print("✅ User signed in successfully: \(user.fullName)")
-            } else {
-                error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid credentials"])
-                print("❌ Invalid credentials for: \(email)")
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    // Parse the API response
+                    let apiUser = try JSONDecoder().decode(APIUser.self, from: data)
+                    
+                    // Convert API user to app user
+                    let user = User(
+                        id: String(apiUser.id),
+                        firstName: apiUser.first_name ?? "",
+                        lastName: apiUser.last_name ?? "",
+                        email: apiUser.email
+                    )
+                    
+                    currentUser = user
+                    isAuthenticated = true
+                    
+                    // Store user data locally
+                    if let userData = try? JSONEncoder().encode(user) {
+                        UserDefaults.standard.set(userData, forKey: "current_user")
+                    }
+                    
+                    print("✅ API signin successful: \(user.fullName)")
+                } else {
+                    // Handle error response
+                    if let errorResponse = try? JSONDecoder().decode(APIError.self, from: data) {
+                        error = NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorResponse.detail])
+                    } else {
+                        error = NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Login failed"])
+                    }
+                    print("❌ API signin failed with status: \(httpResponse.statusCode)")
+                }
             }
+        } catch {
+            self.error = error
+            print("❌ API signin error: \(error.localizedDescription)")
         }
         
         print("📊 Final auth state - isAuthenticated: \(isAuthenticated), currentUser: \(currentUser?.fullName ?? "nil")")
         isLoading = false
         
         // Trigger content loading when authentication succeeds
-        onAuthenticationSuccess?()
+        if isAuthenticated {
+            onAuthenticationSuccess?()
+        }
     }
     
     func signUp(email: String, password: String, firstName: String, lastName: String) async {
         isLoading = true
         error = nil
         
-        print("🔐 Starting signup for: \(email)")
+        print("🔐 Starting API signup for: \(email)")
         
-        // Check if user already exists
-        let users = getStoredUsers()
-        if users[email] != nil {
-            error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "User with this email already exists"])
-            print("❌ User already exists: \(email)")
+        guard let url = URL(string: "\(baseURL)/auth/register") else {
+            error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
             isLoading = false
             return
         }
         
-        // Create new user
-        let newUser = User(
-            id: UUID().uuidString,
-            firstName: firstName,
-            lastName: lastName,
-            email: email
-        )
+        let registerData = [
+            "email": email,
+            "password": password,
+            "first_name": firstName,
+            "last_name": lastName
+        ]
         
-        print("✅ Created new user: \(newUser.fullName)")
+        do {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try JSONSerialization.data(withJSONObject: registerData)
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    // Parse the API response
+                    let apiUser = try JSONDecoder().decode(APIUser.self, from: data)
+                    
+                    // Convert API user to app user
+                    let user = User(
+                        id: String(apiUser.id),
+                        firstName: apiUser.first_name ?? "",
+                        lastName: apiUser.last_name ?? "",
+                        email: apiUser.email
+                    )
+                    
+                    currentUser = user
+                    isAuthenticated = true
+                    
+                    // Store user data locally
+                    if let userData = try? JSONEncoder().encode(user) {
+                        UserDefaults.standard.set(userData, forKey: "current_user")
+                    }
+                    
+                    print("✅ API signup successful: \(user.fullName)")
+                } else {
+                    // Handle error response
+                    if let errorResponse = try? JSONDecoder().decode(APIError.self, from: data) {
+                        error = NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorResponse.detail])
+                    } else {
+                        error = NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Registration failed"])
+                    }
+                    print("❌ API signup failed with status: \(httpResponse.statusCode)")
+                }
+            }
+        } catch {
+            self.error = error
+            print("❌ API signup error: \(error.localizedDescription)")
+        }
         
-        // Store the user
-        storeUser(newUser, password: password)
-        
-        // Set as current user and authenticate
-        currentUser = newUser
-        isAuthenticated = true
-        
-        print("🎉 User signed up and authenticated: \(email)")
-        print("📊 Current auth state - isAuthenticated: \(isAuthenticated), currentUser: \(currentUser?.fullName ?? "nil")")
-        
+        print("📊 Final auth state - isAuthenticated: \(isAuthenticated), currentUser: \(currentUser?.fullName ?? "nil")")
         isLoading = false
         
         // Trigger content loading when authentication succeeds
-        onAuthenticationSuccess?()
+        if isAuthenticated {
+            onAuthenticationSuccess?()
+        }
     }
     
     func signOut() {
         currentUser = nil
         isAuthenticated = false
+        UserDefaults.standard.removeObject(forKey: "current_user")
         print("🚪 User signed out")
     }
     
@@ -182,6 +254,20 @@ class AuthViewModel: ObservableObject {
         // Temporary mock password reset for testing
         isLoading = false
     }
+}
+
+// MARK: - API Response Models
+struct APIUser: Codable {
+    let id: Int
+    let email: String
+    let first_name: String?
+    let last_name: String?
+    let created_at: String
+    let updated_at: String
+}
+
+struct APIError: Codable {
+    let detail: String
 }
 
  

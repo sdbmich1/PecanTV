@@ -19,8 +19,8 @@ DB_PARAMS = {
     'dbname': 'pecantv',
     'user': 'postgres',
     'password': 'postgres',
-    'host': 'postgres',  # Docker service name
-    'port': '5432'       # Default PostgreSQL port in Docker
+    'host': 'localhost',  # Local connection
+    'port': '5433'        # Docker port mapping
 }
 
 def load_data_from_sheets():
@@ -100,7 +100,7 @@ def insert_content(conn, content_df, genre_map, rating_map):
                 row['trailer_url'],
                 row['content_url'],
                 row.get('description', ''),
-                row['type'],
+                row['type'].upper(),
                 int(row['runtime']),
                 genre_map.get(row['genre']),
                 rating_map.get(row['rating']),
