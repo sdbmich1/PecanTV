@@ -6,6 +6,7 @@ struct SplashScreenView: View {
     @State private var opacity = 0.5
     @StateObject private var authViewModel = AuthViewModel()
     @StateObject private var contentViewModel = ContentViewModel()
+    @StateObject private var healthChecker = APIHealthChecker.shared
     
     var body: some View {
         if isActive {
@@ -13,9 +14,11 @@ struct SplashScreenView: View {
                 ContentView()
                     .environmentObject(authViewModel)
                     .environmentObject(contentViewModel)
+                    .environmentObject(healthChecker)
             } else {
                 SignInView()
                     .environmentObject(authViewModel)
+                    .environmentObject(healthChecker)
             }
         } else {
             ZStack {
@@ -36,6 +39,9 @@ struct SplashScreenView: View {
                         }
                 }
                 .onAppear {
+                    // Check API health during splash screen
+                    healthChecker.checkAPIHealth()
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                         withAnimation {
                             self.isActive = true

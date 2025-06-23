@@ -2,16 +2,20 @@ import SwiftUI
 
 struct SearchView: View {
     @StateObject private var viewModel = ContentViewModel()
+    @StateObject private var favoritesManager = FavoritesManager()
     @State private var searchText = ""
     
     private var searchResults: [MediaContent] {
         if searchText.isEmpty {
             return []
         }
+        
         let allContent = viewModel.films + viewModel.tvSeries
-        return allContent.filter { content in
+        let filteredContent = allContent.filter { content in
             content.title.localizedCaseInsensitiveContains(searchText)
         }
+        
+        return filteredContent
     }
     
     var body: some View {
@@ -57,7 +61,7 @@ struct SearchView: View {
                     ScrollView {
                         LazyVStack(spacing: 16) {
                             ForEach(searchResults) { content in
-                                NavigationLink(destination: ContentDetailView(content: content)) {
+                                NavigationLink(destination: ContentDetailView(content: content, favoritesManager: favoritesManager)) {
                                     HStack(spacing: 12) {
                                         // Poster Image
                                         AsyncImage(url: URL(string: content.posterURL)) { phase in
