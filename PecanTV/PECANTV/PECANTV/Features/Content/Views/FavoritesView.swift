@@ -6,10 +6,6 @@ struct FavoritesView: View {
     @State private var selectedContent: MediaContent?
     @State private var showDetail = false
     
-    var favoriteContent: [MediaContent] {
-        allContent.filter { favoritesManager.isFavorite($0) }
-    }
-    
     var body: some View {
         NavigationView {
             ZStack {
@@ -25,7 +21,7 @@ struct FavoritesView: View {
                         .padding(.top, 20)
                         .padding(.bottom, 10)
                     
-                    if favoriteContent.isEmpty {
+                    if favoritesManager.favoriteContent.isEmpty {
                         VStack(spacing: 16) {
                             Image(systemName: "heart.slash")
                                 .font(.system(size: 48))
@@ -44,7 +40,7 @@ struct FavoritesView: View {
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 20) {
                                 // Custom Favorites Carousel with titles and genres
-                                FavoritesCarouselView(content: favoriteContent)
+                                FavoritesCarouselView(content: favoritesManager.favoriteContent)
                             }
                             .padding(.bottom, 100) // Space for tab bar
                         }
@@ -53,6 +49,16 @@ struct FavoritesView: View {
             }
             .navigationTitle("My Favorites")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                print("🔍 FavoritesView appeared with \(favoritesManager.favoriteContent.count) favorite items")
+                print("🔍 Favorite titles: \(favoritesManager.favoriteContent.map { $0.title })")
+                // Refresh favorites when view appears
+                favoritesManager.loadFavorites()
+            }
+            .onReceive(favoritesManager.$favoriteContent) { _ in
+                // This will trigger a view update when favorites change
+                print("🔍 Favorites updated: \(favoritesManager.favoriteContent.count) items")
+            }
         }
     }
 }
@@ -61,7 +67,7 @@ struct FavoritesCarouselView: View {
     let content: [MediaContent]
     @State private var currentIndex = 0
     @State private var scrollViewProxy: ScrollViewProxy?
-    @StateObject private var favoritesManager = FavoritesManager()
+    @EnvironmentObject var favoritesManager: FavoritesManager
     
     private let itemWidth: CGFloat = 280
     private let spacing: CGFloat = 16
@@ -100,7 +106,7 @@ struct FavoritesCarouselView: View {
                                             .cornerRadius(8)
                                             
                                             VStack(alignment: .leading, spacing: 4) {
-                                                Text(item.title)
+                                                Text(item.title.truncatedTitleWithWordBoundary())
                                                     .font(.subheadline)
                                                     .fontWeight(.medium)
                                                     .foregroundColor(.black)

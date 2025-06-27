@@ -10,8 +10,8 @@ import SwiftUI
 // import FirebaseAuth
 
 struct ContentView: View {
-    @StateObject private var authViewModel = AuthViewModel()
-    @StateObject private var contentViewModel = ContentViewModel()
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var contentViewModel: ContentViewModel
     @StateObject private var favoritesManager = FavoritesManager()
     @StateObject private var healthChecker = APIHealthChecker.shared
     @State private var selectedTab = 0
@@ -22,7 +22,6 @@ struct ContentView: View {
             if authViewModel.isAuthenticated {
                 TabView(selection: $selectedTab) {
                     HomeView()
-                        .environmentObject(contentViewModel)
                         .tabItem {
                             Label("Home", systemImage: "house")
                         }

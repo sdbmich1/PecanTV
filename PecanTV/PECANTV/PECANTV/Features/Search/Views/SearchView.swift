@@ -75,7 +75,7 @@ struct SearchView: View {
                                         
                                         // Content Info
                                         VStack(alignment: .leading, spacing: 4) {
-                                            Text(content.title)
+                                            Text(content.title.truncatedTitleWithWordBoundary())
                                                 .font(.headline)
                                                 .foregroundColor(.primary)
                                             
@@ -139,7 +139,7 @@ struct SearchResultRow: View {
             
             // Content Info
             VStack(alignment: .leading, spacing: 4) {
-                Text(content.title)
+                Text(content.title.truncatedTitleWithWordBoundary())
                     .font(.headline)
                     .foregroundColor(.primary)
                 

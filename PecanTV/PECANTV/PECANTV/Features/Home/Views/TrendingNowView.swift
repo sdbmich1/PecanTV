@@ -137,7 +137,7 @@ struct TrendingNowView: View {
                                                     .padding(8)
                                                 }
                                                 
-                                                Text(item.title)
+                                                Text(item.title.truncatedTitleWithWordBoundary())
                                                     .font(.subheadline)
                                                     .fontWeight(.medium)
                                                     .foregroundColor(.black)

@@ -6,12 +6,13 @@ struct ContentDetailView: View {
     let content: MediaContent
     @ObservedObject var favoritesManager: FavoritesManager
     @Environment(\.dismiss) private var dismiss
+    @State private var showEpisodes = false
     @State private var showTrailer = false
     @State private var showContent = false
     
     var body: some View {
         ZStack {
-            Color.black.edgesIgnoringSafeArea(.all)
+            Color.white.edgesIgnoringSafeArea(.all)
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
@@ -22,10 +23,10 @@ struct ContentDetailView: View {
                             Text("Back")
                         }
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.black.opacity(0.6))
+                        .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
                     .padding(.horizontal)
@@ -75,9 +76,9 @@ struct ContentDetailView: View {
                             }) {
                                 Image(systemName: favoritesManager.isFavorite(content) ? "heart.fill" : "heart")
                                     .font(.title2)
-                                    .foregroundColor(favoritesManager.isFavorite(content) ? .pecanRed : .white)
+                                    .foregroundColor(favoritesManager.isFavorite(content) ? .pecanRed : .black)
                                     .padding(12)
-                                    .background(Color.black.opacity(0.6))
+                                    .background(Color.gray.opacity(0.2))
                                     .clipShape(Circle())
                             }
                             .padding(.top, 12)
@@ -89,7 +90,7 @@ struct ContentDetailView: View {
                             Text(content.title)
                                 .font(.title)
                                 .fontWeight(.bold)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             
                             HStack {
                                 Text(content.type)
@@ -109,7 +110,7 @@ struct ContentDetailView: View {
                             
                             Text(content.description)
                                 .font(.body)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 .lineLimit(nil)
                                 .multilineTextAlignment(.leading)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -118,34 +119,50 @@ struct ContentDetailView: View {
                         
                         // Action buttons
                         VStack(spacing: 12) {
-                            Button(action: { 
-                                print("🎬 Trailer button tapped for: \(content.title) (ID: \(content.id))")
-                                print("🎬 Trailer URL: \(content.trailerURL)")
-                                showTrailer = true 
-                            }) {
-                                HStack {
-                                    Image(systemName: "play.fill")
-                                    Text("Watch Trailer")
+                            if content.type.uppercased() == "SERIES" {
+                                // Episodes button for series
+                                Button(action: { showEpisodes = true }) {
+                                    HStack {
+                                        Image(systemName: "tv")
+                                        Text("Episodes")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.pecanRed)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
                                 }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(content.trailerURL.isEmpty ? Color.gray : Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                            }
-                            .disabled(content.trailerURL.isEmpty)
-                            .allowsHitTesting(!content.trailerURL.isEmpty)
-                            
-                            Button(action: { showContent = true }) {
-                                HStack {
-                                    Image(systemName: "play.fill")
-                                    Text("Watch Film")
+                            } else {
+                                // Trailer and Film buttons for non-series content
+                                Button(action: { 
+                                    print("🎬 Trailer button tapped for: \(content.title) (ID: \(content.id))")
+                                    print("🎬 Trailer URL: \(content.trailerURL)")
+                                    showTrailer = true 
+                                }) {
+                                    HStack {
+                                        Image(systemName: "play.fill")
+                                        Text("Watch Trailer")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(content.trailerURL.isEmpty ? Color.gray : Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
                                 }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.pecanRed)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
+                                .disabled(content.trailerURL.isEmpty)
+                                .allowsHitTesting(!content.trailerURL.isEmpty)
+                                
+                                Button(action: { showContent = true }) {
+                                    HStack {
+                                        Image(systemName: "play.fill")
+                                        Text("Watch Film")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.pecanRed)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
+                                }
                             }
                         }
                         .padding(.horizontal, 16)
@@ -156,34 +173,106 @@ struct ContentDetailView: View {
             }
         }
         .navigationBarHidden(true)
+        .fullScreenCover(isPresented: $showEpisodes) {
+            EpisodesView(series: content)
+                .environmentObject(favoritesManager)
+        }
         .fullScreenCover(isPresented: $showTrailer) {
-            if content.trailerURL.isEmpty {
-                TrailerErrorView(content: content)
-            } else if let url = URL(string: content.trailerURL) {
-                // Check if it's a direct video URL or a player URL
-                if content.trailerURL.contains(".mp4") || content.trailerURL.contains(".mov") || content.trailerURL.contains(".m4v") {
-                    VideoPlayerView(url: url, content: content)
+            Group {
+                if content.trailerURL.isEmpty {
+                    TrailerErrorView(content: content)
+                } else if let url = URL(string: content.trailerURL) {
+                    // Check if it's a direct video URL or a player URL
+                    if content.trailerURL.contains(".mp4") || content.trailerURL.contains(".mov") || content.trailerURL.contains(".m4v") {
+                        VideoPlayerView(url: url, content: content)
+                    } else {
+                        // For player URLs like Castr, show a web view or error message
+                        TrailerWebView(url: url, content: content)
+                    }
                 } else {
-                    // For player URLs like Castr, show a web view or error message
-                    TrailerWebView(url: url, content: content)
+                    // Show error if URL is invalid
+                    TrailerErrorView(content: content)
                 }
-            } else {
-                // Show error if URL is invalid
-                TrailerErrorView(content: content)
             }
         }
         .fullScreenCover(isPresented: $showContent) {
-            if let url = URL(string: content.contentURL) {
-                // Check if it's a direct video URL or a player URL
-                if content.contentURL.contains(".mp4") || content.contentURL.contains(".mov") || content.contentURL.contains(".m4v") {
-                    VideoPlayerView(url: url, content: content)
+            Group {
+                if let url = URL(string: content.contentURL) {
+                    // Check if it's a direct video URL or a player URL
+                    if content.contentURL.contains(".mp4") || content.contentURL.contains(".mov") || content.contentURL.contains(".m4v") {
+                        VideoPlayerView(url: url, content: content)
+                    } else {
+                        // For player URLs like Castr, show a web view or error message
+                        TrailerWebView(url: url, content: content)
+                    }
                 } else {
-                    // For player URLs like Castr, show a web view or error message
-                    TrailerWebView(url: url, content: content)
+                    // Show error if URL is invalid
+                    ContentErrorView(content: content)
                 }
-            } else {
-                // Show error if URL is invalid
-                TrailerErrorView(content: content)
+            }
+        }
+    }
+}
+
+struct ContentErrorView: View {
+    let content: MediaContent
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        ZStack {
+            Color.white.edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: 20) {
+                // Back button
+                HStack {
+                    Button(action: { dismiss() }) {
+                        HStack {
+                            Image(systemName: "chevron.left")
+                            Text("Back")
+                        }
+                        .font(.headline)
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(20)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top, 8)
+                
+                Spacer()
+                
+                VStack(spacing: 16) {
+                    Image(systemName: content.contentURL.isEmpty ? "video.slash" : "exclamationmark.triangle")
+                        .font(.system(size: 64))
+                        .foregroundColor(content.contentURL.isEmpty ? .gray : .red)
+                    
+                    Text(content.contentURL.isEmpty ? "No Content Available" : "Unable to play content")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                    
+                    Text(content.contentURL.isEmpty ? "This content doesn't have a video file available." : "The content URL is invalid or unavailable.")
+                        .font(.body)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    
+                    if let url = URL(string: content.contentURL), !content.contentURL.isEmpty {
+                        Button("Open in Browser") {
+                            UIApplication.shared.open(url)
+                        }
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                    }
+                }
+                
+                Spacer()
             }
         }
     }
@@ -195,7 +284,7 @@ struct TrailerErrorView: View {
     
     var body: some View {
         ZStack {
-            Color.black.edgesIgnoringSafeArea(.all)
+            Color.white.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 20) {
                 // Back button
@@ -206,10 +295,10 @@ struct TrailerErrorView: View {
                             Text("Back")
                         }
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.black.opacity(0.6))
+                        .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
                     
@@ -228,7 +317,7 @@ struct TrailerErrorView: View {
                     Text(content.trailerURL.isEmpty ? "No Trailer Available" : "Unable to play trailer")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     
                     Text(content.trailerURL.isEmpty ? "This content doesn't have a trailer available." : "The trailer URL is invalid or unavailable.")
                         .font(.body)
@@ -241,7 +330,7 @@ struct TrailerErrorView: View {
                             UIApplication.shared.open(url)
                         }
                         .padding()
-                        .background(Color.red)
+                        .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
@@ -262,7 +351,7 @@ struct TrailerWebView: View {
     
     var body: some View {
         ZStack {
-            Color.black.edgesIgnoringSafeArea(.all)
+            Color.white.edgesIgnoringSafeArea(.all)
             
             VStack {
                 // Back button
@@ -273,10 +362,10 @@ struct TrailerWebView: View {
                             Text("Back")
                         }
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.black.opacity(0.6))
+                        .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
                     
@@ -293,7 +382,7 @@ struct TrailerWebView: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.red)
+                        .background(Color.blue)
                         .cornerRadius(20)
                     }
                 }
@@ -303,8 +392,8 @@ struct TrailerWebView: View {
                 if isLoading {
                     VStack {
                         ProgressView("Loading trailer...")
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .foregroundColor(.white)
+                            .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                            .foregroundColor(.black)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error = error {
@@ -315,7 +404,7 @@ struct TrailerWebView: View {
                         
                         Text("Unable to play trailer")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         
                         Text(error.localizedDescription)
                             .font(.subheadline)
@@ -327,7 +416,7 @@ struct TrailerWebView: View {
                             UIApplication.shared.open(url)
                         }
                         .padding()
-                        .background(Color.red)
+                        .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }

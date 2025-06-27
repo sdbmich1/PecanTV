@@ -15,7 +15,7 @@ class AuthViewModel: ObservableObject {
     var onAuthenticationSuccess: (() -> Void)?
     
     // API base URL - using your Mac's IP address
-    private let baseURL = "http://localhost:8000"
+    private let baseURL = "https://77b9-192-69-240-171.ngrok-free.app"
     
     // private var authStateHandler: AuthStateDidChangeListenerHandle?
     // private let db = Firestore.firestore()

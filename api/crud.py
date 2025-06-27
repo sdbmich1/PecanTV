@@ -114,4 +114,102 @@ def search_content(
             models.Content.title.ilike(f"%{query}%"),
             models.Content.description.ilike(f"%{query}%")
         )
-    ).offset(skip).limit(limit).all() 
+    ).offset(skip).limit(limit).all()
+
+# Episode CRUD operations
+def get_episodes(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    content_id: Optional[int] = None,
+    season_number: Optional[int] = None
+) -> List[models.Episode]:
+    query = db.query(models.Episode)
+    
+    if content_id:
+        query = query.filter(models.Episode.series_id == content_id)
+    if season_number:
+        query = query.filter(models.Episode.season_number == season_number)
+    
+    return query.order_by(models.Episode.season_number, models.Episode.episode_number).offset(skip).limit(limit).all()
+
+def get_episode_by_id(db: Session, episode_id: int) -> Optional[models.Episode]:
+    return db.query(models.Episode).filter(models.Episode.id == episode_id).first()
+
+def get_episode_by_content_and_number(
+    db: Session,
+    content_id: int,
+    season_number: int,
+    episode_number: int
+) -> Optional[models.Episode]:
+    return db.query(models.Episode).filter(
+        models.Episode.series_id == content_id,
+        models.Episode.season_number == season_number,
+        models.Episode.episode_number == episode_number
+    ).first()
+
+def create_episode(db: Session, episode: schemas.EpisodeCreate) -> models.Episode:
+    db_episode = models.Episode(
+        title=episode.title,
+        description=episode.description,
+        season_number=episode.season_number,
+        episode_number=episode.episode_number,
+        runtime=episode.runtime,
+        content_url=episode.content_url,
+        thumbnail_url=episode.thumbnail_url,
+        poster_url=episode.poster_url,
+        air_date=episode.air_date,
+        series_id=episode.series_id,
+        content_uuid=episode.content_uuid
+    )
+    db.add(db_episode)
+    db.commit()
+    db.refresh(db_episode)
+    return db_episode
+
+def get_content_with_episodes(db: Session, content_id: int) -> Optional[models.Content]:
+    return db.query(models.Content).filter(models.Content.id == content_id).first()
+
+def get_series_content(db: Session, skip: int = 0, limit: int = 100) -> List[models.Content]:
+    """Get all content that has episodes (series)"""
+    return db.query(models.Content).filter(
+        models.Content.type == models.ContentType.SERIES
+    ).offset(skip).limit(limit).all()
+
+# Favorites CRUD operations
+def get_user_favorites(db: Session, user_id: int) -> List[models.Content]:
+    """Get all content favorited by a user"""
+    return db.query(models.Content).join(models.Favorite).filter(
+        models.Favorite.user_id == user_id
+    ).all()
+
+def toggle_user_favorite(db: Session, user_id: int, content_id: int) -> dict:
+    """Toggle favorite status for a content item"""
+    # Check if favorite already exists
+    existing_favorite = db.query(models.Favorite).filter(
+        models.Favorite.user_id == user_id,
+        models.Favorite.content_id == content_id
+    ).first()
+    
+    if existing_favorite:
+        # Remove favorite
+        db.delete(existing_favorite)
+        db.commit()
+        return {"is_favorited": False}
+    else:
+        # Add favorite
+        new_favorite = models.Favorite(
+            user_id=user_id,
+            content_id=content_id
+        )
+        db.add(new_favorite)
+        db.commit()
+        return {"is_favorited": True}
+
+def is_content_favorited_by_user(db: Session, user_id: int, content_id: int) -> bool:
+    """Check if a content item is favorited by a user"""
+    favorite = db.query(models.Favorite).filter(
+        models.Favorite.user_id == user_id,
+        models.Favorite.content_id == content_id
+    ).first()
+    return favorite is not None 

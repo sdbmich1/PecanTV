@@ -4,23 +4,30 @@ class FavoritesManager: ObservableObject {
     static let shared = FavoritesManager()
     
     @Published private(set) var favoriteIds: Set<Int> = []
+    @Published private(set) var favoriteContent: [MediaContent] = []
     private let defaults = UserDefaults.standard
     private let favoritesKey = "favoriteContentIds"
     
     // For now, we'll use a default user ID of 1
     // In a real app, this would come from authentication
     private let currentUserId = 1
-    private let baseURL = "http://localhost:8000"
+    private let baseURL = "https://77b9-192-69-240-171.ngrok-free.app"
     
-    private init() {
+    init() {
         loadFavorites()
+        // Load favorites from database on startup
+        Task {
+            await loadFavoritesFromDatabase()
+        }
     }
     
     func toggleFavorite(_ content: MediaContent) {
         if favoriteIds.contains(content.id) {
             favoriteIds.remove(content.id)
+            favoriteContent.removeAll { $0.id == content.id }
         } else {
             favoriteIds.insert(content.id)
+            favoriteContent.append(content)
         }
         saveFavorites()
         
@@ -43,7 +50,10 @@ class FavoritesManager: ObservableObject {
             
             DispatchQueue.main.async {
                 self.favoriteIds = Set(response.favorites.map { $0.id })
+                self.favoriteContent = response.favorites
                 self.saveFavorites()
+                print("✅ Loaded \(response.favorites.count) favorites from database")
+                print("📋 Favorite content: \(response.favorites.map { $0.title })")
             }
         } catch {
             print("Failed to load favorites from database: \(error)")
@@ -68,9 +78,13 @@ class FavoritesManager: ObservableObject {
         }
     }
     
-    private func loadFavorites() {
+    func loadFavorites() {
         if let savedIds = defaults.array(forKey: favoritesKey) as? [Int] {
             favoriteIds = Set(savedIds)
+        }
+        // Also reload from database
+        Task {
+            await loadFavoritesFromDatabase()
         }
     }
     

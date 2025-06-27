@@ -10,7 +10,7 @@ class APIHealthChecker: ObservableObject {
     private init() {}
     
     func checkAPIHealth(completion: ((Bool) -> Void)? = nil) {
-        guard let url = URL(string: "http://localhost:8000/health") else {
+        guard let url = URL(string: "https://77b9-192-69-240-171.ngrok-free.app/health") else {
             DispatchQueue.main.async {
                 self.isAPIAvailable = false
                 completion?(false)
@@ -20,15 +20,29 @@ class APIHealthChecker: ObservableObject {
         
         isChecking = true
         var request = URLRequest(url: url)
-        request.timeoutInterval = 3
+        request.timeoutInterval = 10  // Increased from 3 to 10 seconds
         
-        URLSession.shared.dataTask(with: request) { _, response, _ in
+        URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 self.isChecking = false
+                
+                if let error = error {
+                    print("⚠️ API Health check error: \(error.localizedDescription)")
+                    self.isAPIAvailable = false
+                    completion?(false)
+                    return
+                }
+                
                 if let httpResponse = response as? HTTPURLResponse {
                     self.isAPIAvailable = httpResponse.statusCode == 200
+                    if self.isAPIAvailable {
+                        print("✅ API Health check successful")
+                    } else {
+                        print("❌ API Health check failed with status: \(httpResponse.statusCode)")
+                    }
                 } else {
                     self.isAPIAvailable = false
+                    print("❌ API Health check failed - no response")
                 }
                 completion?(self.isAPIAvailable)
             }

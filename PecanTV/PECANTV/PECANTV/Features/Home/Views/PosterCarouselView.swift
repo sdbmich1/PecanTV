@@ -197,7 +197,7 @@ struct PosterCard: View {
             }
             
             // Title
-            Text(content.title)
+            Text(content.title.truncatedTitleWithWordBoundary())
                 .font(.caption)
                 .fontWeight(.medium)
                 .foregroundColor(.black)

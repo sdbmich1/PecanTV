@@ -5,17 +5,17 @@ import Combine
 struct APIContent: Codable {
     let id: Int
     let title: String
-    let poster_url: String
-    let trailer_url: String
-    let content_url: String
+    let posterURL: String
+    let trailerURL: String
+    let contentURL: String
     let description: String?
     let type: String
     let runtime: Int
-    let genre_id: Int?
-    let rating_id: Int?
-    let release_date: String?
-    let created_at: String
-    let updated_at: String
+    let genreId: Int?
+    let ratingId: Int?
+    let releaseDate: String?
+    let createdAt: String
+    let updatedAt: String
     let genres: [APIGenre]?  // Multiple genres
     let genre: APIGenre?     // Keep for backward compatibility
     let rating: APIRating?
@@ -25,17 +25,17 @@ struct APIGenre: Codable {
     let id: Int
     let name: String
     let description: String?
-    let created_at: String
-    let updated_at: String
+    let createdAt: String
+    let updatedAt: String
 }
 
 struct APIRating: Codable {
     let id: Int
     let code: String
     let description: String?
-    let min_age: Int?
-    let created_at: String
-    let updated_at: String
+    let minAge: Int?
+    let createdAt: String
+    let updatedAt: String
 }
 
 // Wrapper struct for JSON decoding
@@ -46,6 +46,7 @@ struct ContentResponse: Codable {
 class ContentViewModel: ObservableObject {
     @Published var films: [MediaContent] = []
     @Published var tvSeries: [MediaContent] = []
+    @Published var allContent: [MediaContent] = []
     @Published var isLoading = false
     @Published var error: Error?
     
@@ -59,7 +60,7 @@ class ContentViewModel: ObservableObject {
         isLoading = true
         error = nil
         
-        guard let url = URL(string: "http://localhost:8000/content") else {
+        guard let url = URL(string: "https://77b9-192-69-240-171.ngrok-free.app/content") else {
             self.error = NSError(domain: "Invalid URL", code: -1, userInfo: nil)
             self.isLoading = false
             return
@@ -72,28 +73,20 @@ class ContentViewModel: ObservableObject {
                 apiContents.map { apiContent in
                     // Convert API content to MediaContent
                     let genreNames = apiContent.genres?.map { self.convertGenreToTitleCase($0.name) } ?? []
-                    let genreString: String
-                    if genreNames.isEmpty {
-                        if let genreName = apiContent.genre?.name {
-                            genreString = self.convertGenreToTitleCase(genreName)
-                        } else {
-                            genreString = "Unknown"
-                        }
-                    } else {
-                        genreString = genreNames.joined(separator: ", ")
-                    }
+                    let genreName = apiContent.genre?.name ?? ""
+                    let ageRating = apiContent.rating?.code ?? "NR"
                     
                     return MediaContent(
                         id: apiContent.id,
                         title: apiContent.title,
                         description: apiContent.description ?? "",
-                        posterURL: apiContent.poster_url,
-                        trailerURL: apiContent.trailer_url,
-                        contentURL: apiContent.content_url,
+                        posterURL: apiContent.posterURL,
+                        trailerURL: apiContent.trailerURL,
+                        contentURL: apiContent.contentURL,
                         type: apiContent.type,
                         runtime: apiContent.runtime,
-                        genre: genreString,
-                        ageRating: apiContent.rating?.code ?? "NR"
+                        genre: genreName,
+                        ageRating: ageRating
                     )
                 }
             }
@@ -106,6 +99,7 @@ class ContentViewModel: ObservableObject {
                     }
                 },
                 receiveValue: { contents in
+                    self.allContent = contents
                     self.films = contents.filter { $0.type == "FILM" }
                     self.tvSeries = contents.filter { $0.type == "SERIES" }
                 }

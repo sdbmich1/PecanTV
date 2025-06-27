@@ -6,7 +6,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
+                Color.white.edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 20) {
                     // Profile Image
@@ -19,7 +19,7 @@ struct ProfileView: View {
                     // User Info
                     Text(authViewModel.currentUser?.email ?? "Guest")
                         .font(.title2)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     
                     // Sign Out Button
                     Button(action: {

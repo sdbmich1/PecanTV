@@ -16,7 +16,7 @@ struct LandscapeCarouselView: View {
                 Text(title)
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 
                 Spacer()
                 
@@ -67,7 +67,7 @@ struct LandscapeCarouselView: View {
                 ZStack {
                     ScrollViewReader { proxy in
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: spacing) {
+                            LazyHStack(spacing: spacing) {
                                 ForEach(Array(content.enumerated()), id: \.element.id) { index, item in
                                     NavigationLink(destination: ContentDetailView(content: item, favoritesManager: favoritesManager)) {
                                         VStack(alignment: .leading) {
@@ -130,10 +130,10 @@ struct LandscapeCarouselView: View {
                                                 .padding(8)
                                             }
                                             
-                                            Text(item.title)
+                                            Text(item.title.truncatedTitleWithWordBoundary())
                                                 .font(.subheadline)
                                                 .fontWeight(.medium)
-                                                .foregroundColor(.white)
+                                                .foregroundColor(.black)
                                                 .lineLimit(2)
                                                 .frame(width: itemWidth, alignment: .leading)
                                                 .padding(.top, 4)

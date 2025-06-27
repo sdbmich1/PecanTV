@@ -6,6 +6,33 @@
     <dict>
         <key>NSAllowsArbitraryLoads</key>
         <true/>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>192.2.18.228</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+                <key>NSExceptionMinimumTLSVersion</key>
+                <string>TLSv1.0</string>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <false/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+            <key>localhost</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+                <key>NSExceptionMinimumTLSVersion</key>
+                <string>TLSv1.0</string>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <false/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+        </dict>
     </dict>
     <key>UIBackgroundModes</key>
     <array>

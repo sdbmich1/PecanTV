@@ -114,7 +114,7 @@ struct ContentCard: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(content.title)
+                Text(content.title.truncatedTitleWithWordBoundary())
                     .font(isFeatured ? .headline : .subheadline)
                     .lineLimit(1)
                     .foregroundColor(.primary)
