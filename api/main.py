@@ -17,6 +17,7 @@ import schemas
 import crud
 from subscription_routes import router as subscription_router
 from auth_service import AuthService
+from security_middleware import security_middleware
 
 # Load environment variables
 load_dotenv()
@@ -27,13 +28,22 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
+# Add security middleware
+app.middleware("http")(security_middleware)
+
+# Configure CORS with more restrictive settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=[
+        "http://localhost:3000",  # React dev server
+        "http://localhost:8080",  # Alternative dev port
+        "https://pecantv.com",    # Production domain (replace with actual domain)
+        "https://www.pecantv.com" # Production domain with www
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["X-RateLimit-Minute-Remaining", "X-RateLimit-Hour-Remaining"]
 )
 
 # Include subscription routes
@@ -55,6 +65,11 @@ async def root():
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+@app.get("/security/stats")
+def get_security_stats():
+    """Get security statistics and monitoring data"""
+    return security_middleware.get_security_stats()
 
 @app.get("/test-cdn")
 def test_cdn():

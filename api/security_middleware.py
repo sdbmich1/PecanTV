@@ -1,0 +1,354 @@
+"""
+Security middleware for PecanTV API
+Implements rate limiting, security headers, input validation, and other security features
+"""
+
+import time
+import hashlib
+import re
+from typing import Dict, List, Optional, Tuple
+from collections import defaultdict, deque
+from fastapi import Request, HTTPException, Response
+from fastapi.responses import JSONResponse
+import logging
+from datetime import datetime, timedelta
+import json
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class RateLimiter:
+    """Rate limiting implementation using sliding window"""
+    
+    def __init__(self, requests_per_minute: int = 60, requests_per_hour: int = 1000):
+        self.requests_per_minute = requests_per_minute
+        self.requests_per_hour = requests_per_hour
+        self.minute_requests = defaultdict(deque)  # IP -> deque of timestamps
+        self.hour_requests = defaultdict(deque)    # IP -> deque of timestamps
+    
+    def get_client_ip(self, request: Request) -> str:
+        """Extract client IP address from request"""
+        # Check for forwarded headers first (for proxy/load balancer setups)
+        forwarded_for = request.headers.get("X-Forwarded-For")
+        if forwarded_for:
+            return forwarded_for.split(",")[0].strip()
+        
+        real_ip = request.headers.get("X-Real-IP")
+        if real_ip:
+            return real_ip
+        
+        # Fallback to direct connection
+        return request.client.host if request.client else "unknown"
+    
+    def is_rate_limited(self, client_ip: str) -> Tuple[bool, Dict]:
+        """Check if client is rate limited"""
+        now = time.time()
+        
+        # Clean old entries from minute window
+        while (self.minute_requests[client_ip] and 
+               now - self.minute_requests[client_ip][0] > 60):
+            self.minute_requests[client_ip].popleft()
+        
+        # Clean old entries from hour window
+        while (self.hour_requests[client_ip] and 
+               now - self.hour_requests[client_ip][0] > 3600):
+            self.hour_requests[client_ip].popleft()
+        
+        # Check minute limit
+        minute_count = len(self.minute_requests[client_ip])
+        if minute_count >= self.requests_per_minute:
+            return True, {
+                "limit_type": "minute",
+                "limit": self.requests_per_minute,
+                "reset_time": int(now + 60 - (now - self.minute_requests[client_ip][0]))
+            }
+        
+        # Check hour limit
+        hour_count = len(self.hour_requests[client_ip])
+        if hour_count >= self.requests_per_hour:
+            return True, {
+                "limit_type": "hour",
+                "limit": self.requests_per_hour,
+                "reset_time": int(now + 3600 - (now - self.hour_requests[client_ip][0]))
+            }
+        
+        # Add current request
+        self.minute_requests[client_ip].append(now)
+        self.hour_requests[client_ip].append(now)
+        
+        return False, {
+            "minute_remaining": self.requests_per_minute - minute_count - 1,
+            "hour_remaining": self.requests_per_hour - hour_count - 1
+        }
+
+class SecurityHeaders:
+    """Security headers configuration"""
+    
+    @staticmethod
+    def get_security_headers() -> Dict[str, str]:
+        """Return security headers to be added to responses"""
+        return {
+            "X-Content-Type-Options": "nosniff",
+            "X-Frame-Options": "DENY",
+            "X-XSS-Protection": "1; mode=block",
+            "Referrer-Policy": "strict-origin-when-cross-origin",
+            "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+            "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+            "Content-Security-Policy": (
+                "default-src 'self'; "
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+                "style-src 'self' 'unsafe-inline'; "
+                "img-src 'self' data: https:; "
+                "font-src 'self'; "
+                "connect-src 'self'; "
+                "media-src 'self' https:; "
+                "object-src 'none'; "
+                "base-uri 'self'; "
+                "form-action 'self'"
+            )
+        }
+
+class InputValidator:
+    """Input validation and sanitization"""
+    
+    # SQL injection patterns
+    SQL_INJECTION_PATTERNS = [
+        r"(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)",
+        r"(\b(OR|AND)\b\s+\d+\s*=\s*\d+)",
+        r"(\b(OR|AND)\b\s+['\"]\w+['\"]\s*=\s*['\"]\w+['\"])",
+        r"(--|#|/\*|\*/)",
+        r"(\b(WAITFOR|DELAY)\b)",
+        r"(\b(BENCHMARK|SLEEP)\b)",
+    ]
+    
+    # XSS patterns
+    XSS_PATTERNS = [
+        r"<script[^>]*>.*?</script>",
+        r"<iframe[^>]*>.*?</iframe>",
+        r"<object[^>]*>.*?</object>",
+        r"<embed[^>]*>",
+        r"javascript:",
+        r"vbscript:",
+        r"onload\s*=",
+        r"onerror\s*=",
+        r"onclick\s*=",
+        r"onmouseover\s*=",
+    ]
+    
+    # Path traversal patterns
+    PATH_TRAVERSAL_PATTERNS = [
+        r"\.\./",
+        r"\.\.\\",
+        r"%2e%2e%2f",
+        r"%2e%2e%5c",
+        r"..%2f",
+        r"..%5c",
+    ]
+    
+    @classmethod
+    def validate_input(cls, value: str, input_type: str = "general") -> Tuple[bool, str]:
+        """Validate and sanitize input"""
+        if not isinstance(value, str):
+            return False, f"Invalid input type for {input_type}"
+        
+        # Check for SQL injection
+        for pattern in cls.SQL_INJECTION_PATTERNS:
+            if re.search(pattern, value, re.IGNORECASE):
+                logger.warning(f"SQL injection attempt detected in {input_type}: {value}")
+                return False, f"Invalid input detected in {input_type}"
+        
+        # Check for XSS
+        for pattern in cls.XSS_PATTERNS:
+            if re.search(pattern, value, re.IGNORECASE):
+                logger.warning(f"XSS attempt detected in {input_type}: {value}")
+                return False, f"Invalid input detected in {input_type}"
+        
+        # Check for path traversal
+        for pattern in cls.PATH_TRAVERSAL_PATTERNS:
+            if re.search(pattern, value, re.IGNORECASE):
+                logger.warning(f"Path traversal attempt detected in {input_type}: {value}")
+                return False, f"Invalid input detected in {input_type}"
+        
+        # Type-specific validation
+        if input_type == "email":
+            email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            if not re.match(email_pattern, value):
+                return False, "Invalid email format"
+        
+        elif input_type == "integer":
+            try:
+                int(value)
+            except ValueError:
+                return False, "Invalid integer value"
+        
+        elif input_type == "url":
+            url_pattern = r"^https?://[^\s/$.?#].[^\s]*$"
+            if not re.match(url_pattern, value):
+                return False, "Invalid URL format"
+        
+        return True, "Valid input"
+    
+    @classmethod
+    def sanitize_input(cls, value: str) -> str:
+        """Sanitize input by removing potentially dangerous characters"""
+        if not isinstance(value, str):
+            return str(value)
+        
+        # Remove null bytes
+        value = value.replace('\x00', '')
+        
+        # Remove control characters except newlines and tabs
+        value = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', value)
+        
+        # Limit length
+        if len(value) > 1000:
+            value = value[:1000]
+        
+        return value.strip()
+
+class SecurityMiddleware:
+    """Main security middleware class"""
+    
+    def __init__(self, 
+                 rate_limit_minute: int = 60,
+                 rate_limit_hour: int = 1000,
+                 enable_rate_limiting: bool = True,
+                 enable_input_validation: bool = True,
+                 enable_security_headers: bool = True):
+        
+        self.rate_limiter = RateLimiter(rate_limit_minute, rate_limit_hour)
+        self.enable_rate_limiting = enable_rate_limiting
+        self.enable_input_validation = enable_input_validation
+        self.enable_security_headers = enable_security_headers
+        
+        # Track security events
+        self.security_events = []
+    
+    async def __call__(self, request: Request, call_next):
+        """Process request through security middleware"""
+        start_time = time.time()
+        
+        try:
+            # Get client IP
+            client_ip = self.rate_limiter.get_client_ip(request)
+            
+            # Rate limiting
+            if self.enable_rate_limiting:
+                is_limited, rate_info = self.rate_limiter.is_rate_limited(client_ip)
+                if is_limited:
+                    logger.warning(f"Rate limit exceeded for IP {client_ip}: {rate_info}")
+                    self.log_security_event("rate_limit_exceeded", client_ip, request.url.path)
+                    return JSONResponse(
+                        status_code=429,
+                        content={
+                            "error": "Rate limit exceeded",
+                            "limit_type": rate_info["limit_type"],
+                            "reset_time": rate_info["reset_time"]
+                        },
+                        headers={"Retry-After": str(rate_info["reset_time"] - int(time.time()))}
+                    )
+            
+            # Input validation for query parameters
+            if self.enable_input_validation:
+                validation_result = self.validate_request_input(request)
+                if not validation_result["valid"]:
+                    logger.warning(f"Invalid input detected from IP {client_ip}: {validation_result['error']}")
+                    self.log_security_event("invalid_input", client_ip, request.url.path, validation_result['error'])
+                    return JSONResponse(
+                        status_code=400,
+                        content={"error": "Invalid input detected", "details": validation_result["error"]}
+                    )
+            
+            # Process request
+            response = await call_next(request)
+            
+            # Add security headers
+            if self.enable_security_headers:
+                for header, value in SecurityHeaders.get_security_headers().items():
+                    response.headers[header] = value
+            
+            # Add rate limit info to headers
+            if self.enable_rate_limiting:
+                _, rate_info = self.rate_limiter.is_rate_limited(client_ip)
+                if "minute_remaining" in rate_info:
+                    response.headers["X-RateLimit-Minute-Remaining"] = str(rate_info["minute_remaining"])
+                    response.headers["X-RateLimit-Hour-Remaining"] = str(rate_info["hour_remaining"])
+            
+            # Log request
+            processing_time = time.time() - start_time
+            logger.info(f"Request processed: {request.method} {request.url.path} from {client_ip} in {processing_time:.3f}s")
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"Security middleware error: {e}")
+            self.log_security_event("middleware_error", client_ip, request.url.path, str(e))
+            return JSONResponse(
+                status_code=500,
+                content={"error": "Internal server error"}
+            )
+    
+    def validate_request_input(self, request: Request) -> Dict:
+        """Validate all input from the request"""
+        try:
+            # Validate query parameters
+            for param_name, param_value in request.query_params.items():
+                if param_value:
+                    is_valid, error_msg = InputValidator.validate_input(param_value, "query_param")
+                    if not is_valid:
+                        return {"valid": False, "error": f"Query parameter '{param_name}': {error_msg}"}
+            
+            # Validate path parameters
+            for param_name, param_value in request.path_params.items():
+                if param_value:
+                    is_valid, error_msg = InputValidator.validate_input(str(param_value), "path_param")
+                    if not is_valid:
+                        return {"valid": False, "error": f"Path parameter '{param_name}': {error_msg}"}
+            
+            # Validate headers (basic check for suspicious headers)
+            suspicious_headers = ["x-forwarded-for", "x-real-ip", "x-forwarded-host"]
+            for header_name in suspicious_headers:
+                if header_name in request.headers:
+                    header_value = request.headers[header_name]
+                    is_valid, error_msg = InputValidator.validate_input(header_value, "header")
+                    if not is_valid:
+                        return {"valid": False, "error": f"Header '{header_name}': {error_msg}"}
+            
+            return {"valid": True, "error": None}
+            
+        except Exception as e:
+            return {"valid": False, "error": f"Validation error: {str(e)}"}
+    
+    def log_security_event(self, event_type: str, client_ip: str, path: str, details: str = None):
+        """Log security events for monitoring"""
+        event = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "event_type": event_type,
+            "client_ip": client_ip,
+            "path": path,
+            "details": details
+        }
+        
+        self.security_events.append(event)
+        
+        # Keep only last 1000 events
+        if len(self.security_events) > 1000:
+            self.security_events = self.security_events[-1000:]
+        
+        logger.warning(f"Security event: {event}")
+    
+    def get_security_stats(self) -> Dict:
+        """Get security statistics"""
+        event_counts = defaultdict(int)
+        for event in self.security_events:
+            event_counts[event["event_type"]] += 1
+        
+        return {
+            "total_events": len(self.security_events),
+            "event_counts": dict(event_counts),
+            "recent_events": self.security_events[-10:] if self.security_events else []
+        }
+
+# Global security middleware instance
+security_middleware = SecurityMiddleware() 
