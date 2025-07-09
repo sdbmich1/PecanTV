@@ -1,0 +1,1 @@
+print("📊 Content loaded - Total: \(contents.count), Films: \(self.films.count), Series: \(self.tvSeries.count)")

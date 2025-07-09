@@ -14,8 +14,7 @@ class AuthViewModel: ObservableObject {
     // Callback for when authentication succeeds
     var onAuthenticationSuccess: (() -> Void)?
     
-    // API base URL - using your Mac's IP address
-    private let baseURL = "https://77b9-192-69-240-171.ngrok-free.app"
+    // API base URL - using centralized configuration
     
     // private var authStateHandler: AuthStateDidChangeListenerHandle?
     // private let db = Firestore.firestore()
@@ -92,7 +91,7 @@ class AuthViewModel: ObservableObject {
         
         print("🔐 Attempting API signin for: \(email)")
         
-        guard let url = URL(string: "\(baseURL)/auth/login") else {
+        guard let url = APIConfig.url(for: APIConfig.Endpoints.login) else {
             error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
             isLoading = false
             return
@@ -160,7 +159,7 @@ class AuthViewModel: ObservableObject {
         
         print("🔐 Starting API signup for: \(email)")
         
-        guard let url = URL(string: "\(baseURL)/auth/register") else {
+        guard let url = APIConfig.url(for: APIConfig.Endpoints.register) else {
             error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
             isLoading = false
             return

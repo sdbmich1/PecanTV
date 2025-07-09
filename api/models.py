@@ -22,6 +22,7 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     first_name = Column(String(100))
     last_name = Column(String(100))
+    stripe_customer_id = Column(String(255), unique=True, nullable=True)  # Stripe customer ID
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -80,7 +81,7 @@ class Content(Base):
     title = Column(String(255), nullable=False)
     poster_url = Column(Text, nullable=False)
     trailer_url = Column(Text, nullable=False)
-    content_url = Column(Text, nullable=False)
+    content_url = Column(Text, nullable=True)
     description = Column(Text)
     type = Column(Enum(ContentType), nullable=False)
     runtime = Column(Integer, nullable=False)
@@ -118,8 +119,9 @@ class Episode(Base):
     season_number = Column(Integer, nullable=False)
     episode_number = Column(Integer, nullable=False)
     runtime = Column(Integer)
-    content_url = Column(Text, nullable=False)
-    poster_url = Column(Text)  # Keep this column
+    content_url = Column(Text, nullable=True)
+    poster_url = Column("poster_url", Text)  # Explicitly map to database column
+    thumbnail_url = Column(Text)  # Database column name
     series_id = Column(Integer, ForeignKey("content.id", ondelete="CASCADE"), nullable=False)  # Database has series_id
     content_uuid = Column(UUID(as_uuid=True), ForeignKey("content.uuid", ondelete="CASCADE"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)

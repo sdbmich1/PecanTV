@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F0ABE2112DF5F6B9008C455C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F0ABE2102DF5F6B9008C455C /* GoogleService-Info.plist */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F0ABE2102DF5F6B9008C455C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+
 		F0EC80322DDD86100015ED14 /* PECANTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PECANTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0EC80442DDD86120015ED14 /* PECANTVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PECANTVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0EC804E2DDD86120015ED14 /* PECANTVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PECANTVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,7 +87,7 @@
 		F0EC80292DDD86100015ED14 = {
 			isa = PBXGroup;
 			children = (
-				F0ABE2102DF5F6B9008C455C /* GoogleService-Info.plist */,
+		
 				F0EC80342DDD86100015ED14 /* PECANTV */,
 				F0EC80472DDD86120015ED14 /* PECANTVTests */,
 				F0EC80512DDD86120015ED14 /* PECANTVUITests */,
@@ -210,7 +210,6 @@
 			mainGroup = F0EC80292DDD86100015ED14;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				F0A70B2C2E0494CB003DDD00 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F0EC80332DDD86100015ED14 /* Products */;
@@ -229,7 +228,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0ABE2112DF5F6B9008C455C /* GoogleService-Info.plist in Resources */,
+		
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,17 +585,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		F0A70B2C2E0494CB003DDD00 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.14.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = F0EC802A2DDD86100015ED14 /* Project object */;
 }

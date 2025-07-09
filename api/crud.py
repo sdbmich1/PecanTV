@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_, func
 from typing import List, Optional
 import hashlib
@@ -42,7 +42,11 @@ def get_content(
     type: Optional[str] = None,
     genre: Optional[str] = None
 ) -> List[models.Content]:
-    query = db.query(models.Content)
+    # Always join with genre and rating tables to ensure data is populated
+    query = db.query(models.Content).options(
+        joinedload(models.Content.genre),
+        joinedload(models.Content.rating)
+    )
     
     if type:
         query = query.filter(models.Content.type == type)
@@ -54,7 +58,10 @@ def get_content(
     return query.offset(skip).limit(limit).all()
 
 def get_content_by_id(db: Session, content_id: int) -> Optional[models.Content]:
-    return db.query(models.Content).filter(models.Content.id == content_id).first()
+    return db.query(models.Content).options(
+        joinedload(models.Content.genre),
+        joinedload(models.Content.rating)
+    ).filter(models.Content.id == content_id).first()
 
 def get_genres(db: Session, skip: int = 0, limit: int = 100) -> List[models.Genre]:
     return db.query(models.Genre).offset(skip).limit(limit).all()
@@ -90,6 +97,38 @@ def create_content(db: Session, content: schemas.ContentCreate) -> models.Conten
         db_content.genres = genres
     
     db.add(db_content)
+    db.commit()
+    db.refresh(db_content)
+    return db_content
+
+def update_content(db: Session, content_id: int, content_update: schemas.ContentUpdate) -> Optional[models.Content]:
+    """Update a content item by ID"""
+    db_content = db.query(models.Content).filter(models.Content.id == content_id).first()
+    if not db_content:
+        return None
+    
+    # Update fields if provided
+    if content_update.title is not None:
+        db_content.title = content_update.title
+    if content_update.poster_url is not None:
+        db_content.poster_url = content_update.poster_url
+    if content_update.trailer_url is not None:
+        db_content.trailer_url = content_update.trailer_url
+    if content_update.content_url is not None:
+        db_content.content_url = content_update.content_url
+    if content_update.description is not None:
+        db_content.description = content_update.description
+    if content_update.type is not None:
+        db_content.type = content_update.type
+    if content_update.runtime is not None:
+        db_content.runtime = content_update.runtime
+    if content_update.genre_id is not None:
+        db_content.genre_id = content_update.genre_id
+    if content_update.rating_id is not None:
+        db_content.rating_id = content_update.rating_id
+    if content_update.release_date is not None:
+        db_content.release_date = content_update.release_date
+    
     db.commit()
     db.refresh(db_content)
     return db_content
@@ -131,7 +170,13 @@ def get_episodes(
     if season_number:
         query = query.filter(models.Episode.season_number == season_number)
     
-    return query.order_by(models.Episode.season_number, models.Episode.episode_number).offset(skip).limit(limit).all()
+    episodes = query.order_by(models.Episode.season_number, models.Episode.episode_number).offset(skip).limit(limit).all()
+    
+    # Debug logging
+    for episode in episodes[:3]:
+        print(f"CRUD Episode {episode.title}: poster_url={episode.poster_url}, thumbnail_url={episode.thumbnail_url}")
+    
+    return episodes
 
 def get_episode_by_id(db: Session, episode_id: int) -> Optional[models.Episode]:
     return db.query(models.Episode).filter(models.Episode.id == episode_id).first()
@@ -157,7 +202,6 @@ def create_episode(db: Session, episode: schemas.EpisodeCreate) -> models.Episod
         runtime=episode.runtime,
         content_url=episode.content_url,
         thumbnail_url=episode.thumbnail_url,
-        poster_url=episode.poster_url,
         air_date=episode.air_date,
         series_id=episode.series_id,
         content_uuid=episode.content_uuid

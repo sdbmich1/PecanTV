@@ -60,11 +60,13 @@ class ContentViewModel: ObservableObject {
         isLoading = true
         error = nil
         
-        guard let url = URL(string: "https://77b9-192-69-240-171.ngrok-free.app/content") else {
+        guard let url = APIConfig.url(for: APIConfig.Endpoints.content) else {
             self.error = NSError(domain: "Invalid URL", code: -1, userInfo: nil)
             self.isLoading = false
             return
         }
+        
+        print("🔍 Loading content from: \(url)")
         
         URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
@@ -99,9 +101,17 @@ class ContentViewModel: ObservableObject {
                     }
                 },
                 receiveValue: { contents in
+                    print("✅ Loaded \(contents.count) total content items")
                     self.allContent = contents
                     self.films = contents.filter { $0.type == "FILM" }
                     self.tvSeries = contents.filter { $0.type == "SERIES" }
+                    print("✅ Films: \(self.films.count), Series: \(self.tvSeries.count)")
+                    
+                    // Debug: Print series titles
+                    print("📺 Series found:")
+                    for series in self.tvSeries {
+                        print("  - \(series.title) (ID: \(series.id))")
+                    }
                 }
             )
             .store(in: &cancellables)

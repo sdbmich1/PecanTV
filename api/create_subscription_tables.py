@@ -6,6 +6,7 @@ Script to create subscription tables in the database.
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
+import json
 
 # Database connection parameters
 DB_PARAMS = {
@@ -32,7 +33,7 @@ def create_subscription_tables():
             CREATE TABLE IF NOT EXISTS subscription_plans (
                 id SERIAL PRIMARY KEY,
                 uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
-                name VARCHAR(100) NOT NULL,
+                name VARCHAR(100) NOT NULL UNIQUE,
                 description TEXT,
                 price DECIMAL(10,2) NOT NULL,
                 currency VARCHAR(3) DEFAULT 'USD',
@@ -183,7 +184,7 @@ def create_subscription_tables():
                 plan['name'],
                 plan['description'],
                 plan['price'],
-                plan['features'],
+                json.dumps(plan['features']),  # Convert dict to JSON string
                 plan['max_devices'],
                 plan['max_quality']
             ))

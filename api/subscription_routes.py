@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from typing import List
 import stripe
 import os
+from datetime import datetime
 
 from database import get_db
 from models import User
@@ -14,25 +15,19 @@ from subscription_models import SubscriptionPlan, UserSubscription, Subscription
 from subscription_schemas import (
     SubscriptionPlanResponse, UserSubscriptionResponse, SubscriptionStatusResponse,
     CreateSubscriptionRequest, CancelSubscriptionRequest, UpdateSubscriptionRequest,
-    PaymentIntentResponse, CustomerResponse
+    PaymentIntentResponse, CustomerResponse, SubscriptionHistoryResponse
 )
-from stripe_client import stripe_client, DEFAULT_PLANS
+from auth_service import AuthService
+import schemas
+import stripe_client
 
-router = APIRouter(prefix="/subscriptions", tags=["subscriptions"])
+router = APIRouter(tags=["subscriptions"])
 
-# Dependency to get current user (you'll need to implement this)
+# Dependency to get current user from JWT
 def get_current_user(db: Session = Depends(get_db), token: str = None):
-    """Get current authenticated user."""
-    # This is a placeholder - implement your authentication logic
     if not token:
         raise HTTPException(status_code=401, detail="Authentication required")
-    
-    # Decode token and get user
-    # user = decode_token_and_get_user(token, db)
-    # return user
-    
-    # For now, return a mock user
-    return db.query(User).first()
+    return AuthService.get_current_user(db, token)
 
 @router.get("/plans", response_model=List[SubscriptionPlanResponse])
 async def get_subscription_plans(db: Session = Depends(get_db)):
@@ -78,44 +73,52 @@ async def get_subscription_status(
         max_quality=current_plan.max_quality if current_plan else "480p"
     )
 
-@router.post("/create", response_model=UserSubscriptionResponse)
+@router.post("/create", response_model=schemas.AuthResponse)
 async def create_subscription(
     request: CreateSubscriptionRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """Create a new subscription for the current user."""
-    # Get the plan
     plan = db.query(SubscriptionPlan).filter(SubscriptionPlan.id == request.plan_id).first()
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
-    
-    # Check if user already has an active subscription
+
     existing_subscription = db.query(UserSubscription).filter(
         UserSubscription.user_id == current_user.id,
         UserSubscription.status == "active"
     ).first()
-    
     if existing_subscription:
         raise HTTPException(status_code=400, detail="User already has an active subscription")
-    
+
     try:
         # Create or get Stripe customer
         if not current_user.stripe_customer_id:
             customer = stripe_client.create_customer(
                 email=current_user.email,
-                name=current_user.name
+                name=f"{current_user.first_name} {current_user.last_name}".strip()
             )
             current_user.stripe_customer_id = customer.id
             db.commit()
-        
+
+        # Attach payment method to customer (if provided)
+        if hasattr(request, 'payment_method_id') and request.payment_method_id:
+            stripe.PaymentMethod.attach(
+                request.payment_method_id,
+                customer=current_user.stripe_customer_id
+            )
+            stripe.Customer.modify(
+                current_user.stripe_customer_id,
+                invoice_settings={"default_payment_method": request.payment_method_id}
+            )
+
         # Create Stripe subscription
         stripe_subscription = stripe_client.create_subscription(
             customer_id=current_user.stripe_customer_id,
             price_id=plan.stripe_price_id,
-            trial_days=request.trial_days
+            trial_days=getattr(request, 'trial_days', None)
         )
-        
+
         # Create subscription record
         subscription = UserSubscription(
             user_id=current_user.id,
@@ -125,15 +128,34 @@ async def create_subscription(
             status=stripe_subscription.status,
             current_period_start=datetime.fromtimestamp(stripe_subscription.current_period_start),
             current_period_end=datetime.fromtimestamp(stripe_subscription.current_period_end),
-            trial_end=datetime.fromtimestamp(stripe_subscription.trial_end) if stripe_subscription.trial_end else None
+            trial_end=datetime.fromtimestamp(stripe_subscription.trial_end) if getattr(stripe_subscription, 'trial_end', None) else None
         )
-        
         db.add(subscription)
         db.commit()
         db.refresh(subscription)
-        
-        return subscription
-        
+
+        # Return updated user info and subscription status
+        subscription_status = AuthService.get_user_subscription_status(db, current_user.id)
+        user_with_subscription = schemas.UserWithSubscription(
+            id=current_user.id,
+            uuid=current_user.uuid,
+            email=current_user.email,
+            first_name=current_user.first_name,
+            last_name=current_user.last_name,
+            stripe_customer_id=current_user.stripe_customer_id,
+            created_at=current_user.created_at,
+            updated_at=current_user.updated_at,
+            **subscription_status
+        )
+        access_token = AuthService.create_access_token(
+            data={"sub": str(current_user.uuid), "user_id": current_user.id}
+        )
+        return schemas.AuthResponse(
+            user=user_with_subscription,
+            access_token=access_token,
+            subscription_required=not subscription_status["has_active_subscription"],
+            subscription_plans=None
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create subscription: {str(e)}")
 

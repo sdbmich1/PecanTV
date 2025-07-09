@@ -10,7 +10,7 @@ class APIHealthChecker: ObservableObject {
     private init() {}
     
     func checkAPIHealth(completion: ((Bool) -> Void)? = nil) {
-        guard let url = URL(string: "https://77b9-192-69-240-171.ngrok-free.app/health") else {
+        guard let url = APIConfig.url(for: APIConfig.Endpoints.health) else {
             DispatchQueue.main.async {
                 self.isAPIAvailable = false
                 completion?(false)

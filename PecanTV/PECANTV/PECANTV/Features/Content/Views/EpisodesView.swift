@@ -10,8 +10,7 @@ struct EpisodesView: View {
     @EnvironmentObject var favoritesManager: FavoritesManager
     @Environment(\.dismiss) private var dismiss
     
-    // API Configuration
-    private let baseURL = "https://77b9-192-69-240-171.ngrok-free.app"
+    // API Configuration - using centralized config
     
     var body: some View {
         NavigationView {
@@ -34,15 +33,6 @@ struct EpisodesView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top, 8)
-                    
-                    // Series Title
-                    Text(series.title)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.black)
-                        .padding(.horizontal)
-                        .padding(.top, 20)
-                        .padding(.bottom, 10)
                     
                     if isLoading {
                         VStack {
@@ -85,8 +75,37 @@ struct EpisodesView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
+                        // Main scrollable content
                         ScrollView {
-                            LazyVStack(alignment: .leading, spacing: 20) {
+                            VStack(alignment: .leading, spacing: 0) {
+                                // Series Title
+                                Text(series.title)
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                                    .padding(.horizontal)
+                                    .padding(.top, 16)
+                                    .padding(.bottom, 8)
+                                
+                                // Series Metadata (Genre, Rating, Runtime)
+                                HStack {
+                                    Text(series.type)
+                                    Text("•")
+                                    Text("\(series.runtime) min")
+                                    if !series.genre.isEmpty && series.genre != "Unknown" {
+                                        Text("•")
+                                        Text(series.genre)
+                                    }
+                                    if !series.ageRating.isEmpty && series.ageRating != "NR" {
+                                        Text("•")
+                                        Text(series.ageRating)
+                                    }
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                                .padding(.horizontal)
+                                .padding(.bottom, 16)
+                                
                                 // Episodes Carousel
                                 EpisodesCarouselView(
                                     episodes: episodes,
@@ -101,32 +120,30 @@ struct EpisodesView: View {
                                         series: series
                                     )
                                 }
+                                
+                                // Footer buttons
+                                VStack(spacing: 12) {
+                                    Button(action: { 
+                                        // Add to favorites functionality
+                                        favoritesManager.toggleFavorite(series)
+                                    }) {
+                                        HStack {
+                                            Image(systemName: favoritesManager.isFavorite(series) ? "heart.fill" : "heart")
+                                            Text(favoritesManager.isFavorite(series) ? "Remove from Favorites" : "Add to Favorites")
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(favoritesManager.isFavorite(series) ? Color.gray : Color.pecanRed)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
+                                    }
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.top, 20)
+                                .padding(.bottom, 40) // Extra padding for safe area
                             }
-                            .padding(.bottom, 100) // Space for footer
                         }
                     }
-                    
-                    Spacer()
-                    
-                    // Footer buttons
-                    VStack(spacing: 12) {
-                        Button(action: { 
-                            // Add to favorites functionality
-                            favoritesManager.toggleFavorite(series)
-                        }) {
-                            HStack {
-                                Image(systemName: favoritesManager.isFavorite(series) ? "heart.fill" : "heart")
-                                Text(favoritesManager.isFavorite(series) ? "Remove from Favorites" : "Add to Favorites")
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(favoritesManager.isFavorite(series) ? Color.gray : Color.pecanRed)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 20)
                 }
             }
             .navigationTitle("Episodes")
@@ -141,40 +158,57 @@ struct EpisodesView: View {
         isLoading = true
         errorMessage = nil
         
-        guard let url = URL(string: "\(baseURL)/series/\(series.id)/episodes") else {
+        guard let url = APIConfig.url(for: APIConfig.Endpoints.seriesEpisodes(series.id)) else {
             errorMessage = "Invalid URL"
             isLoading = false
             return
         }
         
+        print("🔍 Loading episodes for series: \(series.title) (ID: \(series.id))")
+        print("🔍 URL: \(url)")
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
-                isLoading = false
-                
                 if let error = error {
-                    errorMessage = "Network error: \(error.localizedDescription)"
+                    print("❌ Network error: \(error.localizedDescription)")
+                    self.errorMessage = "Network error: \(error.localizedDescription)"
+                    self.isLoading = false
                     return
                 }
                 
                 guard let data = data else {
-                    errorMessage = "No data received"
+                    print("❌ No data received")
+                    self.errorMessage = "No data received"
+                    self.isLoading = false
                     return
                 }
                 
+                print("✅ Received data: \(data.count) bytes")
+                
                 do {
                     let decodedEpisodes = try JSONDecoder().decode([Episode].self, from: data)
+                    print("✅ Decoded \(decodedEpisodes.count) episodes")
                     
                     // Filter out episodes without content URLs
                     self.episodes = decodedEpisodes
                         .filter { !$0.contentURL.isEmpty }
                     
+                    print("✅ Filtered to \(self.episodes.count) episodes with content URLs")
+                    
+                    // Debug: Print first few episode URLs
+                    for (index, episode) in self.episodes.prefix(3).enumerated() {
+                        print("📺 Episode \(index + 1): \(episode.title) - URL: \(episode.contentURL)")
+                    }
+                    
                     if let firstEpisode = self.episodes.first {
                         self.selectedEpisode = firstEpisode
+                        print("✅ Selected first episode: \(firstEpisode.title)")
                     }
                     
                     self.isLoading = false
                 } catch {
                     print("❌ Error decoding episodes: \(error)")
+                    print("❌ Raw data: \(String(data: data, encoding: .utf8) ?? "Unable to decode")")
                     self.errorMessage = "Failed to load episodes"
                     self.isLoading = false
                 }
@@ -193,7 +227,6 @@ struct EpisodesCarouselView: View {
     
     private let itemWidth: CGFloat = 320
     private let spacing: CGFloat = 16
-    private let baseURL = "https://77b9-192-69-240-171.ngrok-free.app"
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -208,7 +241,7 @@ struct EpisodesCarouselView: View {
                                         print("🎬 Selected episode: \(episode.title) (S\(episode.seasonNumber)E\(episode.episodeNumber))")
                                     }) {
                                         VStack(alignment: .leading, spacing: 8) {
-                                            let imageURL = episode.posterURL.hasPrefix("http") ? episode.posterURL : "\(baseURL)/\(episode.posterURL.hasPrefix("/") ? String(episode.posterURL.dropFirst()) : episode.posterURL)"
+                                            let imageURL = episode.posterURL.hasPrefix("http") ? episode.posterURL : "\(APIConfig.baseURL)/\(episode.posterURL.hasPrefix("/") ? String(episode.posterURL.dropFirst()) : episode.posterURL)"
                                             AsyncImage(url: URL(string: imageURL)) { phase in
                                                 switch phase {
                                                 case .empty:
@@ -324,14 +357,13 @@ struct EpisodeDetailsSection: View {
     @State private var showVideoPlayer = false
     
     private var videoPlayerContent: some View {
-        let baseURL = "https://77b9-192-69-240-171.ngrok-free.app"
         let videoURL: String
         if episode.contentURL.hasPrefix("http") {
             videoURL = episode.contentURL
         } else {
             // Remove leading slash to prevent double slashes
             let cleanContentURL = episode.contentURL.hasPrefix("/") ? String(episode.contentURL.dropFirst()) : episode.contentURL
-            videoURL = "\(baseURL)/\(cleanContentURL)"
+            videoURL = "\(APIConfig.baseURL)/\(cleanContentURL)"
         }
         
         if let url = URL(string: videoURL) {
@@ -382,33 +414,35 @@ struct EpisodeDetailsSection: View {
                 .padding(.horizontal)
             
             // Episode Description Card
-            VStack(alignment: .leading, spacing: 12) {
-                // Description
-                if !episode.description.isEmpty {
-                    ScrollView {
-                        Text(episode.description.truncatedTitleWithWordBoundary(maxLength: 50))
-                            .font(.body)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    // Description
+                    if !episode.description.isEmpty {
+                        Text(episode.description)
+                            .font(.caption)
                             .foregroundColor(.black)
                             .lineLimit(nil)
                             .multilineTextAlignment(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 8)
+                    } else {
+                        Text("No description available for this episode.")
+                            .font(.body)
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding(.vertical, 8)
                     }
-                    .frame(maxHeight: 200)
-                } else {
-                    Text("No description available for this episode.")
-                        .font(.body)
-                        .foregroundColor(.gray)
-                        .italic()
-                        .padding(.vertical, 8)
                 }
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(12)
+                .padding(.horizontal)
             }
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(12)
-            .padding(.horizontal)
+            .frame(maxHeight: 220)
             
-            // Watch Episode Button
+            Spacer(minLength: 0)
+            
+            // Watch Episode Button pinned to bottom
             Button(action: {
                 showVideoPlayer = true
             }) {

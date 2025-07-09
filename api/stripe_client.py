@@ -2,10 +2,14 @@
 Stripe client configuration and helper functions for PecanTV subscriptions.
 """
 
-import stripe
 import os
+import stripe
+from dotenv import load_dotenv
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure Stripe
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -16,41 +20,52 @@ class StripeClient:
     def __init__(self):
         self.stripe = stripe
         
-    def create_customer(self, email: str, name: str = None) -> Dict:
+    def create_customer(self, email: str, name: str = None, metadata: dict = None):
         """Create a new Stripe customer."""
         try:
-            customer = self.stripe.Customer.create(
-                email=email,
-                name=name,
-                metadata={
-                    "source": "pecantv_app"
-                }
-            )
+            customer_data = {
+                "email": email,
+                "metadata": metadata or {}
+            }
+            if name:
+                customer_data["name"] = name
+            
+            customer = self.stripe.Customer.create(**customer_data)
             return customer
         except stripe.error.StripeError as e:
             raise Exception(f"Failed to create Stripe customer: {str(e)}")
     
-    def create_subscription(self, customer_id: str, price_id: str, trial_days: int = 0) -> Dict:
-        """Create a new subscription for a customer."""
+    def create_subscription(self, customer_id: str, price_id: str, trial_days: int = None):
+        """Create a new Stripe subscription."""
         try:
             subscription_data = {
                 "customer": customer_id,
                 "items": [{"price": price_id}],
                 "payment_behavior": "default_incomplete",
-                "payment_settings": {"save_default_payment_method": "on_subscription"},
-                "expand": ["latest_invoice.payment_intent"],
+                "expand": ["latest_invoice.payment_intent"]
             }
             
-            if trial_days > 0:
+            if trial_days:
                 subscription_data["trial_period_days"] = trial_days
             
             subscription = self.stripe.Subscription.create(**subscription_data)
             return subscription
         except stripe.error.StripeError as e:
-            raise Exception(f"Failed to create subscription: {str(e)}")
+            raise Exception(f"Failed to create Stripe subscription: {str(e)}")
     
-    def cancel_subscription(self, subscription_id: str, at_period_end: bool = True) -> Dict:
-        """Cancel a subscription."""
+    def update_subscription(self, subscription_id: str, price_id: str):
+        """Update an existing Stripe subscription."""
+        try:
+            subscription = self.stripe.Subscription.modify(
+                subscription_id,
+                items=[{"id": subscription.items.data[0].id, "price": price_id}]
+            )
+            return subscription
+        except stripe.error.StripeError as e:
+            raise Exception(f"Failed to update Stripe subscription: {str(e)}")
+    
+    def cancel_subscription(self, subscription_id: str, at_period_end: bool = True):
+        """Cancel a Stripe subscription."""
         try:
             if at_period_end:
                 subscription = self.stripe.Subscription.modify(
@@ -61,44 +76,50 @@ class StripeClient:
                 subscription = self.stripe.Subscription.cancel(subscription_id)
             return subscription
         except stripe.error.StripeError as e:
-            raise Exception(f"Failed to cancel subscription: {str(e)}")
+            raise Exception(f"Failed to cancel Stripe subscription: {str(e)}")
     
-    def update_subscription(self, subscription_id: str, price_id: str) -> Dict:
-        """Update subscription to a different plan."""
+    def get_subscription(self, subscription_id: str):
+        """Retrieve a Stripe subscription."""
+        try:
+            return self.stripe.Subscription.retrieve(subscription_id)
+        except stripe.error.StripeError as e:
+            raise Exception(f"Failed to retrieve Stripe subscription: {str(e)}")
+    
+    def update_subscription_price(self, subscription_id: str, new_price_id: str):
+        """Update subscription price."""
         try:
             subscription = self.stripe.Subscription.retrieve(subscription_id)
             self.stripe.SubscriptionItem.modify(
-                subscription["items"]["data"][0].id,
-                price=price_id
+                subscription.items.data[0].id,
+                price=new_price_id
             )
             return self.stripe.Subscription.retrieve(subscription_id)
         except stripe.error.StripeError as e:
-            raise Exception(f"Failed to update subscription: {str(e)}")
+            raise Exception(f"Failed to update subscription price: {str(e)}")
     
-    def get_subscription(self, subscription_id: str) -> Dict:
-        """Retrieve a subscription by ID."""
+    def get_subscription_by_id(self, subscription_id: str):
+        """Get subscription by ID."""
         try:
             return self.stripe.Subscription.retrieve(subscription_id)
         except stripe.error.StripeError as e:
-            raise Exception(f"Failed to retrieve subscription: {str(e)}")
+            raise Exception(f"Failed to get subscription: {str(e)}")
     
-    def get_customer_subscriptions(self, customer_id: str) -> List[Dict]:
-        """Get all subscriptions for a customer."""
+    def list_customer_subscriptions(self, customer_id: str):
+        """List all subscriptions for a customer."""
         try:
             subscriptions = self.stripe.Subscription.list(customer=customer_id)
             return subscriptions.data
         except stripe.error.StripeError as e:
-            raise Exception(f"Failed to get customer subscriptions: {str(e)}")
+            raise Exception(f"Failed to list customer subscriptions: {str(e)}")
     
-    def create_payment_intent(self, amount: int, currency: str = "usd", customer_id: str = None) -> Dict:
+    def create_payment_intent(self, amount: int, currency: str = "usd", customer_id: str = None, metadata: dict = None):
         """Create a payment intent for one-time payments."""
         try:
             payment_intent_data = {
                 "amount": amount,
                 "currency": currency,
-                "automatic_payment_methods": {"enabled": True},
+                "metadata": metadata or {}
             }
-            
             if customer_id:
                 payment_intent_data["customer"] = customer_id
             
@@ -106,8 +127,8 @@ class StripeClient:
         except stripe.error.StripeError as e:
             raise Exception(f"Failed to create payment intent: {str(e)}")
     
-    def verify_webhook_signature(self, payload: bytes, sig_header: str, webhook_secret: str) -> Dict:
-        """Verify webhook signature for security."""
+    def verify_webhook_signature(self, payload: bytes, sig_header: str, webhook_secret: str):
+        """Verify webhook signature."""
         try:
             event = self.stripe.Webhook.construct_event(
                 payload, sig_header, webhook_secret
@@ -139,7 +160,7 @@ DEFAULT_PLANS = [
         "description": "Unlimited episodes with no ads",
         "price": 9.99,
         "features": {
-            "episodes_per_month": -1,  # Unlimited
+            "episodes_per_month": -1,
             "quality": "720p",
             "ads": False,
             "devices": 1,
@@ -153,7 +174,7 @@ DEFAULT_PLANS = [
         "description": "High quality streaming with downloads",
         "price": 14.99,
         "features": {
-            "episodes_per_month": -1,  # Unlimited
+            "episodes_per_month": -1,
             "quality": "1080p",
             "ads": False,
             "devices": 2,
@@ -167,7 +188,7 @@ DEFAULT_PLANS = [
         "description": "Perfect for the whole family",
         "price": 19.99,
         "features": {
-            "episodes_per_month": -1,  # Unlimited
+            "episodes_per_month": -1,
             "quality": "1080p",
             "ads": False,
             "devices": 4,

@@ -34,7 +34,7 @@ struct ContentView: View {
                         }
                         .tag(1)
                     
-                    ProfileView()
+                    ProfileView(selectedTab: $selectedTab)
                         .tabItem {
                             Label("My PECAN", systemImage: "person")
                         }
@@ -78,8 +78,8 @@ struct ContentView: View {
                 }
             }
         }
-        .onChange(of: healthChecker.isAPIAvailable) { isAvailable in
-            if !isAvailable {
+        .onChange(of: healthChecker.isAPIAvailable) { oldValue, newValue in
+            if !newValue {
                 showAPIErrorAlert = true
             }
         }

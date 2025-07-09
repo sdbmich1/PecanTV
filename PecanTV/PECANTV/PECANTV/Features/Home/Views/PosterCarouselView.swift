@@ -132,31 +132,12 @@ struct PosterCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Poster Image with caching and favorite button overlay
+            // Poster Image with optimized caching and favorite button overlay
             ZStack(alignment: .topTrailing) {
-                AsyncImage(url: URL(string: content.posterURL)) { phase in
-                    switch phase {
-                    case .empty:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 120, height: 180)
-                            .overlay(
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .gray))
-                                    .scaleEffect(0.8)
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 120, height: 180)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                            .onAppear {
-                                imageLoaded = true
-                            }
-                    case .failure:
+                SimpleImageService.shared.directImage(
+                    from: content.posterURL
+                ) {
+                    AnyView(
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 120, height: 180)
@@ -174,12 +155,13 @@ struct PosterCard: View {
                                 }
                             )
                             .clipShape(RoundedRectangle(cornerRadius: 8))
-                    @unknown default:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 120, height: 180)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
+                    )
+                }
+                .frame(width: 120, height: 180)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                .onAppear {
+                    imageLoaded = true
                 }
                 
                 // Favorite button

@@ -18,6 +18,12 @@ struct HomeView: View {
         viewModel.films + viewModel.tvSeries
     }
     
+    var recentlyAddedContent: [MediaContent] {
+        // Show the most recent content (first 10 items)
+        let allContent = viewModel.films + viewModel.tvSeries
+        return Array(allContent.prefix(10))
+    }
+    
     var filteredContent: [MediaContent] {
         let genreFiltered = selectedGenre == "All Genres" ? allContent : allContent.filter { content in
             let contentGenre = content.genre.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
@@ -190,8 +196,8 @@ struct HomeView: View {
                                 }
                                 
                                 // Recently Added Section
-                                if !filteredContent.isEmpty {
-                                    LandscapeCarouselView(title: "Recently Added", content: filteredContent)
+                                let recentlyAdded = Array((viewModel.films + viewModel.tvSeries).prefix(10)); if !recentlyAdded.isEmpty {
+                                    LandscapeCarouselView(title: "Recently Added", content: recentlyAdded)
                                 }
                             }
                             .padding(.bottom, 100) // Space for tab bar
@@ -222,7 +228,7 @@ struct FeaturedContentView: View {
     @State private var showDetail = false
     
     // Use flexible dimensions to prevent layout conflicts
-    private let featuredHeight: CGFloat = 300
+    private let featuredHeight: CGFloat = 200
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {

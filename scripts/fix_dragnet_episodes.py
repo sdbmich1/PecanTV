@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-Script to fix Dragnet episodes to have exactly 13 episodes with correct URL mapping.
+Script to update Dragnet episodes with proper content URLs.
 """
 
 import psycopg2
-import uuid
 from datetime import datetime, timezone
 
 # Database connection parameters
@@ -17,97 +16,56 @@ DB_PARAMS = {
     'sslmode': 'require'
 }
 
-def fix_dragnet_episodes():
-    """Fix Dragnet episodes to have exactly 13 episodes with correct URLs."""
-    print("🔧 Fixing Dragnet Episodes")
-    print("=" * 50)
-    
+def update_dragnet_episodes():
+    """Update Dragnet episodes with proper content URLs."""
     conn = psycopg2.connect(**DB_PARAMS)
     cur = conn.cursor()
-    
     try:
-        # Get Dragnet series ID
-        cur.execute("""
-            SELECT id, uuid, title FROM content 
-            WHERE title ILIKE '%Dragnet%' AND type = 'SERIES'
-        """)
-        result = cur.fetchone()
+        print("🎬 Updating Dragnet Episodes with Content URLs")
+        print("=" * 50)
         
-        if not result:
+        # Get Dragnet series ID
+        cur.execute("SELECT id FROM content WHERE title = 'Dragnet' AND type = 'SERIES'")
+        series_record = cur.fetchone()
+        if not series_record:
             print("❌ Dragnet series not found")
             return
+        series_id = series_record[0]
+        print(f"✅ Found Dragnet series (ID: {series_id})")
         
-        series_id, series_uuid, series_title = result
-        print(f"✅ Found series: {series_title} (ID: {series_id})")
+        # Update episodes with content URLs
+        episode_updates = [
+            (1, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet1.mp4"),
+            (2, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet2.mp4"),
+            (3, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet3.mp4"),
+            (4, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet4.mp4"),
+            (5, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet5.mp4"),
+            (6, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet6.mp4"),
+            (7, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet7.mp4"),
+            (8, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet8.mp4"),
+            (9, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet9.mp4"),
+            (10, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet10.mp4"),
+            (11, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet11.mp4"),
+            (12, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet12.mp4"),
+            (13, "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet13.mp4"),
+        ]
         
-        # Define the correct episode mapping
-        # Episode number -> Dragnet file number
-        episode_mapping = {
-            1: 1,   # Dragnet1
-            2: 2,   # Dragnet2  
-            3: 3,   # Dragnet3
-            4: 4,   # Dragnet4
-            5: 5,   # Dragnet5
-            6: 6,   # Dragnet6
-            7: 7,   # Dragnet7
-            8: 8,   # Dragnet8
-            9: 9,   # Dragnet9
-            10: 10, # Dragnet10
-            11: 11, # Dragnet11
-            12: 12, # Dragnet12
-            13: 13  # Dragnet13
-        }
-        
-        # First, delete all existing episodes
-        cur.execute("DELETE FROM episodes WHERE series_id = %s", (series_id,))
-        deleted_count = cur.rowcount
-        print(f"🗑️  Deleted {deleted_count} existing episodes")
-        
-        # Insert the correct 13 episodes
-        inserted = 0
-        for episode_num in range(1, 14):
-            dragnet_num = episode_mapping[episode_num]
-            title = f"Dragnet Animated - Episode {episode_num}"
-            content_url = f"https://storage.googleapis.com/pecantv_series/dragnet/Dragnet{dragnet_num}_2p-1080-wCredits.mp4"
-            poster_url = "https://storage.googleapis.com/pecantv_series/dragnet/Dragnet_title-img.png"
-            
+        updated = 0
+        for episode_num, content_url in episode_updates:
             cur.execute("""
-                INSERT INTO episodes (
-                    uuid, title, description, season_number, episode_number, runtime,
-                    content_url, poster_url, series_id, content_uuid,
-                    created_at, updated_at
-                ) VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                )
-            """, (
-                str(uuid.uuid4()),
-                title,
-                f"Dragnet Animated Episode {episode_num}",
-                1,
-                episode_num,
-                30,  # 30 minutes runtime
-                content_url,
-                poster_url,
-                series_id,
-                str(series_uuid),
-                datetime.now(timezone.utc),
-                datetime.now(timezone.utc)
-            ))
-            print(f"  ✅ Added episode {episode_num}: {title}")
-            inserted += 1
+                UPDATE episodes 
+                SET content_url = %s, updated_at = %s
+                WHERE series_id = %s AND episode_number = %s
+            """, (content_url, datetime.now(timezone.utc), series_id, episode_num))
+            
+            if cur.rowcount > 0:
+                print(f"  ✅ Updated Episode {episode_num}: {content_url}")
+                updated += 1
+            else:
+                print(f"  ⚠️  Episode {episode_num} not found")
         
         conn.commit()
-        print(f"\n✅ Successfully created {inserted} Dragnet episodes")
-        
-        # Verify the result
-        cur.execute("SELECT COUNT(*) FROM episodes WHERE series_id = %s", (series_id,))
-        final_count = cur.fetchone()[0]
-        print(f"📊 Final episode count: {final_count}")
-        
-        if final_count == 13:
-            print("✅ Dragnet now has exactly 13 episodes!")
-        else:
-            print(f"⚠️  Expected 13 episodes, but found {final_count}")
+        print(f"\n✅ Updated {updated} Dragnet episodes with content URLs.")
         
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -117,4 +75,4 @@ def fix_dragnet_episodes():
         conn.close()
 
 if __name__ == "__main__":
-    fix_dragnet_episodes() 
+    update_dragnet_episodes() 

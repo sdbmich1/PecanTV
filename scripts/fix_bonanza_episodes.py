@@ -1,123 +1,108 @@
 #!/usr/bin/env python3
 """
-Script to fix Bonanza episodes by removing duplicates and fixing episode numbering.
+Script to fix Bonanza episodes using Wurl metadata
+Updates titles, descriptions, and content URLs to match actual GCS files
 """
 
+import os
+import sys
+import pandas as pd
+from dotenv import load_dotenv
 import psycopg2
-import uuid
-from datetime import datetime, timezone
+from psycopg2.extras import RealDictCursor
 
-# Database connection parameters
-DB_PARAMS = {
-    'dbname': 'neondb',
-    'user': 'neondb_owner',
-    'password': 'npg_K1HJErMqmX8g',
-    'host': 'ep-blue-cherry-a6427e0b-pooler.us-west-2.aws.neon.tech',
-    'port': '5432',
-    'sslmode': 'require'
-}
+# Load environment variables
+load_dotenv()
 
-def fix_bonanza_episodes():
-    """Fix Bonanza episodes by removing duplicates and fixing episode numbering."""
-    conn = psycopg2.connect(**DB_PARAMS)
-    cur = conn.cursor()
-    
+def get_wurl_metadata():
+    """Get Bonanza metadata from Wurl files"""
     try:
-        print("🎬 Fixing Bonanza Episodes")
-        print("=" * 40)
+        # Use the most complete Wurl file (7.0.30 has 13 episodes)
+        df = pd.read_csv('Wurl - File Upload Metadata_Version 7.0.30.csv', encoding='utf-8')
+        bonanza_data = df[df['Series Name'].astype(str).str.contains('Bonanza', case=False, na=False)]
         
-        # Get Bonanza series ID
-        cur.execute('SELECT id FROM content WHERE type = %s AND title = %s', ('SERIES', 'Bonanza'))
-        series_id = cur.fetchone()[0]
-        print(f"✅ Found Bonanza series (ID: {series_id})")
+        episodes = []
+        for _, row in bonanza_data.iterrows():
+            episodes.append({
+                'title': row['Title'].strip(),
+                'description': row['Description'].strip() if pd.notna(row['Description']) else '',
+                'video_filename': row['Video Filename'].strip() if pd.notna(row['Video Filename']) else '',
+                'content_url': f"https://storage.googleapis.com/pecantv_series/bonanza/{row['Video Filename'].strip()}"
+            })
         
-        # Get all current Bonanza episodes
-        cur.execute('''
-            SELECT id, title, season_number, episode_number
-            FROM episodes 
-            WHERE series_id = %s 
-            ORDER BY season_number, episode_number, title
-        ''', (series_id,))
-        
-        episodes = cur.fetchall()
-        print(f"📋 Current episodes: {len(episodes)}")
-        
-        # Group by title to find duplicates
-        title_groups = {}
-        for ep in episodes:
-            title = ep[1]
-            if title in title_groups:
-                title_groups[title].append(ep)
-            else:
-                title_groups[title] = [ep]
-        
-        # Find unique episodes (keep one per title)
-        unique_episodes = []
-        duplicates_to_remove = []
-        
-        for title, eps in title_groups.items():
-            if len(eps) > 1:
-                # Keep the first one, mark others for deletion
-                unique_episodes.append(eps[0])
-                duplicates_to_remove.extend(eps[1:])
-                print(f"  ⚠️  Found {len(eps)} duplicates for '{title}' - keeping first, removing {len(eps)-1}")
-            else:
-                unique_episodes.append(eps[0])
-        
-        print(f"📊 Analysis:")
-        print(f"  • Unique episodes: {len(unique_episodes)}")
-        print(f"  • Duplicates to remove: {len(duplicates_to_remove)}")
-        
-        # Remove duplicates
-        if duplicates_to_remove:
-            duplicate_ids = [ep[0] for ep in duplicates_to_remove]
-            cur.execute('DELETE FROM episodes WHERE id = ANY(%s)', (duplicate_ids,))
-            print(f"  ✅ Removed {len(duplicates_to_remove)} duplicate episodes")
-        
-        # Sort unique episodes by current episode number
-        unique_episodes.sort(key=lambda x: x[3])  # Sort by episode_number
-        
-        # Fix episode numbering to be sequential
-        print(f"\n🔢 Fixing Episode Numbers:")
-        for i, episode in enumerate(unique_episodes, 1):
-            old_episode_num = episode[3]
-            new_episode_num = i
-            
-            if old_episode_num != new_episode_num:
-                print(f"  • '{episode[1]}': S1E{old_episode_num} → S1E{new_episode_num}")
-                cur.execute('''
-                    UPDATE episodes 
-                    SET episode_number = %s, updated_at = %s
-                    WHERE id = %s
-                ''', (new_episode_num, datetime.now(timezone.utc), episode[0]))
-            else:
-                print(f"  • '{episode[1]}': S1E{old_episode_num} (no change)")
-        
-        conn.commit()
-        
-        # Verify final result
-        cur.execute('''
-            SELECT title, season_number, episode_number
-            FROM episodes 
-            WHERE series_id = %s 
-            ORDER BY season_number, episode_number
-        ''', (series_id,))
-        
-        final_episodes = cur.fetchall()
-        print(f"\n✅ Final Result:")
-        print(f"  • Total episodes: {len(final_episodes)}")
-        print(f"  • Episode range: S1E1 - S1E{len(final_episodes)}")
-        
-        print(f"\n📺 Final Episode List:")
-        for ep in final_episodes:
-            print(f"  • S{ep[1]}E{ep[2]}: {ep[0]}")
-        
+        return episodes
     except Exception as e:
-        print(f"❌ Error: {e}")
-        conn.rollback()
-    finally:
+        print(f"Error reading Wurl metadata: {e}")
+        return []
+
+def update_bonanza_episodes():
+    """Update Bonanza episodes in the database"""
+    # Get Wurl metadata
+    wurl_episodes = get_wurl_metadata()
+    
+    if not wurl_episodes:
+        print("No Bonanza episodes found in Wurl metadata")
+        return
+    
+    print(f"Found {len(wurl_episodes)} Bonanza episodes in Wurl metadata:")
+    for i, ep in enumerate(wurl_episodes, 1):
+        print(f"{i}. {ep['title']} -> {ep['video_filename']}")
+    
+    # Connect to database
+    try:
+        conn = psycopg2.connect(os.getenv('DATABASE_URL'))
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # Get current Bonanza episodes
+        cur.execute("SELECT id, title, content_url FROM episodes WHERE series_id = 78 ORDER BY episode_number")
+        current_episodes = cur.fetchall()
+        
+        print(f"\nCurrent database has {len(current_episodes)} Bonanza episodes:")
+        for ep in current_episodes:
+            print(f"ID: {ep['id']}, Title: {ep['title']}")
+        
+        # Update episodes
+        for i, wurl_ep in enumerate(wurl_episodes):
+            if i < len(current_episodes):
+                episode_id = current_episodes[i]['id']
+                
+                # Update the episode
+                cur.execute("""
+                    UPDATE episodes 
+                    SET title = %s, description = %s, content_url = %s
+                    WHERE id = %s
+                """, (
+                    wurl_ep['title'],
+                    wurl_ep['description'],
+                    wurl_ep['content_url'],
+                    episode_id
+                ))
+                
+                print(f"Updated episode {episode_id}: {wurl_ep['title']}")
+        
+        # Commit changes
+        conn.commit()
+        print(f"\n✅ Successfully updated {len(wurl_episodes)} Bonanza episodes")
+        
+        # Verify the updates
+        cur.execute("SELECT id, title, content_url FROM episodes WHERE series_id = 78 ORDER BY episode_number")
+        updated_episodes = cur.fetchall()
+        
+        print("\nUpdated episodes:")
+        for ep in updated_episodes:
+            print(f"ID: {ep['id']}, Title: {ep['title']}")
+            print(f"  URL: {ep['content_url']}")
+        
         cur.close()
         conn.close()
+        
+    except Exception as e:
+        print(f"Database error: {e}")
+        if 'conn' in locals():
+            conn.rollback()
+            conn.close()
 
 if __name__ == "__main__":
-    fix_bonanza_episodes() 
+    print("🔧 Fixing Bonanza episodes with Wurl metadata...")
+    update_bonanza_episodes()
+    print("Done!") 

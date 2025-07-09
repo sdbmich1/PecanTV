@@ -35,9 +35,10 @@ struct ContentDetailView: View {
                     // Poster and Info
                     VStack(alignment: .leading, spacing: 16) {
                         ZStack(alignment: .topTrailing) {
-                            AsyncImage(url: URL(string: content.posterURL)) { phase in
-                                switch phase {
-                                case .empty:
+                            SimpleImageService.shared.directImage(
+                                from: content.posterURL
+                            ) {
+                                AnyView(
                                     Rectangle()
                                         .fill(Color.gray.opacity(0.2))
                                         .frame(width: UIScreen.main.bounds.width - 8)
@@ -47,27 +48,11 @@ struct ContentDetailView: View {
                                                 .font(.system(size: 48))
                                                 .foregroundColor(.gray)
                                         )
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: UIScreen.main.bounds.width - 8)
-                                        .frame(height: 240)
-                                        .clipped()
-                                case .failure:
-                                    Rectangle()
-                                        .fill(Color.gray.opacity(0.2))
-                                        .frame(width: UIScreen.main.bounds.width - 8)
-                                        .frame(height: 240)
-                                        .overlay(
-                                            Image(systemName: "photo")
-                                                .font(.system(size: 48))
-                                                .foregroundColor(.gray)
-                                        )
-                                @unknown default:
-                                    EmptyView()
-                                }
+                                )
                             }
+                            .frame(width: UIScreen.main.bounds.width - 8)
+                            .frame(height: 240)
+                            .clipped()
                             .cornerRadius(12)
                             
                             // Favorite button
@@ -159,10 +144,12 @@ struct ContentDetailView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.pecanRed)
+                                    .background((content.contentURL.isEmpty || content.contentURL == "NONE") ? Color.gray : Color.pecanRed)
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
                                 }
+                                .disabled(content.contentURL.isEmpty || content.contentURL == "NONE")
+                                .allowsHitTesting(!(content.contentURL.isEmpty || content.contentURL == "NONE"))
                             }
                         }
                         .padding(.horizontal, 16)
@@ -246,22 +233,23 @@ struct ContentErrorView: View {
                 Spacer()
                 
                 VStack(spacing: 16) {
-                    Image(systemName: content.contentURL.isEmpty ? "video.slash" : "exclamationmark.triangle")
+                    let hasNoContent = content.contentURL.isEmpty || content.contentURL == "NONE"
+                    Image(systemName: hasNoContent ? "video.slash" : "exclamationmark.triangle")
                         .font(.system(size: 64))
-                        .foregroundColor(content.contentURL.isEmpty ? .gray : .red)
+                        .foregroundColor(hasNoContent ? .gray : .red)
                     
-                    Text(content.contentURL.isEmpty ? "No Content Available" : "Unable to play content")
+                    Text(hasNoContent ? "No Content Available" : "Unable to play content")
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.black)
                     
-                    Text(content.contentURL.isEmpty ? "This content doesn't have a video file available." : "The content URL is invalid or unavailable.")
+                    Text(hasNoContent ? "This content doesn't have a video file available." : "The content URL is invalid or unavailable.")
                         .font(.body)
                         .foregroundColor(.gray)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                     
-                    if let url = URL(string: content.contentURL), !content.contentURL.isEmpty {
+                    if let url = URL(string: content.contentURL), !content.contentURL.isEmpty, content.contentURL != "NONE" {
                         Button("Open in Browser") {
                             UIApplication.shared.open(url)
                         }

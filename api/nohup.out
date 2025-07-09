@@ -1,0 +1,1246 @@
+INFO:     Started server process [78665]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+✅ Static files mounted at /pecantv_series from /Users/sdbmi/dev/pecantv_app/pecantv_series
+INFO:     127.0.0.1:61937 - "HEAD /health HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:62946 - "HEAD /health HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:62951 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62954 - "HEAD /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg HTTP/1.1" 405 Method Not Allowed
+🔍 CDN endpoint requested for url: http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:62956 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:62959 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/petrocelli/Petrocelli1_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: /pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: True
+INFO:     127.0.0.1:62966 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=/pecantv_series/petrocelli/Petrocelli1_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62974 - "HEAD /pecantv_series/petrocelli/Petrocelli1_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62977 - "GET /content?limit=5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63156 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63155 - "GET /content HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63163 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63155 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63156 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63163 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63164 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63167 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63172 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63169 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63171 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63170 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63183 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63275 - "GET /content?limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63287 - "GET /content?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63296 - "GET /content?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63341 - "GET /content?limit=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63349 - "HEAD /pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63357 - "HEAD /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=/pecantv_series/default_poster.jpg HTTP/1.1" 405 Method Not Allowed
+🔍 CDN endpoint requested for url: /pecantv_series/default_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/default_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: True
+INFO:     127.0.0.1:63361 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=/pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63419 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63418 - "GET /content HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63422 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63423 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63419 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63418 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63426 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63431 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63431 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63431 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63431 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63431 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63431 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63425 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63431 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63427 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63428 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63429 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63430 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63422 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63547 - "HEAD /health HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:63550 - "GET /health HTTP/1.1" 200 OK
+🔍 CDN endpoint requested for url: /pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/petrocelli/Petrocelli1_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: True
+INFO:     127.0.0.1:63563 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=/pecantv_series/petrocelli/Petrocelli1_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63573 - "GET /content?limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63633 - "GET /content?limit=3 HTTP/1.1" 200 OK
+🔍 CDN endpoint requested for url: /pecantv_series/beatthedevil/BeattheDevil_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/beatthedevil/BeattheDevil_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: /pecantv_series/beatthedevil/BeattheDevil_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/beatthedevil/BeattheDevil_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:63649 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=/pecantv_series/beatthedevil/BeattheDevil_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: /pecantv_series/beatthedevil/BeattheDevil_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/beatthedevil/BeattheDevil_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: /pecantv_series/beatthedevil/BeattheDevil_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/beatthedevil/BeattheDevil_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:63657 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=/pecantv_series/beatthedevil/BeattheDevil_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: /pecantv_series/default_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/default_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: True
+INFO:     127.0.0.1:63711 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=/pecantv_series/default_poster.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63721 - "GET /content?limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64554 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64553 - "GET /content HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64563 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64569 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64570 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64575 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64573 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64571 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64572 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64553 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64554 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64567 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64563 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64587 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64589 - "GET /series/62/episodes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64643 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64644 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64645 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64646 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64642 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64642 - "GET /series/21/episodes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64693 - "GET /health HTTP/1.1" 200 OK
+🔍 CDN endpoint requested for url: http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: http://localhost:8001/pecantv_series/default_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:64725 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/default_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: http://localhost:8001/pecantv_series/default_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:64727 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/default_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: http://localhost:8001/pecantv_series/default_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:64760 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/default_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: http://localhost:8001/pecantv_series/default_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:64768 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/default_poster.jpg HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: http://localhost:8001/pecantv_series/default_poster.jpg (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/http://localhost:8001/pecantv_series/default_poster.jpg)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:64773 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D300%2Cquality%3D85/?url=http://localhost:8001/pecantv_series/default_poster.jpg HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:50677 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50796 - "GET /content?limit=5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50809 - "HEAD /pecantv_series/white_placeholder.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50856 - "GET /content?limit=5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51095 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51093 - "GET /content HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51098 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51095 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51093 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51099 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51098 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51100 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51105 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51103 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51102 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51101 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51106 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51104 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51115 - "GET /pecantv_series/default_poster.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51145 - "GET /series/21/episodes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53407 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53406 - "GET /content HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53413 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53407 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53414 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53406 - "GET /favorites/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53413 - "GET /favorites/1 HTTP/1.1" 200 OK
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:53430 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/San-Francisco_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/San-Francisco_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/San-Francisco_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/San-Francisco_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/San-Francisco_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:53453 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/San-Francisco_title-img.png HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:53469 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Sad-Songs-and-Other-Conversations_title-img.png HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:53498 - "GET /series/567/episodes HTTP/1.1" 200 OK
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Sherlock-Holmes-Series-Img.jpg
+INFO:     127.0.0.1:53504 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Sherlock-Holmes-Series-Img.jpg HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 74, in app
+    await response(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/responses.py", line 343, in __call__
+    stat_result = await anyio.to_thread.run_sync(os.stat, self.path)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+TypeError: stat: path should be string, bytes, os.PathLike or integer, not BytesIO
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Shockproof_title-img.png
+INFO:     127.0.0.1:53512 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Shockproof_title-img.png HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 74, in app
+    await response(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/responses.py", line 343, in __call__
+    stat_result = await anyio.to_thread.run_sync(os.stat, self.path)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+TypeError: stat: path should be string, bytes, os.PathLike or integer, not BytesIO
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Silent-Thunder_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/Silent-Thunder_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Silent-Thunder_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/Silent-Thunder_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Silent-Thunder_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:53514 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Silent-Thunder_title-img.png HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/The-Case-of-Lady-Beryl_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/The-Case-of-Lady-Beryl_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/The-Case-of-Lady-Beryl_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/The-Case-of-Lady-Beryl_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/The-Case-of-Lady-Beryl_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:54319 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/The-Case-of-Lady-Beryl_title-img.png HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:54390 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54394 - "GET /content?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54430 - "GET /content?limit=50 HTTP/1.1" 200 OK
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Brother-from-Another-Planet:the-animated-feature_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/Brother-from-Another-Planet:the-animated-feature_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Brother-from-Another-Planet:the-animated-feature_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/Brother-from-Another-Planet:the-animated-feature_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Brother-from-Another-Planet:the-animated-feature_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:54481 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Brother-from-Another-Planet:the-animated-feature_title-img.png HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Joe-Bullett_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/Joe-Bullett_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Joe-Bullett_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/Joe-Bullett_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Joe-Bullett_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:54491 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Joe-Bullett_title-img.png HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Beat-the-Devil_title-img.png
+INFO:     127.0.0.1:54522 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Beat-the-Devil_title-img.png HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 74, in app
+    await response(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/responses.py", line 343, in __call__
+    stat_result = await anyio.to_thread.run_sync(os.stat, self.path)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+TypeError: stat: path should be string, bytes, os.PathLike or integer, not BytesIO
+INFO:     127.0.0.1:54562 - "GET /content?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54609 - "GET /content?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54676 - "GET /content?limit=500 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54679 - "GET /content?limit=500 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54684 - "GET /content?limit=500 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54687 - "GET /content?limit=500 HTTP/1.1" 200 OK
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Lola-Colt_title-img.png
+INFO:     127.0.0.1:55804 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Lola-Colt_title-img.png HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 74, in app
+    await response(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/responses.py", line 343, in __call__
+    stat_result = await anyio.to_thread.run_sync(os.stat, self.path)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+TypeError: stat: path should be string, bytes, os.PathLike or integer, not BytesIO
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Day-of-Reckoning_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/Day-of-Reckoning_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Day-of-Reckoning_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/Day-of-Reckoning_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Day-of-Reckoning_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:55874 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Day-of-Reckoning_title-img.png HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Feet-of-Clay_title-img.png
+❌ Failed to fetch remote image: https://storage.googleapis.com/pecantv_title_images/Feet-of-Clay_title-img.png (status 404)
+🔍 Resolved local_path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Feet-of-Clay_title-img.png
+🔍 Static path: /Users/sdbmi/dev/pecantv_app/pecantv_series
+🔍 File exists: False
+❌ Image not found: https://storage.googleapis.com/pecantv_title_images/Feet-of-Clay_title-img.png (resolved local path: /Users/sdbmi/dev/pecantv_app/pecantv_series/https://storage.googleapis.com/pecantv_title_images/Feet-of-Clay_title-img.png)
+❌ Image optimization error: 404: Image not found
+INFO:     127.0.0.1:55881 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Feet-of-Clay_title-img.png HTTP/1.1" 500 Internal Server Error
+🔍 CDN endpoint requested for url: https://storage.googleapis.com/pecantv_title_images/Love-Affair_title-image.png
+INFO:     127.0.0.1:55923 - "GET /cdn-cgi/image/format%3Dwebp%2Cwidth%3D600%2Cheight%3D900%2Cquality%3D85%2Cfit%3Dscale-down/?url=https://storage.googleapis.com/pecantv_title_images/Love-Affair_title-image.png HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/routing.py", line 74, in app
+    await response(scope, receive, send)
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/starlette/responses.py", line 343, in __call__
+    stat_result = await anyio.to_thread.run_sync(os.stat, self.path)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/sdbmi/dev/pecantv_app/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+TypeError: stat: path should be string, bytes, os.PathLike or integer, not BytesIO

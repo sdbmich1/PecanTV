@@ -20,16 +20,34 @@ class UserLogin(BaseModel):
 class User(UserBase):
     id: int  # Keep for backward compatibility
     uuid: uuid.UUID
+    stripe_customer_id: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
     class Config:
         from_attributes = True
 
+class UserWithSubscription(User):
+    """User with subscription information"""
+    has_active_subscription: bool = False
+    subscription_plan: Optional[str] = None
+    subscription_status: Optional[str] = None
+    subscription_expires: Optional[datetime] = None
+    can_access_premium: bool = False
+    remaining_free_episodes: Optional[int] = None
+
 class Token(BaseModel):
     access_token: str
     token_type: str
-    user: User
+    user: UserWithSubscription
+
+class AuthResponse(BaseModel):
+    """Enhanced authentication response with subscription status"""
+    user: UserWithSubscription
+    access_token: str
+    token_type: str = "bearer"
+    subscription_required: bool = False
+    subscription_plans: Optional[List[dict]] = None
 
 class GenreBase(BaseModel):
     name: str
@@ -68,9 +86,9 @@ class Rating(RatingBase):
 
 class ContentBase(BaseModel):
     title: str
-    poster_url: str = Field(alias="posterURL")
+    poster_url: Optional[str] = Field(None, alias="posterURL")
     trailer_url: str = Field(alias="trailerURL")
-    content_url: str = Field(alias="contentURL")
+    content_url: Optional[str] = Field(None, alias="contentURL")
     description: Optional[str] = None
     type: ContentType
     runtime: int
@@ -80,6 +98,23 @@ class ContentBase(BaseModel):
 
 class ContentCreate(ContentBase):
     genre_ids: Optional[List[int]] = Field(None, alias="genreIds")  # New field for multiple genres
+
+class ContentUpdate(BaseModel):
+    """Schema for updating content - all fields are optional"""
+    title: Optional[str] = None
+    poster_url: Optional[str] = Field(None, alias="posterURL")
+    trailer_url: Optional[str] = Field(None, alias="trailerURL")
+    content_url: Optional[str] = Field(None, alias="contentURL")
+    description: Optional[str] = None
+    type: Optional[ContentType] = None
+    runtime: Optional[int] = None
+    genre_id: Optional[int] = Field(None, alias="genreId")
+    rating_id: Optional[int] = Field(None, alias="ratingId")
+    release_date: Optional[date] = Field(None, alias="releaseDate")
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
 
 class Content(ContentBase):
     id: int  # Keep for backward compatibility
@@ -118,9 +153,9 @@ class EpisodeBase(BaseModel):
     season_number: int = Field(alias="seasonNumber")
     episode_number: int = Field(alias="episodeNumber")
     runtime: Optional[int] = None
-    content_url: str = Field(alias="contentURL")
+    content_url: Optional[str] = Field(None, alias="contentURL")
+    poster_url: Optional[str] = Field(None, alias="posterURL")  # Add poster_url field
     thumbnail_url: Optional[str] = Field(None, alias="thumbnailURL")  # Database column name
-    poster_url: Optional[str] = Field(None, alias="posterURL")  # This column exists in database
     air_date: Optional[date] = Field(None, alias="airDate")  # Database column name
     series_id: int = Field(alias="seriesId")  # Database column name
     content_uuid: uuid.UUID = Field(alias="contentUuid")

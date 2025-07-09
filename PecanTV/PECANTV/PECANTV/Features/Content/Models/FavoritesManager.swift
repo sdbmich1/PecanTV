@@ -11,7 +11,6 @@ class FavoritesManager: ObservableObject {
     // For now, we'll use a default user ID of 1
     // In a real app, this would come from authentication
     private let currentUserId = 1
-    private let baseURL = "https://77b9-192-69-240-171.ngrok-free.app"
     
     init() {
         loadFavorites()
@@ -43,7 +42,7 @@ class FavoritesManager: ObservableObject {
     
     func loadFavoritesFromDatabase() async {
         do {
-            let url = URL(string: "\(baseURL)/favorites/\(currentUserId)")!
+            let url = URL(string: APIConfig.Endpoints.favoritesForUser(currentUserId))!
             let (data, _) = try await URLSession.shared.data(from: url)
             
             let response = try JSONDecoder().decode(FavoritesResponse.self, from: data)
@@ -63,7 +62,7 @@ class FavoritesManager: ObservableObject {
     
     private func syncFavoriteWithDatabase(contentId: Int, isFavorited: Bool) async {
         do {
-            let url = URL(string: "\(baseURL)/favorites/\(currentUserId)/toggle/\(contentId)")!
+            let url = URL(string: APIConfig.Endpoints.toggleFavorite(currentUserId, contentId: contentId))!
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
