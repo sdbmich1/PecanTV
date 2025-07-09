@@ -1,0 +1,146 @@
+{
+  "total_tests": 23,
+  "passed_tests": 5,
+  "failed_tests": 18,
+  "success_rate": 21.73913043478261,
+  "results": [
+    {
+      "test": "Rate Limiting - Normal Requests",
+      "passed": true,
+      "details": "5 requests succeeded",
+      "timestamp": 1752102089.7712488
+    },
+    {
+      "test": "Rate Limiting - Limit Enforcement",
+      "passed": false,
+      "details": "Rate limit not enforced",
+      "timestamp": 1752102089.870175
+    },
+    {
+      "test": "Security Headers",
+      "passed": false,
+      "details": "Missing headers: ['X-Content-Type-Options', 'X-Frame-Options', 'X-XSS-Protection', 'Referrer-Policy', 'Content-Security-Policy']",
+      "timestamp": 1752102089.872104
+    },
+    {
+      "test": "CORS Configuration",
+      "passed": true,
+      "details": "Proper CORS configuration: http://malicious-site.com",
+      "timestamp": 1752102089.874819
+    },
+    {
+      "test": "Input Validation - SQL Injection: '; DROP TABLE users;",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102090.129987
+    },
+    {
+      "test": "Input Validation - SQL Injection: 1' OR '1'='1",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102090.325192
+    },
+    {
+      "test": "Input Validation - SQL Injection: 1; SELECT * FROM use",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102090.63202
+    },
+    {
+      "test": "Input Validation - SQL Injection: admin'--",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102090.816909
+    },
+    {
+      "test": "Input Validation - SQL Injection: 1 UNION SELECT * FRO",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102091.014931
+    },
+    {
+      "test": "Input Validation - XSS: <script>alert('xss')",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102091.198129
+    },
+    {
+      "test": "Input Validation - XSS: <img src=x onerror=a",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102091.393622
+    },
+    {
+      "test": "Input Validation - XSS: javascript:alert('xs",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102091.586872
+    },
+    {
+      "test": "Input Validation - XSS: <iframe src=javascri",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102091.7854238
+    },
+    {
+      "test": "Authentication - Weak Password Rejection",
+      "passed": true,
+      "details": null,
+      "timestamp": 1752102091.985536
+    },
+    {
+      "test": "Authentication - Invalid Email Rejection",
+      "passed": false,
+      "details": "Status: 422",
+      "timestamp": 1752102092.139231
+    },
+    {
+      "test": "Endpoint Security - /auth/me",
+      "passed": false,
+      "details": "Status: 422",
+      "timestamp": 1752102092.2930381
+    },
+    {
+      "test": "Endpoint Security - /favorites/1",
+      "passed": false,
+      "details": "Status: 200",
+      "timestamp": 1752102092.698747
+    },
+    {
+      "test": "Endpoint Security - /subscriptions/current",
+      "passed": false,
+      "details": "Status: 404",
+      "timestamp": 1752102092.6998248
+    },
+    {
+      "test": "File Upload Security - test.php",
+      "passed": false,
+      "details": "Status: 404",
+      "timestamp": 1752102092.700872
+    },
+    {
+      "test": "File Upload Security - test.exe",
+      "passed": false,
+      "details": "Status: 404",
+      "timestamp": 1752102092.701963
+    },
+    {
+      "test": "File Upload Security - test.sh",
+      "passed": false,
+      "details": "Status: 404",
+      "timestamp": 1752102092.70348
+    },
+    {
+      "test": "Concurrent Requests",
+      "passed": true,
+      "details": "All 10 concurrent requests succeeded",
+      "timestamp": 1752102092.715107
+    },
+    {
+      "test": "Error Handling - Information Disclosure",
+      "passed": true,
+      "details": null,
+      "timestamp": 1752102092.716393
+    }
+  ]
+}
