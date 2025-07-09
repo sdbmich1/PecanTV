@@ -29,7 +29,7 @@ app = FastAPI(
 )
 
 # Add security middleware
-# app.middleware("http")(security_middleware)  # Temporarily disabled for testing
+app.middleware("http")(security_middleware)
 
 # Configure CORS with more restrictive settings
 app.add_middleware(
