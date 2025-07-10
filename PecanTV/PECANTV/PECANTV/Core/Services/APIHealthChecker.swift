@@ -20,7 +20,7 @@ class APIHealthChecker: ObservableObject {
         
         isChecking = true
         var request = URLRequest(url: url)
-        request.timeoutInterval = 10  // Increased from 3 to 10 seconds
+        request.timeoutInterval = 30  // Increased to 30 seconds for ngrok
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {

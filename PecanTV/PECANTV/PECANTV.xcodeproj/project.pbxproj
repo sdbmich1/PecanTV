@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		F0EC80452DDD86120015ED14 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -28,7 +24,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-
 		F0EC80322DDD86100015ED14 /* PECANTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PECANTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0EC80442DDD86120015ED14 /* PECANTVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PECANTVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0EC804E2DDD86120015ED14 /* PECANTVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PECANTVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,7 +82,6 @@
 		F0EC80292DDD86100015ED14 = {
 			isa = PBXGroup;
 			children = (
-		
 				F0EC80342DDD86100015ED14 /* PECANTV */,
 				F0EC80472DDD86120015ED14 /* PECANTVTests */,
 				F0EC80512DDD86120015ED14 /* PECANTVUITests */,
@@ -228,7 +222,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-		
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
