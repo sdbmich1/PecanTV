@@ -10,7 +10,7 @@ import XCTest
 
 final class APIIntegrationTests: XCTestCase {
     
-    let baseURL = "http://localhost:8001"
+    let baseURL = "http://localhost:8000"
     
     override func setUpWithError() throws {
         super.setUp()

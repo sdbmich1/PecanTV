@@ -3,7 +3,7 @@ import Foundation
 struct APIConfig {
     // Centralized API base URL configuration
     // Change this to switch between local development and production
-    static let baseURL = "http://localhost:8001" // Use 8001 for local FastAPI
+    static let baseURL = "http://localhost:8000" // Use 8000 for local FastAPI
     
     // Alternative URLs for different environments
     static let ngrokURL = "https://YOUR_NGROK_URL" // Set this to your ngrok tunnel for remote access

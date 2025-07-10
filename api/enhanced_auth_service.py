@@ -380,6 +380,14 @@ class EnhancedAuthService:
     
     def register_user_secure(self, db: Session, user_data: schemas.UserCreate, request: Request) -> schemas.AuthResponse:
         """Register user with enhanced security validation."""
+        # Validate email format
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(email_pattern, user_data.email):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Invalid email format"
+            )
+        
         # Validate password strength
         password_validation = PasswordValidator.validate_password_strength(user_data.password)
         if not password_validation["valid"]:

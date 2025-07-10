@@ -14,13 +14,13 @@ def get_user_by_id(db: Session, user_id: int) -> Optional[models.User]:
 
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     # Use enhanced auth service for secure password handling
-    from enhanced_auth_service import EnhancedAuthService
+    from enhanced_auth_service import EnhancedAuthService, PasswordValidator
     from fastapi import HTTPException, status
     
     auth_service = EnhancedAuthService()
     
     # Validate password strength
-    password_validation = auth_service.validate_password_strength(user.password)
+    password_validation = PasswordValidator.validate_password_strength(user.password)
     if not password_validation["valid"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

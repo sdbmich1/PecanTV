@@ -117,21 +117,9 @@ class InputValidator:
         r"(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)",
         r"(\b(OR|AND)\b\s+\d+\s*=\s*\d+)",
         r"(\b(OR|AND)\b\s+['\"]\w+['\"]\s*=\s*['\"]\w+['\"])",
-        r"(\b(OR|AND)\b\s+\d+\s*['\"]\s*=\s*['\"]\d+)",
-        r"(\b(OR|AND)\b\s+['\"]\d+\s*['\"]\s*=\s*['\"]\d+)",
         r"(--|#|/\*|\*/)",
         r"(\b(WAITFOR|DELAY)\b)",
         r"(\b(BENCHMARK|SLEEP)\b)",
-        r"(\b(OR|AND)\b\s*['\"]\s*\d+\s*['\"]\s*=\s*['\"]\s*\d+\s*['\"])",
-        r"(\b(OR|AND)\b\s*\d+\s*['\"]\s*=\s*['\"]\s*\d+\s*['\"])",
-        r"(\d+\s*['\"]\s*OR\s*['\"]\s*\d+\s*=\s*['\"]\s*\d+\s*['\"])",
-        r"(\d+\s*['\"]\s*OR\s*['\"]\s*\d+\s*=\s*['\"]\s*\d+\s*['\"])",
-        r"(\d+['\"]\s*OR\s*['\"]\d+\s*=\s*['\"]\d+['\"])",
-        r"(\d+\s*['\"]\s*OR\s*['\"]\s*\d+\s*=\s*['\"]\s*\d+\s*['\"])",
-        r"(\d+['\"]\s*OR\s*['\"]\d+\s*=\s*['\"]\d+['\"])",
-        r"(1\s*['\"]\s*OR\s*['\"]\s*1\s*=\s*['\"]\s*1\s*['\"])",
-        r"(1['\"]\s*OR\s*['\"]1\s*=\s*['\"]1['\"])",
-        r"(1'\s*OR\s*'1'='1)",  # Most explicit for the test case
     ]
     
     # XSS patterns
@@ -223,8 +211,8 @@ class SecurityMiddleware:
     """Main security middleware class"""
     
     def __init__(self, 
-                 rate_limit_minute: int = 100000,  # Max for testing
-                 rate_limit_hour: int = 1000000,   # Max for testing
+                 rate_limit_minute: int = 60,
+                 rate_limit_hour: int = 1000,
                  enable_rate_limiting: bool = True,
                  enable_input_validation: bool = True,
                  enable_security_headers: bool = True):
@@ -352,30 +340,15 @@ class SecurityMiddleware:
     
     def get_security_stats(self) -> Dict:
         """Get security statistics"""
+        event_counts = defaultdict(int)
+        for event in self.security_events:
+            event_counts[event["event_type"]] += 1
+        
         return {
-            "rate_limiting": {
-                "minute_limit": self.rate_limiter.requests_per_minute,
-                "hour_limit": self.rate_limiter.requests_per_hour,
-                "active_clients": len(self.rate_limiter.minute_requests)
-            },
-            "security_events": self.security_events,
-            "input_validation": {
-                "enabled": self.enable_input_validation,
-                "patterns_checked": len(InputValidator.SQL_INJECTION_PATTERNS) + 
-                                  len(InputValidator.XSS_PATTERNS) + 
-                                  len(InputValidator.PATH_TRAVERSAL_PATTERNS)
-            },
-            "security_headers": {
-                "enabled": self.enable_security_headers,
-                "headers_count": len(SecurityHeaders.get_security_headers())
-            }
+            "total_events": len(self.security_events),
+            "event_counts": dict(event_counts),
+            "recent_events": self.security_events[-10:] if self.security_events else []
         }
-    
-    def reset_rate_limiting(self):
-        """Reset rate limiting state for all clients"""
-        self.rate_limiter.minute_requests.clear()
-        self.rate_limiter.hour_requests.clear()
-        logger.info("Rate limiting state reset for all clients")
 
 # Global security middleware instance
 security_middleware = SecurityMiddleware() 
@@ -403,7 +376,7 @@ class SecurityHeadersMiddleware:
                 "base-uri 'self'; "
                 "form-action 'self'"
             )
-}
+        }
     
     async def __call__(self, request: Request, call_next):
         response = await call_next(request)

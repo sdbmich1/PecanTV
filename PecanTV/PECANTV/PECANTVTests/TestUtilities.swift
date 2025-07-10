@@ -100,7 +100,7 @@ class TestHelpers {
 // MARK: - API Test Helpers
 class APITestHelpers {
     
-    static let baseURL = "http://localhost:8001"
+    static let baseURL = "http://localhost:8000"
     
     static func makeRequest(
         endpoint: String,

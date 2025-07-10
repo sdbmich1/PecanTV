@@ -117,6 +117,15 @@ class AuthService:
                 detail="Email already registered"
             )
         
+        # Validate password strength
+        from enhanced_auth_service import PasswordValidator
+        password_validation = PasswordValidator.validate_password_strength(user_data.password)
+        if not password_validation["valid"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Password validation failed: {', '.join(password_validation['errors'])}"
+            )
+        
         # Create Stripe customer
         try:
             stripe_customer = stripe_client.create_customer(

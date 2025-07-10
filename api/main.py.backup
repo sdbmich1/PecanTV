@@ -1,7 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Request, status
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.security import HTTPBearer
 from sqlalchemy.orm import Session
 from typing import List
 import os
@@ -19,12 +18,8 @@ import models
 import schemas
 import crud
 from subscription_routes import router as subscription_router
-from enhanced_auth_service import enhanced_auth_service
+from auth_service import AuthService
 from security_middleware import security_middleware
-from security_config import security_config
-
-# Import User model
-from models import User
 
 # Load environment variables
 load_dotenv()
@@ -38,12 +33,17 @@ app = FastAPI(
 # Add security middleware
 app.middleware("http")(security_middleware)
 
-# Configure CORS with security config settings
+# Configure CORS with more restrictive settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=security_config.CORS_ALLOWED_ORIGINS,
-    allow_credentials=security_config.CORS_ALLOW_CREDENTIALS,
-    allow_methods=security_config.CORS_ALLOWED_METHODS,
+    allow_origins=[
+        "http://localhost:3000",  # React dev server
+        "http://localhost:8080",  # Alternative dev port
+        "https://pecantv.com",    # Production domain (replace with actual domain)
+        "https://www.pecantv.com" # Production domain with www
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["X-RateLimit-Minute-Remaining", "X-RateLimit-Hour-Remaining"]
 )
@@ -60,25 +60,6 @@ if os.path.exists(static_path):
 else:
     print(f"⚠️  Static files directory not found: {static_path}")
 
-
-def get_current_user_dependency(token: str = Depends(HTTPBearer()), db: Session = Depends(get_db)) -> User:
-    """Dependency to get current user from JWT token"""
-    if not token or not hasattr(token, 'credentials') or not token.credentials:
-        logging.warning("Unauthorized access attempt: missing or invalid token")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing or invalid authentication token"
-        )
-    try:
-        user = enhanced_auth_service.get_current_user(db, token.credentials)
-        return user
-    except HTTPException as e:
-        logging.warning(f"Unauthorized access attempt: {e.detail}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials"
-        )
-
 @app.get("/")
 async def root():
     return {"message": "Welcome to PecanTV API"}
@@ -89,25 +70,22 @@ def health_check():
 
 @app.get("/security/stats")
 def get_security_stats():
-    """Get security statistics"""
+    """Get security statistics and monitoring data"""
     return security_middleware.get_security_stats()
 
-@app.post("/security/reset-rate-limit")
-def reset_rate_limiting():
-    """Reset rate limiting state (for testing purposes)"""
-    security_middleware.reset_rate_limiting()
-    return {"message": "Rate limiting state reset successfully"}
+# @app.get("/security/test")
+# def test_security():
+#     """Test security endpoint"""
+#     return {"message": "Security test endpoint working"}
 
-# Add missing endpoints for security tests
-@app.get("/subscription/check")
-def check_subscription():
-    """Check subscription status - placeholder endpoint"""
-    return {"status": "active", "plan": "premium"}
+# @app.get("/test-security")
+# def test_security_alt():
+#     """Test security endpoint with different path"""
+#     return {"message": "Security test endpoint working (alt path)"}
 
 @app.get("/test-cdn")
 def test_cdn():
-    """Test CDN endpoint - placeholder endpoint"""
-    return {"message": "CDN test endpoint"}
+    return {"message": "CDN test endpoint working"}
 
 # CDN-style image optimization endpoint
 
@@ -121,7 +99,6 @@ class URLValidator:
         '.yourdomain.com'  # Add your domains
     ]
     
-    
     BLOCKED_IP_RANGES = [
         '127.0.0.0/8',      # Localhost
         '10.0.0.0/8',       # Private network
@@ -130,12 +107,7 @@ class URLValidator:
         '169.254.0.0/16',   # Link-local
         '::1/128',          # IPv6 localhost
         'fe80::/10',        # IPv6 link-local
-        '0.0.0.0/8',        # Current network
-        '224.0.0.0/4',      # Multicast
-        '240.0.0.0/4',      # Reserved
-        '255.255.255.255/32', # Broadcast
     ]
-
     
     @classmethod
     def is_allowed_url(cls, url: str) -> bool:
@@ -149,43 +121,22 @@ class URLValidator:
                 
                 # Block private and loopback IPs
                 if ip.is_private or ip.is_loopback:
-                    print(f"❌ SSRF blocked: Private/loopback IP detected: {parsed.hostname}")
                     return False
                 
                 # Check against blocked IP ranges
                 for blocked_range in cls.BLOCKED_IP_RANGES:
                     if ip in ipaddress.ip_network(blocked_range):
-                        print(f"❌ SSRF blocked: IP in blocked range {blocked_range}: {parsed.hostname}")
                         return False
-                
-                # Allow public IPs
-                print(f"✅ SSRF check passed: Public IP allowed: {parsed.hostname}")
-                return True
                         
             except ValueError:
                 # Not an IP address, check domain
-                hostname = parsed.hostname.lower()
-                
-                # Check if it's a localhost domain
-                if hostname in ['localhost', '127.0.0.1', '::1']:
-                    print(f"❌ SSRF blocked: Localhost domain detected: {hostname}")
-                    return False
-                
-                # Check domain against allowed suffixes (for specific services)
-                if any(hostname.endswith(suffix) for suffix in cls.ALLOWED_DOMAIN_SUFFIXES):
-                    print(f"✅ SSRF check passed: Allowed domain suffix: {hostname}")
-                    return True
-                
-                # For other domains, check if they're not private/local
-                if not hostname.startswith(('localhost', '127.', '192.168.', '10.', '172.')):
-                    print(f"✅ SSRF check passed: Public domain allowed: {hostname}")
-                    return True
-                else:
-                    print(f"❌ SSRF blocked: Private domain detected: {hostname}")
-                    return False
+                pass
             
-        except Exception as e:
-            print(f"❌ SSRF validation error: {e}")
+            # Check domain against allowed suffixes
+            hostname = parsed.hostname.lower()
+            return any(hostname.endswith(suffix) for suffix in cls.ALLOWED_DOMAIN_SUFFIXES)
+            
+        except Exception:
             return False
 
 
@@ -215,15 +166,8 @@ async def cdn_image_optimization(params: str, url: str = None, request: Request 
         print(f"🔍 CDN endpoint requested for url: {url}")
 
         # Handle remote URLs (GCS, Cloudflare, Dropbox, etc)
-        if url.startswith('http://') or url.startswith('https://'):
-            # Validate URL to prevent SSRF attacks
-            if not URLValidator.is_allowed_url(url):
-                print(f"❌ SSRF attempt blocked: {url}")
-                raise HTTPException(
-                    status_code=400, 
-                    detail="URL not allowed for security reasons"
-                )
-            
+        # Skip localhost URLs as they should be handled as local files
+        if (url.startswith('http://') or url.startswith('https://')) and not url.startswith('http://localhost:') and not url.startswith('http://127.0.0.1:'):
             try:
                 response = requests.get(url, timeout=10)
                 if response.status_code == 200:
@@ -293,22 +237,22 @@ async def cdn_image_optimization(params: str, url: str = None, request: Request 
 
 # Enhanced Authentication endpoints with Stripe integration
 @app.post("/auth/register", response_model=schemas.AuthResponse)
-def register_user(user: schemas.UserCreate, db: Session = Depends(get_db), request: Request = None):
-    """Register a new user with enhanced security validation"""
-    return enhanced_auth_service.register_user_secure(db, user, request)
+def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    """Register a new user with Stripe customer creation and subscription status"""
+    return AuthService.register_user(db, user)
 
 @app.post("/auth/login", response_model=schemas.AuthResponse)
-def login_user(user_credentials: schemas.UserLogin, db: Session = Depends(get_db), request: Request = None):
-    """Login user with enhanced security validation"""
-    return enhanced_auth_service.login_user_secure(db, user_credentials, request)
+def login_user(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
+    """Login user with subscription status check"""
+    return AuthService.login_user(db, user_credentials)
 
 @app.get("/auth/me", response_model=schemas.UserWithSubscription)
 def get_current_user(token: str, db: Session = Depends(get_db)):
     """Get current user with subscription status"""
-    user = enhanced_auth_service.get_current_user(db, token)
+    user = AuthService.get_current_user(db, token)
     
     # Get subscription status
-    subscription_status = enhanced_auth_service.get_user_subscription_status(db, user.id)
+    subscription_status = AuthService.get_user_subscription_status(db, user.id)
     
     # Create user with subscription info
     user_with_subscription = schemas.UserWithSubscription(
@@ -330,7 +274,7 @@ def get_current_user(token: str, db: Session = Depends(get_db)):
 def get_user_favorites(
     user_id: int, 
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user_dependency)
+    current_user: User = Depends(get_current_user)
 ):
     """Get all favorites for a user"""
     # Authorization check
@@ -375,15 +319,8 @@ def get_user_favorites(
     }
 
 @app.post("/favorites/{user_id}/toggle/{content_id}")
-def toggle_favorite(user_id: int, content_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user_dependency)):
+def toggle_favorite(user_id: int, content_id: int, db: Session = Depends(get_db)):
     """Toggle favorite status for a content item"""
-    # Authorization check
-    if current_user.id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied: You can only modify your own favorites"
-        )
-    
     result = crud.toggle_user_favorite(db, user_id=user_id, content_id=content_id)
     return {
         "success": True,
@@ -584,6 +521,22 @@ def process_episodes_with_fallbacks(episodes: List[models.Episode], series_title
         }
         processed_episodes.append(episode_dict)
     return processed_episodes
+
+# @app.get("/debug/episodes/{series_id}")
+# def debug_episodes(series_id: int, db: Session = Depends(get_db)):
+#     """Debug endpoint to check episode poster URLs"""
+#     episodes = crud.get_episodes(db, content_id=series_id, limit=3)
+#     debug_data = []
+#     for episode in episodes:
+#         debug_data.append({
+#             "id": episode.id,
+#             "title": episode.title,
+#             "poster_url": episode.poster_url,
+#             "thumbnail_url": episode.thumbnail_url,
+#             "has_poster_url": hasattr(episode, 'poster_url'),
+#             "poster_url_type": type(episode.poster_url).__name__ if hasattr(episode, 'poster_url') else None
+#         })
+#     return debug_data
 
 if __name__ == "__main__":
     import uvicorn

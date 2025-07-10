@@ -65,7 +65,7 @@ class ImageOptimizationService: ObservableObject {
         
         // CDN Configuration - Update this when CDN is set up
         // CDN Configuration - Currently using direct URLs
-        // let cloudflareDomain = "127.0.0.1:8001"  // Local development
+        // let cloudflareDomain = "127.0.0.1:8000"  // Local development
         // let cloudflareDomain = "images.pecantv.com"  // Production CDN
         
         // Build optimization parameters
