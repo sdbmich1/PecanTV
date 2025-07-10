@@ -7,8 +7,6 @@ import os
 from dotenv import load_dotenv
 from fastapi.responses import FileResponse
 import requests
-from urllib.parse import urlparse
-import ipaddress
 import io
 import urllib.parse
 import logging
@@ -88,59 +86,7 @@ def test_cdn():
     return {"message": "CDN test endpoint working"}
 
 # CDN-style image optimization endpoint
-
-class URLValidator:
-    """Validate URLs to prevent SSRF attacks"""
-    
-    ALLOWED_DOMAIN_SUFFIXES = [
-        '.googleapis.com',
-        '.cloudflare.com',
-        '.amazonaws.com',
-        '.yourdomain.com'  # Add your domains
-    ]
-    
-    BLOCKED_IP_RANGES = [
-        '127.0.0.0/8',      # Localhost
-        '10.0.0.0/8',       # Private network
-        '172.16.0.0/12',    # Private network
-        '192.168.0.0/16',   # Private network
-        '169.254.0.0/16',   # Link-local
-        '::1/128',          # IPv6 localhost
-        'fe80::/10',        # IPv6 link-local
-    ]
-    
-    @classmethod
-    def is_allowed_url(cls, url: str) -> bool:
-        """Check if URL is allowed (no internal IPs, valid domain)"""
-        try:
-            parsed = urlparse(url)
-            
-            # Check if it's an IP address
-            try:
-                ip = ipaddress.ip_address(parsed.hostname)
-                
-                # Block private and loopback IPs
-                if ip.is_private or ip.is_loopback:
-                    return False
-                
-                # Check against blocked IP ranges
-                for blocked_range in cls.BLOCKED_IP_RANGES:
-                    if ip in ipaddress.ip_network(blocked_range):
-                        return False
-                        
-            except ValueError:
-                # Not an IP address, check domain
-                pass
-            
-            # Check domain against allowed suffixes
-            hostname = parsed.hostname.lower()
-            return any(hostname.endswith(suffix) for suffix in cls.ALLOWED_DOMAIN_SUFFIXES)
-            
-        except Exception:
-            return False
-
-
-@app.get('/cdn-cgi/image/{params:path}')
+@app.get("/cdn-cgi/image/{params:path}")
 @app.head("/cdn-cgi/image/{params:path}")
 async def cdn_image_optimization(params: str, url: str = None, request: Request = None):
     """

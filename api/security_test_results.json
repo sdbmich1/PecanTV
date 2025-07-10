@@ -1,146 +1,28 @@
 {
-  "total_tests": 23,
-  "passed_tests": 4,
-  "failed_tests": 19,
-  "success_rate": 17.391304347826086,
+  "total_tests": 4,
+  "passed_tests": 2,
+  "failed_tests": 2,
+  "success_rate": 50.0,
   "results": [
     {
-      "test": "Rate Limiting - Normal Requests",
-      "passed": true,
-      "details": "5 requests succeeded",
-      "timestamp": 1752103654.741806
+      "test": "Access Control",
+      "passed": false,
+      "details": "Expected 403, got 200"
     },
     {
-      "test": "Rate Limiting - Limit Enforcement",
+      "test": "SQL Injection Protection",
       "passed": true,
-      "details": "Rate limited after 23 requests",
-      "timestamp": 1752103654.767251
+      "details": "Blocked: '; DROP TABLE users;..."
     },
     {
       "test": "Security Headers",
-      "passed": false,
-      "details": "Missing headers: ['X-Content-Type-Options', 'X-Frame-Options', 'X-XSS-Protection', 'Referrer-Policy', 'Content-Security-Policy']",
-      "timestamp": 1752103654.768107
-    },
-    {
-      "test": "CORS Configuration",
       "passed": true,
-      "details": "CORS headers not present (secure)",
-      "timestamp": 1752103654.7689779
+      "details": "All required headers present"
     },
     {
-      "test": "Input Validation - SQL Injection: '; DROP TABLE users;",
+      "test": "Debug Endpoints",
       "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.7699358
-    },
-    {
-      "test": "Input Validation - SQL Injection: 1' OR '1'='1",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.770983
-    },
-    {
-      "test": "Input Validation - SQL Injection: 1; SELECT * FROM use",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.771948
-    },
-    {
-      "test": "Input Validation - SQL Injection: admin'--",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.772788
-    },
-    {
-      "test": "Input Validation - SQL Injection: 1 UNION SELECT * FRO",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.7736351
-    },
-    {
-      "test": "Input Validation - XSS: <script>alert('xss')",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.774517
-    },
-    {
-      "test": "Input Validation - XSS: <img src=x onerror=a",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.77533
-    },
-    {
-      "test": "Input Validation - XSS: javascript:alert('xs",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.776395
-    },
-    {
-      "test": "Input Validation - XSS: <iframe src=javascri",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.777379
-    },
-    {
-      "test": "Authentication - Weak Password Rejection",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.778817
-    },
-    {
-      "test": "Authentication - Invalid Email Rejection",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.779733
-    },
-    {
-      "test": "Endpoint Security - /auth/me",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.780579
-    },
-    {
-      "test": "Endpoint Security - /favorites/1",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.7814121
-    },
-    {
-      "test": "Endpoint Security - /subscriptions/current",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.782284
-    },
-    {
-      "test": "File Upload Security - test.php",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.7831712
-    },
-    {
-      "test": "File Upload Security - test.exe",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.784039
-    },
-    {
-      "test": "File Upload Security - test.sh",
-      "passed": false,
-      "details": "Status: 429",
-      "timestamp": 1752103654.78486
-    },
-    {
-      "test": "Concurrent Requests",
-      "passed": false,
-      "details": "Only 0/10 requests succeeded",
-      "timestamp": 1752103654.79146
-    },
-    {
-      "test": "Error Handling - Information Disclosure",
-      "passed": true,
-      "details": null,
-      "timestamp": 1752103654.7925608
+      "details": "Endpoint /debug/episodes/1 still accessible"
     }
   ]
 }

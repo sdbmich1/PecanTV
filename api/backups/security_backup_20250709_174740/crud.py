@@ -162,37 +162,10 @@ def search_content(
     skip: int = 0,
     limit: int = 100
 ) -> List[models.Content]:
-    # Input validation
-    from security_middleware import InputValidator
-    from fastapi import HTTPException, status
-    
-    if not query or len(query.strip()) < 2:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Search query must be at least 2 characters"
-        )
-    
-    if len(query) > 100:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Search query too long (max 100 characters)"
-        )
-    
-    # Sanitize input
-    is_valid, error_msg = InputValidator.validate_input(query, "search_query")
-    if not is_valid:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid search query: {error_msg}"
-        )
-    
-    # Sanitize the query
-    sanitized_query = InputValidator.sanitize_input(query)
-    
     return db.query(models.Content).filter(
         or_(
-            models.Content.title.ilike(f"%{sanitized_query}%"),
-            models.Content.description.ilike(f"%{sanitized_query}%")
+            models.Content.title.ilike(f"%{query}%"),
+            models.Content.description.ilike(f"%{query}%")
         )
     ).offset(skip).limit(limit).all()
 
