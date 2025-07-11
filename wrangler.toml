@@ -1,0 +1,14 @@
+name = "pecantv-api"
+main = "api/main.py"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "pecantv-api"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id" 

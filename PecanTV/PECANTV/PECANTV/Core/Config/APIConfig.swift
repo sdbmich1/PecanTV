@@ -3,11 +3,11 @@ import Foundation
 struct APIConfig {
     // Centralized API base URL configuration
     // Change this to switch between local development and production
-    static let baseURL = "https://faf0ee880de4.ngrok-free.app" // ngrok tunnel for iPhone testing
+    static let baseURL = "https://pecantv-api-production.up.railway.app" // Railway production deployment
     
     // Alternative URLs for different environments
     static let ngrokURL = "https://YOUR_NGROK_URL" // Set this to your ngrok tunnel for remote access
-    static let productionURL = "https://api.pecantv.com"
+    static let productionURL = "https://pecantv-api-production.up.railway.app"
     
     // Endpoints
     enum Endpoints {

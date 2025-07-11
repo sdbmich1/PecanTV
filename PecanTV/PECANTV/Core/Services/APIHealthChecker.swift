@@ -2,7 +2,7 @@ import Foundation
 
 class APIHealthChecker {
     func checkHealth() {
-        guard let url = URL(string: "https://77b9-192-69-240-171.ngrok-free.app/health") else {
+        guard let url = URL(string: "https://pecantv-api-production.up.railway.app/health") else {
             print("Invalid URL")
             return
         }

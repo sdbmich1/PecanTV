@@ -100,7 +100,7 @@ class TestHelpers {
 // MARK: - API Test Helpers
 class APITestHelpers {
     
-    static let baseURL = "http://localhost:8000"
+    static let baseURL = "https://pecantv-api-production.up.railway.app"
     
     static func makeRequest(
         endpoint: String,

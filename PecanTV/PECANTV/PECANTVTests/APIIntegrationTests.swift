@@ -10,7 +10,7 @@ import XCTest
 
 final class APIIntegrationTests: XCTestCase {
     
-    let baseURL = "http://localhost:8000"
+    let baseURL = "https://pecantv-api-production.up.railway.app"
     
     override func setUpWithError() throws {
         super.setUp()
