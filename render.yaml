@@ -3,7 +3,7 @@ services:
     name: pecantv-api
     runtime: python
     buildCommand: pip install -r api/requirements.txt
-    startCommand: cd api && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: cd api && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
         value: postgresql://neondb_owner:npg_K1HJErMqmX8g@ep-blue-cherry-a6427e0b-pooler.us-west-2.aws.neon.tech/neondb?sslmode=require
