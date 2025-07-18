@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-07-17T14:54:10.958585",
+  "cold_launch_time": 6.557106256484985,
+  "warm_launch_time": 2.284970998764038,
+  "app_size_mb": 9.443760871887207,
+  "recommendations": [
+    "Optimize cold launch time - consider lazy loading and reducing initial setup",
+    "Optimize warm launch time - reduce view initialization overhead"
+  ]
+}

@@ -13,11 +13,11 @@ struct TrendingNowView: View {
         VStack(alignment: .leading, spacing: 4) {
             // Header with title and scroll buttons
             HStack {
-                Text("Trending Now")
+                Text("Trending Films")
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.black)
-                    .accessibilityIdentifier("TrendingNowLabel")
+                    .accessibilityIdentifier("TrendingFilmsLabel")
                 
                 Spacer()
                 
@@ -39,7 +39,7 @@ struct TrendingNowView: View {
                                 .background(Color.black.opacity(0.6))
                                 .clipShape(Circle())
                         }
-                        .accessibilityIdentifier("TrendingNowLeftButton")
+                        .accessibilityIdentifier("FilmsAZLeftButton")
                         .disabled(currentIndex == 0)
                         .opacity(currentIndex == 0 ? 0.5 : 1.0)
                         
@@ -58,7 +58,7 @@ struct TrendingNowView: View {
                                 .background(Color.black.opacity(0.6))
                                 .clipShape(Circle())
                         }
-                        .accessibilityIdentifier("TrendingNowRightButton")
+                        .accessibilityIdentifier("FilmsAZRightButton")
                         .disabled(currentIndex >= content.count - 1)
                         .opacity(currentIndex >= content.count - 1 ? 0.5 : 1.0)
                     }
@@ -66,7 +66,7 @@ struct TrendingNowView: View {
             }
             .padding(.horizontal)
             .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("TrendingNowHeader")
+            .accessibilityIdentifier("FilmsAZHeader")
             
             // Content carousel
             if !content.isEmpty {
@@ -159,7 +159,7 @@ struct TrendingNowView: View {
                     }
                 }
                 .frame(height: 200)
-                .accessibilityIdentifier("TrendingNowCarousel")
+                .accessibilityIdentifier("FilmsAZCarousel")
             } else {
                 // Loading state when no content
                 Rectangle()
@@ -169,12 +169,12 @@ struct TrendingNowView: View {
                         VStack(spacing: 12) {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .gray))
-                            Text("Loading trending content...")
+                            Text("Loading films...")
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
                     )
-                    .accessibilityIdentifier("TrendingNowLoadingState")
+                    .accessibilityIdentifier("FilmsAZLoadingState")
             }
         }
         .accessibilityElement(children: .contain)

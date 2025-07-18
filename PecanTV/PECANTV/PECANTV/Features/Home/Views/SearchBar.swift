@@ -10,13 +10,19 @@ struct SearchBar: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.gray)
+                .font(.system(size: 18)) // Larger for iPad
+                .frame(width: 44, height: 44) // Larger touch target for iPad
+                .contentShape(Rectangle())
             
             TextField(placeholder, text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
                 .foregroundColor(.black)
+                .font(.system(size: 18)) // Larger font for iPad
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
             
             if !text.isEmpty {
                 Button {
@@ -24,15 +30,19 @@ struct SearchBar: View {
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.gray)
-                        .font(.system(size: 16))
+                        .font(.system(size: 20)) // Larger for iPad
                 }
                 .buttonStyle(PlainButtonStyle())
+                .frame(width: 44, height: 44) // Larger touch target for iPad
+                .contentShape(Rectangle())
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(Color.gray.opacity(0.1))
         .cornerRadius(25)
+        .frame(minHeight: 56) // Larger minimum height for iPad
+        .contentShape(Rectangle())
     }
 }
 

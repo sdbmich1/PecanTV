@@ -20,17 +20,20 @@ struct EpisodesView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // Back button
                     Button(action: { dismiss() }) {
-                        HStack {
+                        HStack(spacing: 8) {
                             Image(systemName: "chevron.left")
+                                .font(.title2)
                             Text("Back")
+                                .font(.headline)
                         }
-                        .font(.headline)
                         .foregroundColor(.black)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .accessibilityLabel("Back to previous screen")
                     .padding(.horizontal)
                     .padding(.top, 8)
                     
@@ -447,19 +450,65 @@ struct EpisodeDetailsSection: View {
                 showVideoPlayer = true
             }) {
                 HStack {
-                    Image(systemName: "play.fill")
+                    Image(systemName: getEpisodeButtonIcon())
                     Text("Watch Episode")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.blue)
+                .background(getEpisodeButtonColor())
                 .foregroundColor(.white)
                 .cornerRadius(10)
             }
+            .disabled(!isEpisodeAvailable())
+            .allowsHitTesting(isEpisodeAvailable())
+            .overlay(
+                !isEpisodeAvailable() ? 
+                VStack {
+                    Spacer()
+                    Text(getEpisodeButtonMessage())
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 8)
+                        .padding(.bottom, 4)
+                } : nil
+            )
             .padding(.horizontal)
         }
         .fullScreenCover(isPresented: $showVideoPlayer) {
             videoPlayerContent
+        }
+    }
+    
+    // MARK: - Helper Functions
+    
+    private func isEpisodeAvailable() -> Bool {
+        return !episode.contentURL.isEmpty && episode.contentURL != "NONE"
+    }
+    
+    private func getEpisodeButtonIcon() -> String {
+        if isEpisodeAvailable() {
+            return "play.fill"
+        } else {
+            return "play.slash"
+        }
+    }
+    
+    private func getEpisodeButtonColor() -> Color {
+        if isEpisodeAvailable() {
+            return Color.blue
+        } else {
+            return Color.gray
+        }
+    }
+    
+    private func getEpisodeButtonMessage() -> String {
+        if episode.contentURL.isEmpty || episode.contentURL == "NONE" {
+            return "No video available"
+        } else if episode.contentURL.contains("storage.googleapis.com") {
+            return "Video requires access setup"
+        } else {
+            return "Video unavailable"
         }
     }
 }

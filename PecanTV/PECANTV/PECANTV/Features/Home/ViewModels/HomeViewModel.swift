@@ -85,6 +85,7 @@ class HomeViewModel: ObservableObject {
     @Published var films: [MediaContent] = []
     @Published var isLoading = false
     @Published var error: Error?
+    @Published var hasLoadedContent = false
     
     private let driveService = GoogleDriveService.shared
     private let contentLoader: ContentLoader
@@ -92,10 +93,18 @@ class HomeViewModel: ObservableObject {
     
     init() {
         self.contentLoader = ContentLoader(driveService: driveService)
-        loadContent()
+        print("📱 HomeViewModel initialized - content loading deferred")
+        // Don't automatically load content - let the view decide when to load
     }
     
     func loadContent() {
+        // Prevent multiple simultaneous loads
+        guard !isLoading && !hasLoadedContent else {
+            print("📱 HomeViewModel: Content already loading or loaded")
+            return
+        }
+        
+        print("🔄 HomeViewModel: Starting content load...")
         isLoading = true
         error = nil
         
@@ -105,11 +114,14 @@ class HomeViewModel: ObservableObject {
                 await MainActor.run {
                     self.films = loadedContent
                     self.isLoading = false
+                    self.hasLoadedContent = true
+                    print("✅ HomeViewModel: Content loaded successfully (\(loadedContent.count) items)")
                 }
             } catch {
                 await MainActor.run {
                     self.error = error
                     self.isLoading = false
+                    print("❌ HomeViewModel: Failed to load content: \(error.localizedDescription)")
                 }
             }
         }

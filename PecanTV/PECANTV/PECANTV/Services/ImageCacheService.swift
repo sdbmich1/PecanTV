@@ -222,18 +222,37 @@ class ImageCacheService: ObservableObject {
     }
     
     private func loadCacheStatistics() {
-        // Load from UserDefaults or other persistent storage
-        cacheHits = UserDefaults.standard.integer(forKey: "ImageCacheHits")
-        cacheMisses = UserDefaults.standard.integer(forKey: "ImageCacheMisses")
+        // Load from UserDefaults with better error handling
+        let defaults = UserDefaults.standard
+        
+        // Safely load cache hits
+        if let hits = defaults.object(forKey: "ImageCacheHits") as? Int {
+            cacheHits = hits
+        } else {
+            cacheHits = 0
+            defaults.set(0, forKey: "ImageCacheHits")
+        }
+        
+        // Safely load cache misses
+        if let misses = defaults.object(forKey: "ImageCacheMisses") as? Int {
+            cacheMisses = misses
+        } else {
+            cacheMisses = 0
+            defaults.set(0, forKey: "ImageCacheMisses")
+        }
+        
+        print("📊 ImageCacheService: Loaded statistics - Hits: \(cacheHits), Misses: \(cacheMisses)")
     }
     
     private func trackPerformance(url: String, loadTime: TimeInterval, success: Bool) {
         loadTimes[url] = loadTime
         
-        // Save statistics periodically
+        // Save statistics periodically with better error handling
         if (cacheHits + cacheMisses) % 10 == 0 {
-            UserDefaults.standard.set(cacheHits, forKey: "ImageCacheHits")
-            UserDefaults.standard.set(cacheMisses, forKey: "ImageCacheMisses")
+            let defaults = UserDefaults.standard
+            defaults.set(cacheHits, forKey: "ImageCacheHits")
+            defaults.set(cacheMisses, forKey: "ImageCacheMisses")
+            defaults.synchronize()
         }
     }
 }

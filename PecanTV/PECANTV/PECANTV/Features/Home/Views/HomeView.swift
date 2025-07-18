@@ -29,21 +29,14 @@ struct HomeView: View {
             let contentGenre = content.genre.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
             let selectedGenreLower = selectedGenre.lowercased()
             
-            // Debug logging
-            print("🔍 Filtering: '\(content.title)' (genre: '\(content.genre)') against '\(selectedGenre)'")
-            
             // Simple genre matching
-            let matches = contentGenre.contains(selectedGenreLower) || selectedGenreLower.contains(contentGenre)
-            print("🔍 Match result: \(matches)")
-            
-            return matches
+            return contentGenre.contains(selectedGenreLower) || selectedGenreLower.contains(contentGenre)
         }
         
         let searchFiltered = searchText.isEmpty ? genreFiltered : genreFiltered.filter { 
             $0.title.localizedCaseInsensitiveContains(searchText) 
         }
         
-        print("🔍 Filtered content count: \(searchFiltered.count) for genre '\(selectedGenre)'")
         return searchFiltered
     }
     
@@ -60,8 +53,8 @@ struct HomeView: View {
             $0.title.localizedCaseInsensitiveContains(searchText) 
         }
         
-        print("🔍 Filtered films count: \(searchFiltered.count) for genre '\(selectedGenre)'")
-        return searchFiltered
+        // Sort alphabetically by title
+        return searchFiltered.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
     }
     
     var filteredTVSeries: [MediaContent] {
@@ -77,12 +70,12 @@ struct HomeView: View {
             $0.title.localizedCaseInsensitiveContains(searchText) 
         }
         
-        print("🔍 Filtered TV series count: \(searchFiltered.count) for genre '\(selectedGenre)'")
-        return searchFiltered
+        // Sort alphabetically by title
+        return searchFiltered.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color.white.edgesIgnoringSafeArea(.all)
                 
@@ -148,29 +141,62 @@ struct HomeView: View {
                 } else {
                     VStack(spacing: 0) {
                         // Search and Filter Bar at the top
-                        HStack(spacing: 12) {
-                            // Search Bar
-                            SearchBar(text: $searchText, placeholder: "Search movies and shows...")
-                            
-                            // Genre Dropdown
-                            Menu {
-                                ForEach(genres, id: \.self) { genre in
-                                    Button(genre) {
-                                        selectedGenre = genre
+                        Group {
+                            if UIDevice.current.userInterfaceIdiom == .pad {
+                                // iPad: Stacked vertically
+                                VStack(spacing: 12) {
+                                    SearchBar(text: $searchText, placeholder: "Search movies and shows...")
+                                    
+                                    Button(action: {
+                                        showGenrePicker = true
+                                    }) {
+                                        HStack {
+                                            Text(selectedGenre)
+                                                .foregroundColor(.black)
+                                                .lineLimit(1)
+                                                .font(.system(size: 18))
+                                            Spacer()
+                                            Image(systemName: "chevron.down")
+                                                .foregroundColor(.gray)
+                                                .font(.system(size: 16))
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 16)
+                                        .background(Color.gray.opacity(0.1))
+                                        .cornerRadius(25)
+                                        .frame(minHeight: 56)
                                     }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .contentShape(Rectangle())
                                 }
-                            } label: {
-                                HStack {
-                                    Text(selectedGenre)
-                                        .foregroundColor(.black)
-                                        .lineLimit(1)
-                                    Image(systemName: "chevron.down")
-                                        .foregroundColor(.gray)
+                            } else {
+                                // iPhone: Side by side
+                                HStack(spacing: 12) {
+                                    SearchBar(text: $searchText, placeholder: "Search...")
+                                        .frame(maxWidth: .infinity)
+                                    
+                                    Button(action: {
+                                        showGenrePicker = true
+                                    }) {
+                                        HStack {
+                                            Text(selectedGenre)
+                                                .foregroundColor(.black)
+                                                .lineLimit(1)
+                                                .font(.system(size: 16))
+                                            Image(systemName: "chevron.down")
+                                                .foregroundColor(.gray)
+                                                .font(.system(size: 14))
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 12)
+                                        .background(Color.gray.opacity(0.1))
+                                        .cornerRadius(20)
+                                        .frame(minHeight: 44)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .contentShape(Rectangle())
+                                    .frame(width: 120)
                                 }
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 12)
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(25)
                             }
                         }
                         .padding(.horizontal)
@@ -185,12 +211,13 @@ struct HomeView: View {
                                     FeaturedContentView(content: featuredContent)
                                 }
                                 
-                                // Trending Now Section
+                                // Films Section (Alphabetical Order - Check for Duplicates)
+                                // Both carousels are now sorted alphabetically to help identify any duplicate content
                                 if !filteredFilms.isEmpty {
                                     TrendingNowView(content: filteredFilms)
                                 }
                                 
-                                // Hot Series Section
+                                // TV Series Section (Alphabetical Order - Check for Duplicates)
                                 if !filteredTVSeries.isEmpty {
                                     LandscapeCarouselView(title: "Hot Series", content: filteredTVSeries)
                                 }
@@ -205,18 +232,27 @@ struct HomeView: View {
                     }
                 }
             }
-            .navigationTitle("PECAN TV")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Image("pecantv_logo")
                         .resizable()
-                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
                         .frame(height: 30)
                 }
             }
+            .sheet(isPresented: $showGenrePicker) {
+                GenrePickerView(selectedGenre: $selectedGenre)
+            }
             .onAppear {
                 // Content will load automatically via ContentViewModel
+                print("🏠 HomeView appeared")
+                
+                // If no content is loaded and API is available, try loading content
+                if viewModel.films.isEmpty && viewModel.tvSeries.isEmpty && !viewModel.isLoading && healthChecker.isAPIAvailable {
+                    print("🔄 HomeView: No content loaded, triggering content load")
+                    viewModel.loadContent()
+                }
             }
         }
     }
@@ -322,18 +358,20 @@ struct FeaturedContentView: View {
             }
         }
         .sheet(isPresented: $showDetail) {
-            ContentDetailView(content: content, favoritesManager: favoritesManager)
+            NavigationStack {
+                ContentDetailView(content: content, favoritesManager: favoritesManager)
+            }
         }
     }
 }
 
 struct GenrePickerView: View {
     @Binding var selectedGenre: String
-    let genres: [String]
+    let genres = ["All Genres", "Action", "Adventure", "Animals", "Anime", "Children", "Comedy", "Crime", "Documentary", "Drama", "Educational", "Faith", "Fantasy", "Fashion", "Food", "Gaming", "Health", "History", "Horror", "Martial Arts", "Mystery", "Nature", "News", "Reality", "Romance", "Science Fiction", "Science", "Sitcom", "Special", "Sports", "Technology", "Thriller", "Western"]
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(genres, id: \.self) { genre in
@@ -344,24 +382,28 @@ struct GenrePickerView: View {
                             HStack {
                                 Text(genre)
                                     .foregroundColor(.primary)
+                                    .font(.system(size: 18)) // Larger font for iPad
                                 Spacer()
                                 if genre == selectedGenre {
                                     Image(systemName: "checkmark")
                                         .foregroundColor(.blue)
+                                        .font(.system(size: 18))
                                 }
                             }
-                            .padding(.horizontal)
-                            .padding(.vertical, 12)
+                            .padding(.horizontal, 24) // More padding for iPad
+                            .padding(.vertical, 20) // Larger touch target for iPad
+                            .frame(maxWidth: .infinity)
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(PlainButtonStyle())
                         
                         if genre != genres.last {
                             Divider()
-                                .padding(.leading)
+                                .padding(.leading, 24)
                         }
                     }
                 }
+                .padding(.vertical)
             }
             .navigationTitle("Select Genre")
             .navigationBarTitleDisplayMode(.inline)
@@ -370,9 +412,13 @@ struct GenrePickerView: View {
                     Button("Done") {
                         dismiss()
                     }
+                    .font(.system(size: 18)) // Larger font for iPad
+                    .frame(minWidth: 60, minHeight: 44) // Larger touch target
                 }
             }
         }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
     }
 }
 

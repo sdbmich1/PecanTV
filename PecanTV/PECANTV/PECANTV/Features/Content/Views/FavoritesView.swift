@@ -23,6 +23,7 @@ struct FavoritesView: View {
                     
                     if favoritesManager.favoriteContent.isEmpty {
                         VStack(spacing: 16) {
+                            Spacer()
                             Image(systemName: "heart.slash")
                                 .font(.system(size: 48))
                                 .foregroundColor(.gray)
@@ -34,6 +35,7 @@ struct FavoritesView: View {
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal)
+                            Spacer()
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
@@ -51,13 +53,34 @@ struct FavoritesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 print("🔍 FavoritesView appeared with \(favoritesManager.favoriteContent.count) favorite items")
+                print("🔍 Favorite IDs: \(favoritesManager.favoriteIds)")
+                print("🔍 Available content count: \(allContent.count)")
                 print("🔍 Favorite titles: \(favoritesManager.favoriteContent.map { $0.title })")
+                
                 // Refresh favorites when view appears
                 favoritesManager.loadFavorites()
+                
+                // Also try to update from available content if we have favorite IDs but no content
+                if !favoritesManager.favoriteIds.isEmpty && favoritesManager.favoriteContent.isEmpty {
+                    print("🔍 Attempting to populate favorites from available content")
+                    favoritesManager.updateFavoriteContentFromAvailableContent(allContent)
+                }
+                
+                // Force a UI update after a short delay to ensure data is loaded
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    print("🔍 FavoritesView delayed check - Favorite content count: \(favoritesManager.favoriteContent.count)")
+                    print("🔍 FavoritesView delayed check - Favorite IDs: \(favoritesManager.favoriteIds)")
+                }
             }
             .onReceive(favoritesManager.$favoriteContent) { _ in
                 // This will trigger a view update when favorites change
                 print("🔍 Favorites updated: \(favoritesManager.favoriteContent.count) items")
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .contentLoaded)) { _ in
+                // Refresh favorites when content is loaded
+                print("🔍 Content loaded notification received, refreshing favorites")
+                favoritesManager.loadFavorites()
+                favoritesManager.updateFavoriteContentFromAvailableContent(allContent)
             }
         }
     }

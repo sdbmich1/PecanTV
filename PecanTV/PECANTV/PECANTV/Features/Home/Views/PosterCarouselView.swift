@@ -77,9 +77,9 @@ struct PosterCarouselView: View {
                     }
                     .padding(.horizontal, 20)
                 }
-                .onChange(of: currentIndex) { newIndex in
+                .onChange(of: currentIndex) { oldValue, newValue in
                     withAnimation(.easeInOut(duration: 0.3)) {
-                        proxy.scrollTo(newIndex, anchor: .center)
+                        proxy.scrollTo(newValue, anchor: .center)
                     }
                 }
             }
@@ -141,19 +141,6 @@ struct PosterCard: View {
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 120, height: 180)
-                            .overlay(
-                                VStack(spacing: 8) {
-                                    Image(systemName: "photo")
-                                        .font(.system(size: 20))
-                                        .foregroundColor(.gray)
-                                    Text(content.title)
-                                        .font(.caption2)
-                                        .foregroundColor(.gray)
-                                        .multilineTextAlignment(.center)
-                                        .lineLimit(3)
-                                        .padding(.horizontal, 4)
-                                }
-                            )
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     )
                 }
@@ -192,7 +179,9 @@ struct PosterCard: View {
             showDetail = true
         }
         .sheet(isPresented: $showDetail) {
-            ContentDetailView(content: content, favoritesManager: favoritesManager)
+            NavigationStack {
+                ContentDetailView(content: content, favoritesManager: favoritesManager)
+            }
         }
     }
 }

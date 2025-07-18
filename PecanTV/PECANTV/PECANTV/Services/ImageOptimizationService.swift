@@ -50,11 +50,12 @@ class ImageOptimizationService: ObservableObject {
         size: ImageSize = .medium,
         format: ImageFormat = .webp
     ) -> URL? {
-        // For now, use direct URLs until CDN is properly set up
+        // For GCS URLs, use direct URLs for best performance
+        // GCS already provides excellent global CDN performance
         return URL(string: originalURL)
     }
     
-    /// Generate optimized URL using Cloudflare Image Resizing
+    /// Generate optimized URL using Cloudflare Image Resizing (for future use)
     private func generateCloudflareOptimizedURL(
         originalURL: String,
         size: ImageSize,
@@ -63,32 +64,10 @@ class ImageOptimizationService: ObservableObject {
         // Cloudflare Image Resizing URL format:
         // https://images.pecantv.com/cdn-cgi/image/format=webp,width=300,quality=85/https://original-url.com/image.jpg
         
-        // CDN Configuration - Update this when CDN is set up
-        // CDN Configuration - Currently using direct URLs
-        // let cloudflareDomain = "127.0.0.1:8000"  // Local development
-        // let cloudflareDomain = "images.pecantv.com"  // Production CDN
+        // CDN Configuration - Currently using GCS direct URLs
+        // let cloudflareDomain = "images.pecantv.com"  // Future CDN option
         
-        // Build optimization parameters
-        var params: [String] = []
-        
-        // Add format
-        params.append("format=\(format.rawValue)")
-        
-        // Add size if not original
-        if size != .original {
-            params.append("width=\(size.dimensions.width)")
-            if size.dimensions.height > 0 {
-                params.append("height=\(size.dimensions.height)")
-            }
-        }
-        
-        // Add quality
-        params.append("quality=\(size.quality)")
-        
-        // Add fit mode for better results
-        params.append("fit=scale-down")
-        
-        // For now, return direct URL until CDN is properly set up
+        // For now, return direct GCS URL for best performance
         return URL(string: originalURL)
     }
     
@@ -114,81 +93,53 @@ class ImageOptimizationService: ObservableObject {
         return getOptimizedImageURL(originalURL: originalURL, size: .large)
     }
     
-    // MARK: - Format Detection
+    // MARK: - GCS-Specific Helpers
     
-    /// Detect best format based on image content and device capabilities
-    func getBestFormat(for imageURL: String) -> ImageFormat {
-        // Check if device supports WebP
-        if supportsWebP() {
-            return .webp
-        }
+    /// Check if URL is from Google Cloud Storage
+    func isGCSURL(_ url: String) -> Bool {
+        return url.contains("storage.googleapis.com")
+    }
+    
+    /// Get GCS bucket and path from URL
+    func getGCSPath(from url: String) -> (bucket: String, path: String)? {
+        guard isGCSURL(url) else { return nil }
         
-        // Check if image has transparency (PNG)
-        if imageURL.lowercased().contains(".png") {
-            return .png
-        }
+        // Parse GCS URL: https://storage.googleapis.com/bucket-name/path/to/file
+        let components = url.components(separatedBy: "storage.googleapis.com/")
+        guard components.count > 1 else { return nil }
         
-        // Default to JPEG
-        return .jpeg
-    }
-    
-    /// Check if device supports WebP
-    private func supportsWebP() -> Bool {
-        // iOS 14+ supports WebP natively
-        if #available(iOS 14.0, *) {
-            return true
-        }
-        return false
-    }
-    
-    // MARK: - Performance Monitoring
-    
-    /// Track image load performance
-    func trackImageLoad(url: String, loadTime: TimeInterval, success: Bool) {
-        // In production, you might want to send this to analytics
-        print("📊 Image Load: \(url)")
-        print("   Time: \(String(format: "%.2f", loadTime))s")
-        print("   Success: \(success)")
-    }
-    
-    // MARK: - Fallback Handling
-    
-    /// Get fallback URL if optimization fails
-    func getFallbackURL(from originalURL: String) -> URL? {
-        // Return original URL as fallback
-        return URL(string: originalURL)
-    }
-    
-    /// Check if URL is optimizable
-    func isOptimizable(_ url: String) -> Bool {
-        return url.contains("storage.googleapis.com") || 
-               url.contains("dropbox.com") ||
-               url.contains("your-cdn.com")
-    }
-}
-
-// MARK: - Extensions for SwiftUI
-
-extension ImageOptimizationService {
-    /// Get optimized URL for SwiftUI views
-    func getOptimizedURL(
-        for originalURL: String,
-        context: ImageContext = .card
-    ) -> URL? {
-        let size: ImageSize
-        let format = getBestFormat(for: originalURL)
+        let pathComponents = components[1].components(separatedBy: "/")
+        guard pathComponents.count > 1 else { return nil }
         
+        let bucket = pathComponents[0]
+        let path = pathComponents.dropFirst().joined(separator: "/")
+        
+        return (bucket: bucket, path: path)
+    }
+    
+    // MARK: - Performance Optimization
+    
+    /// Get optimal image size for device
+    func getOptimalSize(for context: ImageContext, deviceScale: CGFloat = UIScreen.main.scale) -> ImageSize {
         switch context {
         case .thumbnail:
-            size = .thumbnail
+            return deviceScale > 2 ? .small : .thumbnail
         case .card:
-            size = .small
+            return deviceScale > 2 ? .medium : .small
         case .detail:
-            size = .medium
+            return deviceScale > 2 ? .large : .medium
         case .fullscreen:
-            size = .large
+            return .large
         }
-        
-        return getOptimizedImageURL(originalURL: originalURL, size: size, format: format)
+    }
+    
+    /// Get optimal format for device
+    func getOptimalFormat() -> ImageFormat {
+        // Use WebP for iOS 14+ (better compression)
+        if #available(iOS 14.0, *) {
+            return .webp
+        } else {
+            return .jpeg
+        }
     }
 } 

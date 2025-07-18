@@ -242,8 +242,8 @@ def create_episode(db: Session, episode: schemas.EpisodeCreate) -> models.Episod
         episode_number=episode.episode_number,
         runtime=episode.runtime,
         content_url=episode.content_url,
+        poster_url=episode.poster_url,
         thumbnail_url=episode.thumbnail_url,
-        air_date=episode.air_date,
         series_id=episode.series_id,
         content_uuid=episode.content_uuid
     )

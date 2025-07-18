@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UIKit // Added for UIDevice
 
 // API Response structure to match the database schema
 struct APIContent: Codable {
@@ -19,6 +20,44 @@ struct APIContent: Codable {
     let genres: [APIGenre]?  // Multiple genres
     let genre: APIGenre?     // Keep for backward compatibility
     let rating: APIRating?
+    
+    func toMediaContent() -> MediaContent {
+        let genreNames = genres?.map { convertGenreToTitleCase($0.name) } ?? []
+        let genreName = genre?.name ?? ""
+        let ageRating = rating?.code ?? "NR"
+        
+        return MediaContent(
+            id: id,
+            title: title,
+            description: description ?? "",
+            posterURL: posterURL,
+            trailerURL: trailerURL,
+            contentURL: contentURL,
+            type: type,
+            runtime: runtime,
+            genre: genreName,
+            ageRating: ageRating
+        )
+    }
+    
+    // Helper function to convert genre names from all caps to title case
+    private func convertGenreToTitleCase(_ genre: String) -> String {
+        // Handle special cases mapping database names to display names
+        let specialCases = [
+            "SCI-FI": "Science Fiction",
+            "SCIENCE FICTION": "Science Fiction",
+            "KUNG-FU": "Martial Arts",
+            "KUNGFU": "Martial Arts",
+            "MARTIAL ARTS": "Martial Arts"
+        ]
+        
+        if let specialCase = specialCases[genre.uppercased()] {
+            return specialCase
+        }
+        
+        // Convert to title case for regular genres
+        return genre.lowercased().capitalized
+    }
 }
 
 struct APIGenre: Codable {
@@ -53,87 +92,57 @@ class ContentViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        loadContent()
+        // Don't automatically load content - let the app decide when to load
+        print("📱 ContentViewModel initialized")
     }
     
     func loadContent() {
+        print("🔄 ContentViewModel: Starting content load...")
         isLoading = true
         error = nil
         
         guard let url = APIConfig.url(for: APIConfig.Endpoints.content) else {
+            print("❌ ContentViewModel: Invalid URL for content endpoint")
             self.error = NSError(domain: "Invalid URL", code: -1, userInfo: nil)
             self.isLoading = false
             return
         }
         
-        print("🔍 Loading content from: \(url)")
+        print("🔍 ContentViewModel: Loading content from: \(url)")
         
         URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
             .decode(type: [APIContent].self, decoder: JSONDecoder())
-            .map { apiContents in
-                apiContents.map { apiContent in
-                    // Convert API content to MediaContent
-                    let genreNames = apiContent.genres?.map { self.convertGenreToTitleCase($0.name) } ?? []
-                    let genreName = apiContent.genre?.name ?? ""
-                    let ageRating = apiContent.rating?.code ?? "NR"
-                    
-                    return MediaContent(
-                        id: apiContent.id,
-                        title: apiContent.title,
-                        description: apiContent.description ?? "",
-                        posterURL: apiContent.posterURL,
-                        trailerURL: apiContent.trailerURL,
-                        contentURL: apiContent.contentURL,
-                        type: apiContent.type,
-                        runtime: apiContent.runtime,
-                        genre: genreName,
-                        ageRating: ageRating
-                    )
-                }
-            }
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { completion in
                     self.isLoading = false
-                    if case .failure(let error) = completion {
+                    switch completion {
+                    case .finished:
+                        print("✅ ContentViewModel: Content loaded successfully")
+                    case .failure(let error):
+                        print("❌ ContentViewModel: Failed to load content: \(error.localizedDescription)")
                         self.error = error
                     }
                 },
-                receiveValue: { contents in
-                    print("✅ Loaded \(contents.count) total content items")
-                    self.allContent = contents
-                    self.films = contents.filter { $0.type == "FILM" }
-                    self.tvSeries = contents.filter { $0.type == "SERIES" }
-                    print("✅ Films: \(self.films.count), Series: \(self.tvSeries.count)")
+                receiveValue: { apiContent in
+                    print("📊 ContentViewModel: Received \(apiContent.count) content items")
+                    self.films = apiContent.filter { $0.type.uppercased() == "FILM" }.map { $0.toMediaContent() }
+                    self.tvSeries = apiContent.filter { $0.type.uppercased() == "SERIES" }.map { $0.toMediaContent() }
+                    self.allContent = self.films + self.tvSeries
+                    print("📊 ContentViewModel: Processed \(self.films.count) films and \(self.tvSeries.count) TV series")
                     
-                    // Debug: Print series titles
-                    print("📺 Series found:")
-                    for series in self.tvSeries {
-                        print("  - \(series.title) (ID: \(series.id))")
+                    // Notify FavoritesManager to update favorite content
+                    DispatchQueue.main.async {
+                        FavoritesManager.shared.updateFavoriteContentFromAvailableContent(self.allContent)
+                        
+                        // Post notification that content has been loaded
+                        NotificationCenter.default.post(name: .contentLoaded, object: nil)
+                        print("📢 Content loaded notification posted")
                     }
                 }
             )
             .store(in: &cancellables)
-    }
-    
-    // Helper function to convert genre names from all caps to title case
-    private func convertGenreToTitleCase(_ genre: String) -> String {
-        // Handle special cases mapping database names to display names
-        let specialCases = [
-            "SCI-FI": "Science Fiction",
-            "SCIENCE FICTION": "Science Fiction",
-            "KUNG-FU": "Martial Arts",
-            "KUNGFU": "Martial Arts",
-            "MARTIAL ARTS": "Martial Arts"
-        ]
-        
-        if let specialCase = specialCases[genre.uppercased()] {
-            return specialCase
-        }
-        
-        // Convert to title case for regular genres
-        return genre.lowercased().capitalized
     }
     
     func getContentsByGenre(_ genre: String) -> [MediaContent] {

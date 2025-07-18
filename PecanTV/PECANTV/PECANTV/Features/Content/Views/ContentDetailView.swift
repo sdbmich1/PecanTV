@@ -6,160 +6,251 @@ struct ContentDetailView: View {
     let content: MediaContent
     @ObservedObject var favoritesManager: FavoritesManager
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.presentationMode) private var presentationMode
     @State private var showEpisodes = false
     @State private var showTrailer = false
     @State private var showContent = false
+    
+    // Robust dismiss function that works in both sheet and NavigationLink contexts
+    private func performDismiss() {
+        print("🔙 Performing dismiss...")
+        print("🔙 Dismiss environment available: \(dismiss != nil)")
+        print("🔙 Presentation mode available: \(presentationMode != nil)")
+        
+        // Try the modern dismiss first
+        dismiss()
+        
+        // Fallback to presentation mode if needed
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
     
     var body: some View {
         ZStack {
             Color.white.edgesIgnoringSafeArea(.all)
             
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    // Back button
-                    Button(action: { dismiss() }) {
-                        HStack {
+            VStack(spacing: 0) {
+                // Back button - Moved outside ScrollView for better accessibility
+                HStack {
+                    Button(action: {
+                        print("🔙 Back button tapped")
+                        performDismiss()
+                    }) {
+                        HStack(spacing: 8) {
                             Image(systemName: "chevron.left")
+                                .font(.title2)
                             Text("Back")
+                                .font(.headline)
                         }
-                        .font(.headline)
                         .foregroundColor(.black)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-                    
-                    // Poster and Info
-                    VStack(alignment: .leading, spacing: 16) {
-                        ZStack(alignment: .topTrailing) {
-                            SimpleImageService.shared.directImage(
-                                from: content.posterURL
-                            ) {
-                                AnyView(
-                                    Rectangle()
-                                        .fill(Color.gray.opacity(0.2))
-                                        .frame(width: UIScreen.main.bounds.width - 8)
-                                        .frame(height: 240)
-                                        .overlay(
-                                            Image(systemName: "photo")
-                                                .font(.system(size: 48))
-                                                .foregroundColor(.gray)
-                                        )
-                                )
-                            }
-                            .frame(width: UIScreen.main.bounds.width - 8)
-                            .frame(height: 240)
-                            .clipped()
-                            .cornerRadius(12)
-                            
-                            // Favorite button
-                            Button(action: {
-                                favoritesManager.toggleFavorite(content)
-                            }) {
-                                Image(systemName: favoritesManager.isFavorite(content) ? "heart.fill" : "heart")
-                                    .font(.title2)
-                                    .foregroundColor(favoritesManager.isFavorite(content) ? .pecanRed : .black)
-                                    .padding(12)
-                                    .background(Color.gray.opacity(0.2))
-                                    .clipShape(Circle())
-                            }
-                            .padding(.top, 12)
-                            .padding(.trailing, 12)
-                        }
-                        
-                        // Content info
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text(content.title)
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(.black)
-                            
-                            HStack {
-                                Text(content.type)
-                                Text("•")
-                                Text("\(content.runtime) min")
-                                if !content.genre.isEmpty && content.genre != "Unknown" {
-                                    Text("•")
-                                    Text(content.genre)
-                                }
-                                if !content.ageRating.isEmpty && content.ageRating != "NR" {
-                                    Text("•")
-                                    Text(content.ageRating)
-                                }
-                            }
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                            
-                            Text(content.description)
-                                .font(.body)
-                                .foregroundColor(.black)
-                                .lineLimit(nil)
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        .padding(.horizontal, 16)
-                        
-                        // Action buttons
-                        VStack(spacing: 12) {
-                            if content.type.uppercased() == "SERIES" {
-                                // Episodes button for series
-                                Button(action: { showEpisodes = true }) {
-                                    HStack {
-                                        Image(systemName: "tv")
-                                        Text("Episodes")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.pecanRed)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                                }
-                            } else {
-                                // Trailer and Film buttons for non-series content
-                                Button(action: { 
-                                    print("🎬 Trailer button tapped for: \(content.title) (ID: \(content.id))")
-                                    print("🎬 Trailer URL: \(content.trailerURL)")
-                                    showTrailer = true 
-                                }) {
-                                    HStack {
-                                        Image(systemName: "play.fill")
-                                        Text("Watch Trailer")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(content.trailerURL.isEmpty ? Color.gray : Color.blue)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                                }
-                                .disabled(content.trailerURL.isEmpty)
-                                .allowsHitTesting(!content.trailerURL.isEmpty)
-                                
-                                Button(action: { showContent = true }) {
-                                    HStack {
-                                        Image(systemName: "play.fill")
-                                        Text("Watch Film")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background((content.contentURL.isEmpty || content.contentURL == "NONE") ? Color.gray : Color.pecanRed)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                                }
-                                .disabled(content.contentURL.isEmpty || content.contentURL == "NONE")
-                                .allowsHitTesting(!(content.contentURL.isEmpty || content.contentURL == "NONE"))
-                            }
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 20)
+                    .buttonStyle(PlainButtonStyle())
+                    .accessibilityLabel("Back to previous screen")
+                    .onTapGesture {
+                        print("🔙 Back button onTapGesture triggered")
+                        performDismiss()
                     }
-                    .padding(.vertical)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+                .background(Color.white)
+                .zIndex(1000) // Ensure back button is always on top
+                
+                // Scrollable content
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // Poster and Info
+                        VStack(alignment: .leading, spacing: 16) {
+                            ZStack(alignment: .topTrailing) {
+                                SimpleImageService.shared.directImage(
+                                    from: content.posterURL
+                                ) {
+                                    AnyView(
+                                        Rectangle()
+                                            .fill(Color.gray.opacity(0.2))
+                                            .frame(width: UIScreen.main.bounds.width - 8)
+                                            .frame(height: 240)
+                                    )
+                                }
+                                .frame(width: UIScreen.main.bounds.width - 8)
+                                .frame(height: 240)
+                                .clipped()
+                                .cornerRadius(12)
+                                
+                                // Favorite button
+                                Button(action: {
+                                    favoritesManager.toggleFavorite(content)
+                                }) {
+                                    Image(systemName: favoritesManager.isFavorite(content) ? "heart.fill" : "heart")
+                                        .font(.title2)
+                                        .foregroundColor(favoritesManager.isFavorite(content) ? .pecanRed : .black)
+                                        .padding(12)
+                                        .background(Color.gray.opacity(0.2))
+                                        .clipShape(Circle())
+                                }
+                                .padding(.top, 12)
+                                .padding(.trailing, 12)
+                            }
+                            
+                            // Content info
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(content.title)
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                                
+                                HStack {
+                                    Text(content.type)
+                                    Text("•")
+                                    Text("\(content.runtime) min")
+                                    if !content.genre.isEmpty && content.genre != "Unknown" {
+                                        Text("•")
+                                        Text(content.genre)
+                                    }
+                                    if !content.ageRating.isEmpty && content.ageRating != "NR" {
+                                        Text("•")
+                                        Text(content.ageRating)
+                                    }
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                                
+                                Text(content.description)
+                                    .font(.body)
+                                    .foregroundColor(.black)
+                                    .lineLimit(nil)
+                                    .multilineTextAlignment(.leading)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(.horizontal, 16)
+                            
+                            // Action buttons
+                            VStack(spacing: 12) {
+                                if content.type.uppercased() == "SERIES" {
+                                    // Episodes button for series
+                                    Button(action: { showEpisodes = true }) {
+                                        HStack {
+                                            Image(systemName: "tv")
+                                            Text("Episodes")
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.pecanRed)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
+                                    }
+                                    
+                                    // Remove from favorites button for series
+                                    Button(action: {
+                                        favoritesManager.toggleFavorite(content)
+                                    }) {
+                                        HStack {
+                                            Image(systemName: favoritesManager.isFavorite(content) ? "heart.fill" : "heart")
+                                            Text(favoritesManager.isFavorite(content) ? "Remove from Favorites" : "Add to Favorites")
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(favoritesManager.isFavorite(content) ? Color.gray : Color.pecanRed)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
+                                    }
+                                } else {
+                                    // Watch buttons for films
+                                    if !content.trailerURL.isEmpty {
+                                        Button(action: { showTrailer = true }) {
+                                            HStack {
+                                                Image(systemName: "play.rectangle")
+                                                Text("Watch Trailer")
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(Color.blue)
+                                            .foregroundColor(.white)
+                                            .cornerRadius(10)
+                                        }
+                                    }
+                                    
+                                    if isContentAvailable() {
+                                        Button(action: { showContent = true }) {
+                                            HStack {
+                                                Image(systemName: getContentButtonIcon())
+                                                Text("Watch Film")
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(getContentButtonColor())
+                                            .foregroundColor(.white)
+                                            .cornerRadius(10)
+                                        }
+                                    } else {
+                                        Button(action: {}) {
+                                            HStack {
+                                                Image(systemName: getContentButtonIcon())
+                                                Text(getContentButtonMessage())
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(getContentButtonColor())
+                                            .foregroundColor(.white)
+                                            .cornerRadius(10)
+                                        }
+                                        .disabled(true)
+                                    }
+                                    
+                                    // Add to favorites button for films
+                                    Button(action: {
+                                        favoritesManager.toggleFavorite(content)
+                                    }) {
+                                        HStack {
+                                            Image(systemName: favoritesManager.isFavorite(content) ? "heart.fill" : "heart")
+                                            Text(favoritesManager.isFavorite(content) ? "Remove from Favorites" : "Add to Favorites")
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(favoritesManager.isFavorite(content) ? Color.gray : Color.pecanRed)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.top, 20)
+                        }
+                        .padding(.vertical)
+                    }
                 }
             }
         }
         .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    // Swipe right to go back (iPad gesture support)
+                    if value.translation.width > 100 && abs(value.translation.height) < 50 {
+                        print("🔙 Swipe right gesture detected - dismissing content detail")
+                        performDismiss()
+                    }
+                }
+        )
+        .onAppear {
+            print("🔍 ContentDetailView appeared for: \(content.title)")
+            print("🔍 Dismiss environment available: \(dismiss != nil)")
+            print("🔍 Presentation mode available: \(presentationMode != nil)")
+            print("🔍 Content ID: \(content.id)")
+            print("🔍 Content type: \(content.type)")
+        }
+        .onDisappear {
+            print("🔍 ContentDetailView disappeared for: \(content.title)")
+        }
         .fullScreenCover(isPresented: $showEpisodes) {
             EpisodesView(series: content)
                 .environmentObject(favoritesManager)
@@ -199,6 +290,38 @@ struct ContentDetailView: View {
             }
         }
     }
+    
+    // MARK: - Helper Functions
+    
+    private func isContentAvailable() -> Bool {
+        return !content.contentURL.isEmpty && content.contentURL != "NONE"
+    }
+    
+    private func getContentButtonIcon() -> String {
+        if isContentAvailable() {
+            return "play.fill"
+        } else {
+            return "play.slash"
+        }
+    }
+    
+    private func getContentButtonColor() -> Color {
+        if isContentAvailable() {
+            return Color.pecanRed
+        } else {
+            return Color.gray
+        }
+    }
+    
+    private func getContentButtonMessage() -> String {
+        if content.contentURL.isEmpty || content.contentURL == "NONE" {
+            return "No video available"
+        } else if content.contentURL.contains("storage.googleapis.com") {
+            return "Video requires access setup"
+        } else {
+            return "Video unavailable"
+        }
+    }
 }
 
 struct ContentErrorView: View {
@@ -213,17 +336,20 @@ struct ContentErrorView: View {
                 // Back button
                 HStack {
                     Button(action: { dismiss() }) {
-                        HStack {
+                        HStack(spacing: 8) {
                             Image(systemName: "chevron.left")
+                                .font(.title2)
                             Text("Back")
+                                .font(.headline)
                         }
-                        .font(.headline)
                         .foregroundColor(.black)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .accessibilityLabel("Back to previous screen")
                     
                     Spacer()
                 }
@@ -278,17 +404,20 @@ struct TrailerErrorView: View {
                 // Back button
                 HStack {
                     Button(action: { dismiss() }) {
-                        HStack {
+                        HStack(spacing: 8) {
                             Image(systemName: "chevron.left")
+                                .font(.title2)
                             Text("Back")
+                                .font(.headline)
                         }
-                        .font(.headline)
                         .foregroundColor(.black)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .accessibilityLabel("Back to previous screen")
                     
                     Spacer()
                 }
@@ -345,31 +474,34 @@ struct TrailerWebView: View {
                 // Back button
                 HStack {
                     Button(action: { dismiss() }) {
-                        HStack {
+                        HStack(spacing: 8) {
                             Image(systemName: "chevron.left")
+                                .font(.title2)
                             Text("Back")
+                                .font(.headline)
                         }
-                        .font(.headline)
                         .foregroundColor(.black)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(20)
                     }
+                    .buttonStyle(PlainButtonStyle())
+                    .accessibilityLabel("Back to previous screen")
                     
                     Spacer()
                     
                     Button(action: {
                         UIApplication.shared.open(url)
                     }) {
-                        HStack {
+                        HStack(spacing: 8) {
                             Image(systemName: "safari")
                             Text("Open in Browser")
                         }
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 10)
                         .background(Color.blue)
                         .cornerRadius(20)
                     }

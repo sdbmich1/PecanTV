@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit // Added for UIDevice
 
 class APIHealthChecker: ObservableObject {
     @Published var isAPIAvailable: Bool = true
@@ -10,7 +11,10 @@ class APIHealthChecker: ObservableObject {
     private init() {}
     
     func checkAPIHealth(completion: ((Bool) -> Void)? = nil) {
+        print("🔍 APIHealthChecker: Starting health check...")
+        
         guard let url = APIConfig.url(for: APIConfig.Endpoints.health) else {
+            print("❌ APIHealthChecker: Invalid URL")
             DispatchQueue.main.async {
                 self.isAPIAvailable = false
                 completion?(false)
@@ -18,6 +22,7 @@ class APIHealthChecker: ObservableObject {
             return
         }
         
+        print("🔍 APIHealthChecker: Checking URL: \(url)")
         isChecking = true
         var request = URLRequest(url: url)
         request.timeoutInterval = 30  // Increased to 30 seconds for ngrok
@@ -27,24 +32,29 @@ class APIHealthChecker: ObservableObject {
                 self.isChecking = false
                 
                 if let error = error {
-                    print("⚠️ API Health check error: \(error.localizedDescription)")
+                    print("❌ APIHealthChecker: Network error: \(error.localizedDescription)")
                     self.isAPIAvailable = false
                     completion?(false)
                     return
                 }
                 
                 if let httpResponse = response as? HTTPURLResponse {
-                    self.isAPIAvailable = httpResponse.statusCode == 200
-                    if self.isAPIAvailable {
-                        print("✅ API Health check successful")
+                    print("📊 APIHealthChecker: HTTP Status: \(httpResponse.statusCode)")
+                    
+                    if httpResponse.statusCode == 200 {
+                        print("✅ APIHealthChecker: API is available")
+                        self.isAPIAvailable = true
+                        completion?(true)
                     } else {
-                        print("❌ API Health check failed with status: \(httpResponse.statusCode)")
+                        print("❌ APIHealthChecker: API returned status \(httpResponse.statusCode)")
+                        self.isAPIAvailable = false
+                        completion?(false)
                     }
                 } else {
+                    print("❌ APIHealthChecker: Invalid response")
                     self.isAPIAvailable = false
-                    print("❌ API Health check failed - no response")
+                    completion?(false)
                 }
-                completion?(self.isAPIAvailable)
             }
         }.resume()
     }

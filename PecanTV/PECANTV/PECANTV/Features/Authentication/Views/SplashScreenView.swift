@@ -5,6 +5,7 @@ struct SplashScreenView: View {
     @State private var size = 0.8
     @State private var opacity = 0.5
     @State private var logoLoaded = false
+    @State private var apiCheckComplete = false
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var contentViewModel: ContentViewModel
     @StateObject private var healthChecker = APIHealthChecker.shared
@@ -49,7 +50,7 @@ struct SplashScreenView: View {
                         logoLoaded = true
                         
                         // Animate the logo
-                        withAnimation(.easeIn(duration: 1.5)) {
+                        withAnimation(.easeIn(duration: 0.8)) {
                             self.size = 1.0
                             self.opacity = 1.0
                         }
@@ -62,16 +63,40 @@ struct SplashScreenView: View {
                         .opacity(opacity)
                 }
                 .onAppear {
-                    // Check API health during splash screen
-                    healthChecker.checkAPIHealth()
+                    print("🚀 SplashScreen: Starting initialization...")
                     
-                    // Show splash screen for at least 3 seconds
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                        withAnimation(.easeOut(duration: 0.5)) {
-                            self.isActive = true
+                    // Check API health during splash screen
+                    Task {
+                        await healthChecker.checkAPIHealth()
+                        await MainActor.run {
+                            apiCheckComplete = true
+                            print("✅ SplashScreen: API health check complete")
+                            checkReadyToProceed()
                         }
                     }
+                    
+                    // Show splash screen for minimum 1.5 seconds (reduced from 3.0)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        print("⏰ SplashScreen: Minimum display time reached")
+                        checkReadyToProceed()
+                    }
                 }
+            }
+        }
+    }
+    
+    private func checkReadyToProceed() {
+        // Only proceed if both minimum time has passed AND API check is complete
+        guard apiCheckComplete else {
+            print("⏳ SplashScreen: Waiting for API check to complete...")
+            return
+        }
+        
+        // Add a small delay to ensure smooth transition
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            print("✅ SplashScreen: Proceeding to main app")
+            withAnimation(.easeOut(duration: 0.3)) {
+                self.isActive = true
             }
         }
     }

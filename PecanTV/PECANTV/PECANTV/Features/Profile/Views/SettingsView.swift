@@ -5,6 +5,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingSignOutAlert = false
     @State private var showingDeleteAccountAlert = false
+    @State private var showingHelpCenter = false
+    @State private var showingContactUs = false
     
     // Settings state
     @AppStorage("autoPlay") private var autoPlay = true
@@ -143,7 +145,7 @@ struct SettingsView: View {
                         title: "Help Center",
                         subtitle: "Get help and support",
                         action: {
-                            // Navigate to help center
+                            showingHelpCenter = true
                         }
                     )
                     
@@ -152,7 +154,7 @@ struct SettingsView: View {
                         title: "Contact Us",
                         subtitle: "Send us feedback",
                         action: {
-                            // Open contact form
+                            showingContactUs = true
                         }
                     )
                     
@@ -223,6 +225,12 @@ struct SettingsView: View {
                 }
             } message: {
                 Text("This action cannot be undone. All your data will be permanently deleted.")
+            }
+            .sheet(isPresented: $showingHelpCenter) {
+                HelpCenterView()
+            }
+            .sheet(isPresented: $showingContactUs) {
+                ContactUsView()
             }
         }
     }

@@ -158,9 +158,6 @@ struct CastrWebView: UIViewRepresentable {
         configuration.mediaTypesRequiringUserActionForPlayback = []
         configuration.allowsAirPlayForMediaPlayback = true
         
-        // Enable background audio and airplay
-        configuration.mediaPlaybackAllowsAirPlay = true
-        
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.scrollView.isScrollEnabled = false
