@@ -278,6 +278,7 @@ class EnhancedAuthService:
     def verify_token(token: str) -> Dict[str, Any]:
         """Verify and decode a JWT token with enhanced validation."""
         try:
+            print(f"🔍 Verifying token: {token[:20]}...")
             payload = jwt.decode(
                 token, 
                 SECRET_KEY, 
@@ -285,27 +286,41 @@ class EnhancedAuthService:
                 issuer="pecantv-api",
                 audience="pecantv-users"
             )
+            print(f"🔍 Token verification successful: {payload}")
             return payload
         except jwt.ExpiredSignatureError:
             logger.warning("Token expired")
+            print("❌ Token expired")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token has expired"
             )
         except jwt.InvalidIssuerError:
             logger.warning("Invalid token issuer")
+            print("❌ Invalid token issuer")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token"
             )
         except jwt.InvalidAudienceError:
             logger.warning("Invalid token audience")
+            print("❌ Invalid token audience")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token"
             )
         except jwt.JWTError as e:
             logger.warning(f"JWT validation error: {e}")
+            print(f"❌ JWT validation error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials"
+            )
+        except Exception as e:
+            logger.error(f"Unexpected error in verify_token: {e}")
+            print(f"❌ Unexpected error in verify_token: {e}")
+            import traceback
+            traceback.print_exc()
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials"
@@ -542,6 +557,44 @@ class EnhancedAuthService:
         if not EnhancedAuthService.verify_password(password, user.password_hash):
             return None
         return user
+
+    @staticmethod
+    def get_current_user(db: Session, token: str) -> User:
+        """Get current user from JWT token."""
+        try:
+            print(f"🔍 Validating token: {token[:20]}...")
+            payload = EnhancedAuthService.verify_token(token)
+            print(f"🔍 Token payload: {payload}")
+            
+            user_uuid = payload.get("sub")
+            if user_uuid is None:
+                print("❌ No 'sub' claim in token")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Could not validate credentials"
+                )
+            
+            print(f"🔍 Looking for user with UUID: {user_uuid}")
+            user = db.query(User).filter(User.uuid == user_uuid).first()
+            if user is None:
+                print(f"❌ User not found for UUID: {user_uuid}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="User not found"
+                )
+            
+            print(f"✅ Found user: {user.email} (ID: {user.id})")
+            return user
+        except HTTPException:
+            raise
+        except Exception as e:
+            print(f"❌ Error in get_current_user: {e}")
+            import traceback
+            traceback.print_exc()
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials"
+            )
 
 # Global instance
 enhanced_auth_service = EnhancedAuthService() 

@@ -61,19 +61,45 @@ else:
     print(f"⚠️  Static files directory not found: {static_path}")
 
 
-def get_current_user_dependency(token: str = Depends(HTTPBearer()), db: Session = Depends(get_db)) -> User:
-    """Dependency to get current user from JWT token"""
-    if not token or not hasattr(token, 'credentials') or not token.credentials:
-        logging.warning("Unauthorized access attempt: missing or invalid token")
+# Custom authentication dependency
+def get_auth_token(request: Request) -> str:
+    """Extract and validate the Authorization header"""
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing or invalid authentication token"
+            detail="Missing Authorization header"
         )
+    
+    if not auth_header.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Authorization header format"
+        )
+    
+    token = auth_header.split(" ")[1]
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing token"
+        )
+    
+    return token
+
+def get_current_user_dependency(token: str = Depends(get_auth_token), db: Session = Depends(get_db)) -> User:
+    """Dependency to get current user from JWT token"""
     try:
-        user = enhanced_auth_service.get_current_user(db, token.credentials)
+        print(f"🔍 Processing token: {token[:20]}...")
+        user = enhanced_auth_service.get_current_user(db, token)
         return user
-    except HTTPException as e:
-        logging.warning(f"Unauthorized access attempt: {e.detail}")
+    except HTTPException:
+        # Re-raise HTTP exceptions (like 401, 403) as-is
+        raise
+    except Exception as e:
+        logging.error(f"Authentication error: {e}")
+        print(f"❌ Authentication error: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials"
@@ -333,46 +359,66 @@ def get_user_favorites(
     current_user: User = Depends(get_current_user_dependency)
 ):
     """Get all favorites for a user"""
-    # Authorization check
-    if current_user.id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied: You can only view your own favorites"
-        )
-    """Get all favorites for a user"""
-    favorites = crud.get_user_favorites(db, user_id=user_id)
-    
-    # Manually serialize to ensure genre is a string and ageRating is present
-    serialized_favorites = []
-    for fav in favorites:
-        genre_name = fav.genre.name if fav.genre else None
-        rating_code = fav.rating.code if fav.rating else None
-        age_rating = str(fav.rating.min_age) if fav.rating and fav.rating.min_age is not None else ""
-        serialized_fav = {
-            "id": fav.id,
-            "uuid": str(fav.uuid),
-            "title": fav.title,
-            "posterURL": fav.poster_url,
-            "trailerURL": fav.trailer_url,
-            "contentURL": fav.content_url,
-            "description": fav.description,
-            "type": fav.type.value,
-            "runtime": fav.runtime,
-            "genreId": fav.genre_id,
-            "ratingId": fav.rating_id,
-            "releaseDate": fav.release_date.isoformat() if fav.release_date else None,
-            "createdAt": fav.created_at.isoformat(),
-            "updatedAt": fav.updated_at.isoformat(),
-            "genre": genre_name,
-            "rating": rating_code,
-            "ageRating": age_rating
+    try:
+        # Authorization check
+        if current_user.id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: You can only view your own favorites"
+            )
+        
+        print(f"🔍 Getting favorites for user {user_id} (current user: {current_user.id})")
+        
+        favorites = crud.get_user_favorites(db, user_id=user_id)
+        print(f"🔍 Found {len(favorites)} favorites in database")
+        
+        # Manually serialize to ensure genre is a string and ageRating is present
+        serialized_favorites = []
+        for fav in favorites:
+            try:
+                genre_name = fav.genre.name if fav.genre else None
+                rating_code = fav.rating.code if fav.rating else None
+                age_rating = str(fav.rating.min_age) if fav.rating and fav.rating.min_age is not None else ""
+                serialized_fav = {
+                    "id": fav.id,
+                    "uuid": str(fav.uuid),
+                    "title": fav.title,
+                    "posterURL": fav.poster_url,
+                    "trailerURL": fav.trailer_url,
+                    "contentURL": fav.content_url,
+                    "description": fav.description,
+                    "type": fav.type.value,
+                    "runtime": fav.runtime,
+                    "genreId": fav.genre_id,
+                    "ratingId": fav.rating_id,
+                    "releaseDate": fav.release_date.isoformat() if fav.release_date else None,
+                    "createdAt": fav.created_at.isoformat(),
+                    "updatedAt": fav.updated_at.isoformat(),
+                    "genre": genre_name,
+                    "rating": rating_code,
+                    "ageRating": age_rating
+                }
+                serialized_favorites.append(serialized_fav)
+            except Exception as e:
+                print(f"❌ Error serializing favorite {fav.id}: {e}")
+                continue
+        
+        print(f"✅ Successfully serialized {len(serialized_favorites)} favorites")
+        
+        return {
+            "favorites": serialized_favorites,
+            "total_count": len(favorites)
         }
-        serialized_favorites.append(serialized_fav)
-    
-    return {
-        "favorites": serialized_favorites,
-        "total_count": len(favorites)
-    }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Unexpected error in get_user_favorites: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}"
+        )
 
 @app.post("/favorites/{user_id}/toggle/{content_id}")
 def toggle_favorite(user_id: int, content_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user_dependency)):
@@ -436,6 +482,24 @@ def update_content(content_id: int, content_update: schemas.ContentUpdate, db: S
     if updated_content is None:
         raise HTTPException(status_code=404, detail="Content not found")
     return updated_content
+
+@app.post("/content", response_model=schemas.Content)
+def create_content(content: schemas.ContentCreate, db: Session = Depends(get_db)):
+    """Create new content"""
+    try:
+        created_content = crud.create_content(db, content)
+        return created_content
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create content: {str(e)}")
+
+@app.post("/episodes", response_model=schemas.Episode)
+def create_episode(episode: schemas.EpisodeCreate, db: Session = Depends(get_db)):
+    """Create new episode"""
+    try:
+        created_episode = crud.create_episode(db, episode)
+        return created_episode
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create episode: {str(e)}")
 
 @app.get("/episodes")
 def get_episodes(
